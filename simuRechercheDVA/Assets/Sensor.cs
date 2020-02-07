@@ -36,6 +36,7 @@ public class Sensor : MonoBehaviour
 		for(int i =0; i<numberOfSources ;i++ ){
 			GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			sphere.transform.position = emissionSources[i];
+			sphere.name = "signalTransmitter";
 		}
 		
 		

@@ -10,11 +10,11 @@ using UnityEngine.UI;
 public abstract class DroneControl : MonoBehaviour
 {
 
-	protected FixedWingFlightSim sim;
+	protected DroneFlightSim sim;
 	protected Sensor sensor;
 	protected Text modeDisplay;
 	
-	
+	public bool manualOverride = false;
 	
 	protected GameObject target;
 	protected bool hasTarget = false;
@@ -31,13 +31,19 @@ public abstract class DroneControl : MonoBehaviour
 	// Update is called once per frame
 	public virtual void Update()
 	{
-		HandleKeyboardInput();//keyboard override
-		modeDisplay.text = ("mode : ");
+		if(Input.anyKey || manualOverride){
+			modeDisplay.text = ("mode : manual");
+			HandleKeyboardInput();//keyboard override
+		}else{
+			modeDisplay.text = ("mode : ");
+			ControlLoop();
+		}
+		
 		
 	}
 	
 	
-	
+	public abstract void ControlLoop();
 	
 	public void SetWaypoint(GameObject waypointIndicator){
 		target = waypointIndicator;

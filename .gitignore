@@ -27,3 +27,6 @@ $RECYCLE.BIN/
 
 # project-specific ignore
 simuRechercheDVA/sensorOutput.csv
+simuRechercheDVA/sensorOutput.wsv
+simuRechercheDVA/Assets/sensorOutput.wsv
+simuRechercheDVA/Assets/sensorOutput.wsv.meta

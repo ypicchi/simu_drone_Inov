@@ -36,13 +36,16 @@ public class FixedWingDroneControl : DroneControl
 	}
 
 	// Update is called once per frame
-	public override void Update()
-	{
-		base.Update();
-		
-		
+	//public override void Update()
+	//{
+	//	base.Update();	
+	//}
+	
+	
+	
+	public override void ControlLoop(){
 		float thrustCommand = speedPid.Update(targetSpeed,sensor.GetSpeed(),Time.deltaTime);
-		sim.SetThrust(thrustCommand);
+		sim.SetMainThrust(thrustCommand);
 		
 		if(sensor.GetSpeed()>18){
 		
@@ -56,8 +59,8 @@ public class FixedWingDroneControl : DroneControl
 			
 			isCircling = false;
 			isFollowingDirectly = false;
-			sim.SetPitchDroneSpeed(0);
-			sim.SetRollDroneSpeed(0);
+			sim.SetPitchTorque(0);
+			sim.SetRollTorque(0);
 			
 			
 			
@@ -75,19 +78,14 @@ public class FixedWingDroneControl : DroneControl
 			} 
 			
 		}else{
-			sim.SetRollDroneSpeed(0);
+			sim.SetRollTorque(0);
 			float pitchCommand = pitchPid.Update(-30,sensor.GetPitch(),Time.deltaTime);
-			sim.SetPitchDroneSpeed(pitchCommand);
+			sim.SetPitchTorque(-pitchCommand);
 		}
 		if(sensor.IsStalling()){
 			modeDisplay.text = ("mode : STALLING");
 		}
-		
 	}
-	
-	
-	
-	
 	
 	public void SetSpeed(float newSpeed){
 		targetSpeed = newSpeed;
@@ -109,14 +107,11 @@ public class FixedWingDroneControl : DroneControl
 		float currentClimb = sensor.GetRealClimbAngle();
 		rollCommand -= turnDirection *climbPid.Update(targetClimbAngle,currentClimb,Time.deltaTime);
 		
-		sim.SetPitchDroneSpeed(3);
-		sim.SetRollDroneSpeed(rollCommand);
+		sim.SetPitchTorque(-3);
+		sim.SetRollTorque(rollCommand);
 		
-		//TODO
+		
 	}
-	
-	
-	
 	
 	
 	
@@ -181,55 +176,49 @@ public class FixedWingDroneControl : DroneControl
 			climbRollCorrection = Mathf.Abs(0.8f * baseRollCommand) * Mathf.Sign(climbRollCorrection);
 		}
 		float rollCommand = baseRollCommand + climbRollCorrection;
-		sim.SetRollDroneSpeed(rollCommand);//positive : roll left
+		sim.SetRollTorque(rollCommand);//positive : roll left
 		
 		
 		
 		float pitchSpeedThrottle = Map(0,3,0,baseRollForTurn,Mathf.Abs(currentRoll));//Pitch induced to turn
-		sim.SetPitchDroneSpeed(pitchSpeedThrottle + climbCommand);
+		sim.SetPitchTorque(-(pitchSpeedThrottle + climbCommand));
 	}
 	
 	
 	
 	
 	protected override void HandleKeyboardInput(){
-		float angularSpeedDecay = 0.05f;
-
 		if (Input.GetKey(KeyCode.LeftShift)){
-			sim.SetThrust(sim.GetMainThrust()+0.1f);
+			sim.SetMainThrust(sim.GetMainThrust()+0.1f);
         }else if (Input.GetKey(KeyCode.LeftControl)){
-			sim.SetThrust(sim.GetMainThrust()-0.1f);
+			sim.SetMainThrust(sim.GetMainThrust()-0.1f);
         }
 		
 		//pitch
-		float pitchSpeed = sim.GetPitchDroneSpeed();
         if (Input.GetKey(KeyCode.Z)){
-            sim.SetPitchDroneSpeed(-(pitchSpeed + 2*angularSpeedDecay));
+            sim.SetPitchTorque(15);
         }else if (Input.GetKey(KeyCode.S)){
-            sim.SetPitchDroneSpeed(-(pitchSpeed - 2*angularSpeedDecay));
+            sim.SetPitchTorque(-22);
         }else{
-			sim.SetPitchDroneSpeed(-(pitchSpeed - Mathf.Sign(pitchSpeed)*angularSpeedDecay));
+			sim.SetPitchTorque(0);
 		}
 		
 		//roll
-		float rollSpeed = sim.GetRollDroneSpeed();
 		if (Input.GetKey(KeyCode.Q)){
-            sim.SetRollDroneSpeed(rollSpeed + 2*angularSpeedDecay);
+            sim.SetRollTorque(15);
         }else if (Input.GetKey(KeyCode.D)){
-            sim.SetRollDroneSpeed(rollSpeed - 2*angularSpeedDecay);
+            sim.SetRollTorque(-15);
         }else{
-			sim.SetRollDroneSpeed(rollSpeed - Mathf.Sign(rollSpeed)*angularSpeedDecay);
+			sim.SetRollTorque(0);
 		}
 		
 		//yaw
-		float yawSpeed = sim.GetYawDroneSpeed();
 		if (Input.GetKey(KeyCode.A)){
-            sim.SetYawDroneSpeed(yawSpeed - 2*angularSpeedDecay);
+            sim.SetYawTorque(15);
         }else if (Input.GetKey(KeyCode.E)) {
-            sim.SetYawDroneSpeed(yawSpeed + 2*angularSpeedDecay);
+            sim.SetYawTorque(-15);
         }else{
-			sim.SetYawDroneSpeed(yawSpeed - Mathf.Sign(yawSpeed)*angularSpeedDecay);
+			sim.SetYawTorque(0);
 		}
-		
 	}
 }
