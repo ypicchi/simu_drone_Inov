@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -927,6 +927,7 @@ MonoBehaviour:
   researchZoneSize: {x: 100, y: 0, z: 100}
   researchZoneOrigin: {x: 10, y: 5, z: 50}
   samplingInterval: 0.2
+  waypointValidationDistance: 5
   bandWidth: 10
 --- !u!114 &867078845
 MonoBehaviour:
@@ -984,13 +985,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxThrust: 50
-  finess: 10
   dragCoefficients: {x: 1.5, y: 15, z: 0.1}
   turndroneSpeed: 5
-  angularSpeedDecay: 0.05
-  yLiftCenterZOffset: -0.1
-  xLiftCenterZOffset: -5
-  thrust: 30
+  xDragCenterOffset: {x: 0, y: 0, z: -5}
+  yDragCenterOffset: {x: 0, y: 0, z: -0.1}
+  zDragCenterOffset: {x: 0, y: 0, z: 0}
+  inducedLift:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 10, z: 0}
 --- !u!54 &867078848
 Rigidbody:
   m_ObjectHideFlags: 0

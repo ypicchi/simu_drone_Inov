@@ -1,42 +1,35 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 //Basic controls and simulation
-public abstract class DroneFlightSim : MonoBehaviour
+public class FixedWingFlightSim : MonoBehaviour
 {
 	//public static maVar
 	
 	//autre script : usingdroneFlightSim.cs
 	
-	protected Rigidbody rb;
-	
 	public float maxThrust = 30.0f;
+	public Vector3 dragCoefficients = new Vector3(1.5f,5f,0.1f);
+	public float turndroneSpeed = 5f;
 	
-	
-	public Vector3 dragCoefficients = new Vector3(1.5f,5f,0.1f);//the drag coefficient for each directions (sideway,upward,forward)
-	
-	
-	//Where the drag will be applied relative to the center of mass. 
-	//Any lift is applied at the center of drag of the corresponding direction
 	public Vector3 xDragCenterOffset = new Vector3(0,0,-5f);
 	public Vector3 yDragCenterOffset = new Vector3(0,0,-0.1f);
 	public Vector3 zDragCenterOffset = new Vector3(0,0,0);
 	
-	//inducedLift[0][2] means the lift induced on the Z axis by the drag on the X axis (X drag is multiplied by the value to created the Z lift)
 	public Vector3[] inducedLift = {new Vector3(0,0,0),new Vector3(0,0,0),new Vector3(0,10f,0)};
 	
+	private Rigidbody rb;
+	private float droneSpeed;
 	
-	public float mainThrust = 15.0f;//start thrust
+	private Vector3 angularSpeedVector = Vector3.zero;
 	
-	
-	protected Vector3 combinedTorque = Vector3.zero;
 	
 	protected Vector3[] thrusterOffset = {new Vector3(0,0,0)};
 	protected Vector3[] thrusterThrustVectors = {new Vector3(0,0,1)};
 	protected float[] thrusterThrustValues = {15f};
+	
 	
 	
 
@@ -44,6 +37,7 @@ public abstract class DroneFlightSim : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+		//dragCoefficients = new Vector3(1.5f,5f,0.1f);
 		
 		
 		
@@ -52,14 +46,27 @@ public abstract class DroneFlightSim : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		combinedTorque = Vector3.zero;//may be an issue with the update ordres of the various classes
+		Vector3 localVelocityVector = transform.InverseTransformDirection(rb.velocity);
+		//Debug.Log("velocity "+localVelocityVector);
+		droneSpeed = localVelocityVector.magnitude;
+		
+		UpdateAngularVelocity();//rotation speed in every axis
+		//HandleBasicForces();
 		HandleForces();
     }
 	
 	
 	//----getters----
-	
-	public virtual float GetMainThrust(){
+	public float GetPitchDroneSpeed(){
+		return angularSpeedVector[0];
+	}
+	public float GetRollDroneSpeed(){
+		return angularSpeedVector[2];
+	}
+	public float GetYawDroneSpeed(){
+		return angularSpeedVector[1];
+	}
+	public float GetMainThrust(){
 		if(thrusterThrustValues.Length>0)
 			return thrusterThrustValues[0];
 		else{
@@ -67,14 +74,26 @@ public abstract class DroneFlightSim : MonoBehaviour
 			return 0f;
 		}
 	}
-	
+	public float GetForwardSpeed(){
+		return droneSpeed;
+	}
 	
 	
 	//----setters----
-	
-	public virtual void SetMainThrust(float thrustValue){
+	public void SetPitchDroneSpeed(float angularSpeed){
+		angularSpeed = Mathf.Clamp(angularSpeed,-turndroneSpeed,turndroneSpeed);
+		angularSpeedVector[0] = -angularSpeed;
+	}
+	public void SetRollDroneSpeed(float angularSpeed){
+		angularSpeed = Mathf.Clamp(angularSpeed,-turndroneSpeed,turndroneSpeed);
+		angularSpeedVector[2] = angularSpeed;
+	}
+	public void SetYawDroneSpeed(float angularSpeed){
+		angularSpeed = Mathf.Clamp(angularSpeed,-turndroneSpeed,turndroneSpeed);
+		angularSpeedVector[1] = angularSpeed;
+	}
+	public  void SetThrust(float thrustValue){
 		SetThrusterThrust(0,thrustValue);
-		//mainThrust = Mathf.Clamp(thrustValue,0,maxThrust);
 	}
 	
 	public void SetThrusterThrust(int thrusterIndex,float thrustValue){
@@ -84,26 +103,24 @@ public abstract class DroneFlightSim : MonoBehaviour
 			Debug.Log("Trying to set some thrust but out of index");
 	}
 	
-	public void SetPitchTorque(float torque){
-		combinedTorque[0] = torque;
+	
+	
+	//----other----
+	
+	
+	
+	private void UpdateAngularVelocity(){
+		rb.angularVelocity = Vector3.zero;
+		
+		rb.angularVelocity = angularSpeedVector * droneSpeed * Time.deltaTime;
+		rb.angularVelocity = transform.TransformDirection(rb.angularVelocity);//change base
 	}
 	
-	public void SetYawTorque(float torque){
-		combinedTorque[1] = torque;
-	}
-	
-	public void SetRollTorque(float torque){
-		combinedTorque[2] = torque;
-	}
 	
 	
 
 	
-	
-	
-
-	
-	protected void HandleForces(){
+	private void HandleForces(){
 		Vector3 localVelocityVector = transform.InverseTransformDirection(rb.velocity);//world to local
 		Vector3 airSpeed = - localVelocityVector;
 		
@@ -117,8 +134,7 @@ public abstract class DroneFlightSim : MonoBehaviour
 		}
 		
 		
-		//Debug.Log("force "+force);
-		//Debug.Log("mainThrust "+mainThrust);
+		//Debug.Log("force "+force);=
 
 		
 		Vector3 CG = rb.worldCenterOfMass;
@@ -136,8 +152,6 @@ public abstract class DroneFlightSim : MonoBehaviour
 			Vector3 worldThrusterPosition = CG + transform.TransformDirection(thrusterOffset[i]);
 			rb.AddForceAtPosition(transform.TransformDirection(thrusterThrustVectors[i]*thrusterThrustValues[i]), worldThrusterPosition);
 		}
-		
-		rb.AddRelativeTorque(combinedTorque);
 		
 	}
 	
