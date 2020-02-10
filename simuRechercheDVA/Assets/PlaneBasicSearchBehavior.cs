@@ -12,7 +12,7 @@ public class PlaneBasicSearchBehavior : Navigation
 	public override void Start()
 	{
 		base.Start ();
-		ctrl = GetComponent<FixedWingDroneControl>();
+		ctrl = GetComponent<DroneControl>();
 		ctrl.SetWaypoint(waypointIndicator);
 	
 		

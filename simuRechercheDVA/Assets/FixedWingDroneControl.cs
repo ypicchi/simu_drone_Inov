@@ -11,7 +11,7 @@ public class FixedWingDroneControl : DroneControl
 {
 
 	
-	
+	protected DroneFlightSim sim;
 	
 	public PID rollPid = new PID(0.1f,0,0);
 	public PID climbPid = new PID(0.3f,0.1f,0.01f);

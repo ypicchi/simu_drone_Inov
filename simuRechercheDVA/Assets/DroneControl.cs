@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public abstract class DroneControl : MonoBehaviour
 {
 
-	protected DroneFlightSim sim;
+	
 	protected Sensor sensor;
 	protected Text modeDisplay;
 	
