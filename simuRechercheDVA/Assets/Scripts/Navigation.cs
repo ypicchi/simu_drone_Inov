@@ -2,12 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public abstract class Navigation : MonoBehaviour
 {
 	
-	protected Text sensorPowerDisplay;
+
 	
     protected DroneControl ctrl;
     protected Sensor sensor;
@@ -17,7 +17,7 @@ public abstract class Navigation : MonoBehaviour
 	public Vector3 researchZoneOrigin = new Vector3(10,5,50);
 	
 	public float samplingInterval = 0.2f;//in second
-	public int waypointValidationDistance = 5;
+	public float waypointValidationDistance = 5;
 	
 	
 	protected int numberWaypointReached = 0;
@@ -34,7 +34,6 @@ public abstract class Navigation : MonoBehaviour
 	{
 		
 		sensor = GetComponent<Sensor>();
-		sensorPowerDisplay = GameObject.Find("Canvas/signalPowerDisplay").GetComponent<Text>();
 		waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		waypointIndicator.transform.position = new Vector3(0,5,-50);
 		GenerateMainWaypoint();
@@ -60,8 +59,7 @@ public abstract class Navigation : MonoBehaviour
 		}
 		
 		float power = sensor.GetSignalPower(transform.position);
-		//Debug.Log("sensor power "+power);
-		sensorPowerDisplay.text = "Signal power : "+power.ToString();
+
 		
 		if(isSearching){
 			float currentTime = Time.time;
@@ -77,7 +75,14 @@ public abstract class Navigation : MonoBehaviour
     }
 	
 	
-	
+	public void AddWaypoint(Vector3 nextPoint){
+		mainWaypoints.Enqueue(nextPoint);
+	}
+
+	public void ClearWaypoint(){
+		mainWaypoints.Clear();
+	}
+
 	protected void GenerateNewWaypoint(){
 		GenerateNextNavigationWaypoint();
 	}

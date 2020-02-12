@@ -35,12 +35,7 @@ public class FixedWingDroneControl : DroneControl
 		sim = GetComponent<FixedWingFlightSim>();
 	}
 
-	// Update is called once per frame
-	//public override void Update()
-	//{
-	//	base.Update();	
-	//}
-	
+
 	
 	
 	public override void ControlLoop(){
@@ -83,7 +78,7 @@ public class FixedWingDroneControl : DroneControl
 			sim.SetPitchTorque(-pitchCommand);
 		}
 		if(sensor.IsStalling()){
-			modeDisplay.text = ("mode : STALLING");
+			modeDisplayText = ("mode : STALLING");
 		}
 	}
 	
@@ -95,7 +90,7 @@ public class FixedWingDroneControl : DroneControl
 	public void CircleAround(float targetClimbAngle){
 		targetClimbAngle = Mathf.Clamp(targetClimbAngle,-50,maximumClimbAngle);
 		
-		modeDisplay.text = ("mode : circle (climb : "+targetClimbAngle + ")");
+		modeDisplayText = ("mode : circle (climb : "+targetClimbAngle + ")");
 		
 		float turnDirection = -1f; //1 : left, -1 : right;
 		
@@ -159,8 +154,8 @@ public class FixedWingDroneControl : DroneControl
 		
 	}
 	
-	private void CompoundMove(float targetClimbAngle,float turnAngle){//TODO bug pour tourner a droite. Roll mauvais sens ?
-		modeDisplay.text = ("mode : compound (turnAngle : " + turnAngle+"; targetClimbAngle : "+targetClimbAngle+")");
+	private void CompoundMove(float targetClimbAngle,float turnAngle){
+		modeDisplayText = ("mode : compound (turnAngle : " + turnAngle+"; targetClimbAngle : "+targetClimbAngle+")");
 		
 		float rollTargetForThisTurn = Mathf.Clamp(3*turnAngle,-baseRollForTurn,baseRollForTurn);
 		

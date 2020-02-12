@@ -26,7 +26,11 @@ $RECYCLE.BIN/
 
 
 # project-specific ignore
-simuRechercheDVA/sensorOutput.csv
-simuRechercheDVA/sensorOutput.wsv
-simuRechercheDVA/Assets/sensorOutput.wsv
-simuRechercheDVA/Assets/sensorOutput.wsv.meta
+simuRechercheDVA\/sensorOutput\.csv
+simuRechercheDVA\/sensorOutput\.wsv
+simuRechercheDVA\/Assets\/sensorOutput\.wsv
+simuRechercheDVA\/Assets\/sensorOutput\.wsv\.meta
+simuRechercheDVA\/Assets\/InitTestScene[0-9]{18}\.unity
+simuRechercheDVA\/Assets\/InitTestScene[0-9]{18}\.unity\.meta
+#simuRechercheDVA/Assets/InitTestScene*
+#simuRechercheDVA/Assets/InitTestScene*.meta

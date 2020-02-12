@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Sensor : MonoBehaviour
 {
@@ -9,12 +8,13 @@ public class Sensor : MonoBehaviour
 	
 	
 	private Rigidbody rb;
-	private Text rollDisplay;
-	private Text pitchDisplay;
-	private Text climbAngleDisplay;
-	private Text realClimbAngleDisplay;
-	private Text forwardSpeedDisplay;
-	
+
+	public string rollDisplayText;
+	public string pitchDisplayText;
+	public string climbAngleDisplayText;
+	public string realClimbAngleDisplayText;
+	public string forwardSpeedDisplayText;
+
 	
 	private const int numberOfSources = 1;
 	private Vector3[] emissionSources = new Vector3[numberOfSources];
@@ -40,12 +40,6 @@ public class Sensor : MonoBehaviour
 		}
 		
 		
-		rollDisplay = GameObject.Find("Canvas/rollDisplay").GetComponent<Text>();
-		pitchDisplay = GameObject.Find("Canvas/pitchDisplay").GetComponent<Text>();
-		climbAngleDisplay = GameObject.Find("Canvas/climbAngleDisplay").GetComponent<Text>();
-		realClimbAngleDisplay = GameObject.Find("Canvas/realClimbAngleDisplay").GetComponent<Text>();
-		forwardSpeedDisplay = GameObject.Find("Canvas/forwardSpeedDisplay").GetComponent<Text>();
-		
 
     }
 
@@ -55,11 +49,12 @@ public class Sensor : MonoBehaviour
 		float currentRoll = GetRoll();
 		float currentPitch = GetPitch();
 		
-		rollDisplay.text = "roll : "+currentRoll.ToString();
-		pitchDisplay.text = "pitch : "+currentPitch.ToString();
-		climbAngleDisplay.text = "climb angle : "+GetAttitudeClimbAngle().ToString();
-		realClimbAngleDisplay.text = "real climb angle : "+GetRealClimbAngle().ToString();
-		forwardSpeedDisplay.text = "forward speed : "+GetSpeed().ToString();
+		rollDisplayText = "roll : "+currentRoll.ToString();
+		pitchDisplayText = "pitch : "+currentPitch.ToString();
+		climbAngleDisplayText = "climb angle : "+GetAttitudeClimbAngle().ToString();
+		realClimbAngleDisplayText = "real climb angle : "+GetRealClimbAngle().ToString();
+		forwardSpeedDisplayText = "forward speed : "+GetSpeed().ToString();
+		
         hasComputedThisFrame = false;
 		
 		lastRollValue = currentRoll;

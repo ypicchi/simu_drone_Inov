@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 //using static DroneFlightSim;
 
 
@@ -12,7 +11,10 @@ public abstract class DroneControl : MonoBehaviour
 
 	
 	protected Sensor sensor;
-	protected Text modeDisplay;
+	
+	public string modeDisplayText;
+	
+	
 	
 	public bool manualOverride = false;
 	
@@ -24,7 +26,9 @@ public abstract class DroneControl : MonoBehaviour
 	public virtual void Start()
 	{
 		sensor = GetComponent<Sensor>();
-		modeDisplay = GameObject.Find("Canvas/modeDisplay").GetComponent<Text>();
+		
+		
+		
 		
 	}
 
@@ -32,10 +36,14 @@ public abstract class DroneControl : MonoBehaviour
 	public virtual void Update()
 	{
 		if(Input.anyKey || manualOverride){
-			modeDisplay.text = ("mode : manual");
+			
+			modeDisplayText = ("mode : manual");
+			
 			HandleKeyboardInput();//keyboard override
 		}else{
-			modeDisplay.text = ("mode : ");
+			
+			modeDisplayText = ("mode : ");
+			
 			ControlLoop();
 		}
 		
