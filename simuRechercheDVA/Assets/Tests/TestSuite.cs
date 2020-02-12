@@ -13,7 +13,7 @@ namespace Tests
     public class TestControl
     {
 
-        
+        public GameObject targetDrone;
         
         /*
         // A Test behaves as an ordinary method
@@ -34,7 +34,7 @@ namespace Tests
             yield return null;
         }
         */
-
+        
 
         [UnityTest]
         public IEnumerator TestStaticError()
@@ -47,7 +47,7 @@ namespace Tests
             
 
             
-            GameObject targetDrone = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Dummy"));
+            GameObject targetDrone = GameObject.Instantiate(Resources.Load<GameObject>("Dummy"));
             Debug.Log("target drone : "+targetDrone.name);
 
             Navigation nav = targetDrone.GetComponent<Navigation>();
@@ -94,15 +94,19 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator TestOscillation()
+        public IEnumerator TestOscillation()//TODO I don't have much faith in this test....
         {
             int nbSample = 200;
+            float proportionOfSamplesUsedForTheAverage = 0.1f;
             Vector3 startingPosition = Vector3.zero;
             Vector3 targetPosition = new Vector3(5,5,5);
+            float proportionOfSamplesUsedForTheOscillation = 0.3f;
+            float attenuationThreshold = 0.8f;
+            float acceptableContinuousOscillationAmplitude = 0.2f;
             
 
             
-            GameObject targetDrone = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Dummy"));
+            GameObject targetDrone = GameObject.Instantiate(Resources.Load<GameObject>("Dummy"));
             Debug.Log("target drone : "+targetDrone.name);
 
             Navigation nav = targetDrone.GetComponent<Navigation>();
@@ -114,8 +118,6 @@ namespace Tests
 
             yield return null;//Wait one frame so we can overwrite the waypoints
 
-            //nav.ClearWaypoint();//in case the waypoint generation in navigation.Starts() runs before this function
-            //nav.AddWaypoint(targetPosition);
 
             GameObject waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		    waypointIndicator.transform.position = targetPosition;
@@ -132,15 +134,100 @@ namespace Tests
 
 
             //now we have all the positions, we can estimate the error
-            Assert.IsTrue(false);
+            int nbSampleAveraged = (int)(((float)nbSample)*proportionOfSamplesUsedForTheAverage);
+            Vector3 accumulator = Vector3.zero;
+            for(int i = 0;i<nbSampleAveraged;i++){
+                accumulator = accumulator + allPositions[nbSample - 1 - i];
+            }
+            accumulator = accumulator / nbSampleAveraged;
+            
 
+            for(int axis = 0; axis<3;axis++){
+                List<float> maxList;
+                List<float> minList;
 
+                getNextMax(allPositions,axis,out minList,out maxList);
+                float endValue = accumulator[axis];
 
+                //Test if max is attenuated enough
+                int nbSampleOscillation = (int)(((float)maxList.Count)*proportionOfSamplesUsedForTheOscillation);
+                int index = 0;
+                float previousOvershot = 0f;
+                foreach(float currentMax in maxList){
+                    float currentOvershot = currentMax - endValue;
+                    if(index == 0){
+                        previousOvershot = currentOvershot;
+                        continue;
+                    }
+                    if(index>=nbSampleOscillation){
+                        break;
+                    }
+
+                    bool isMaxOk = currentOvershot < acceptableContinuousOscillationAmplitude || currentOvershot < attenuationThreshold*previousOvershot;
+                    Assert.IsTrue(isMaxOk);
+
+                    previousOvershot = currentOvershot;
+                }
+
+                //Test if min is attenuated enough
+                nbSampleOscillation = (int)(((float)minList.Count)*proportionOfSamplesUsedForTheOscillation);
+                index = 0;
+                foreach(float currentMin in maxList){
+                    float currentOvershot = endValue - currentMin;
+                    if(index == 0){
+                        previousOvershot = currentOvershot;
+                        continue;
+                    }
+                    if(index>=nbSampleOscillation){
+                        break;
+                    }
+
+                    bool isMinOk = currentOvershot < acceptableContinuousOscillationAmplitude || currentOvershot < attenuationThreshold*previousOvershot;
+                    Assert.IsTrue(isMinOk);
+
+                    previousOvershot = currentOvershot;
+                }
+            }
 
             Object.Destroy(targetDrone);
-            yield break;
         }
 
+
+        private bool isLocalMin (float previous, float current, float next){
+            return (previous > current && current < next);
+        }
+
+        private bool isLocalMax (float previous, float current, float next){
+            return (previous < current && current > next);
+        }
+
+        private void getNextMax(List<Vector3> list,int axis,out List<float> minList,out List<float> maxList){
+            maxList = new List<float>();
+            minList = new List<float>();
+
+            int index = 0;
+            float previousPrevious = 0;
+            float previous = 0;
+            float current = 0;
+            foreach(Vector3 element in list){
+                current = element[axis];
+                if(index == 0){
+                    previousPrevious = current;
+                }else if(index ==1){
+                    previous = current;
+                }else{
+                    if(isLocalMin(previousPrevious,previous,current)){
+                        minList.Add(previous);
+                    }else if(isLocalMax(previousPrevious,previous,current)){
+                        maxList.Add(previous);
+                    }
+
+                    previousPrevious = previous;
+                    previous = current;
+                }
+                index++;
+            }
+        }
        
     }
 }

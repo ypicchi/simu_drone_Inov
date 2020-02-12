@@ -50,6 +50,11 @@ public abstract class Navigation : MonoBehaviour
 		
 	}
 
+	void OnDestroy()
+    {
+        Object.Destroy(waypointIndicator);
+    }
+
     // Update is called once per frame
     void Update()
     {
