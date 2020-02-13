@@ -34,3 +34,9 @@ simuRechercheDVA\/Assets\/InitTestScene[0-9]{18}\.unity
 simuRechercheDVA\/Assets\/InitTestScene[0-9]{18}\.unity\.meta
 #simuRechercheDVA/Assets/InitTestScene*
 #simuRechercheDVA/Assets/InitTestScene*.meta
+
+simuRechercheDVA/Assets/sensorOutput.wsv.meta
+simuRechercheDVA/ProjectSettings/QualitySettings.asset
+simuRechercheDVA/ProjectSettings/UnityConnectSettings.asset
+simuRechercheDVA/ProjectSettings/ProjectSettings.asset
+simuRechercheDVA/Assets/sensorOutput.wsv.meta
