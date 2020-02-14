@@ -8,7 +8,8 @@ public class QuadcopterControl : DroneControl
     protected DroneFlightSim sim;
 
 	protected float[] thrust;
-	protected int nomberOfThruster;
+	protected int numberOfThruster;
+	protected bool needToRunManual = false;
 
     // Start is called before the first frame update
 	public override void Start()
@@ -17,13 +18,15 @@ public class QuadcopterControl : DroneControl
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
 		thrust = simProperties.ThrusterThrustValues;
-		nomberOfThruster = simProperties.ThrusterThrustValues.Length;
+		numberOfThruster = simProperties.ThrusterThrustValues.Length;
 	}
 
     
 
     public override void ControlLoop(){
-		
+		if(needToRunManual){//To reset the acceleration set in manual
+			HandleKeyboardInput();
+		}
 	}
 
     //SetThrusterThrust(int thrusterIndex,float thrustValue)
@@ -31,42 +34,83 @@ public class QuadcopterControl : DroneControl
 
     protected override void HandleKeyboardInput(){
 		if (Input.GetKey(KeyCode.LeftShift)){
-			for(int i=0;i<nomberOfThruster;i++){
-				thrust[i] += 0.1f;
+			for(int i=0;i<numberOfThruster;i++){
+				thrust[i] += 0.05f;
 				sim.SetThrusterThrust(i,thrust[i]);
 			}
         }else if (Input.GetKey(KeyCode.LeftControl)){
-			for(int i=0;i<nomberOfThruster;i++){
-				thrust[i] -= 0.1f;
+			for(int i=0;i<numberOfThruster;i++){
+				thrust[i] -= 0.05f;
 				sim.SetThrusterThrust(i,thrust[i]);
 			}
         }
-		
-		//pitch
-        if (Input.GetKey(KeyCode.Z)){
-            //sim.SetPitchTorque(15);
-        }else if (Input.GetKey(KeyCode.S)){
-            //sim.SetPitchTorque(-22);
-        }else{
-			//sim.SetPitchTorque(0);
+
+		float averageThrust = 0;
+		for(int i=0;i<numberOfThruster;i++){
+			averageThrust += thrust[i];
 		}
-		
-		//roll
-		if (Input.GetKey(KeyCode.Q)){
-            //sim.SetRollTorque(15);
-        }else if (Input.GetKey(KeyCode.D)){
-            //sim.SetRollTorque(-15);
-        }else{
-			//sim.SetRollTorque(0);
+		averageThrust /= numberOfThruster;
+
+
+		for(int i=0;i<numberOfThruster;i++){
+			thrust[i] = averageThrust;
+			sim.SetThrusterThrust(i,thrust[i]);
 		}
+
+
+		float turnPower = 0.01f;
+		needToRunManual = true;
 		
-		//yaw
-		if (Input.GetKey(KeyCode.A)){
-            //sim.SetYawTorque(15);
-        }else if (Input.GetKey(KeyCode.E)) {
-            //sim.SetYawTorque(-15);
+        if(Input.GetKey(KeyCode.Z)){      //------------------ Z
+            thrust[0] -= turnPower;
+			thrust[1] -= turnPower;
+			thrust[2] += turnPower;
+			thrust[3] += turnPower;
+			for(int i=0;i<numberOfThruster;i++){
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
+        }else if (Input.GetKey(KeyCode.S)){//------------------ S
+            thrust[0] += turnPower;
+			thrust[1] += turnPower;
+			thrust[2] -= turnPower;
+			thrust[3] -= turnPower;
+			for(int i=0;i<numberOfThruster;i++){
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
+        }else if (Input.GetKey(KeyCode.Q)){//------------------ Q
+			thrust[0] -= turnPower;
+			thrust[1] += turnPower;
+			thrust[2] += turnPower;
+			thrust[3] -= turnPower;
+			for(int i=0;i<numberOfThruster;i++){
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
+        }else if (Input.GetKey(KeyCode.D)){//------------------ D
+            thrust[0] += turnPower;
+			thrust[1] -= turnPower;
+			thrust[2] -= turnPower;
+			thrust[3] += turnPower;
+			for(int i=0;i<numberOfThruster;i++){
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
+        }else if (Input.GetKey(KeyCode.A)){//------------------ A
+            thrust[0] -= turnPower;
+			thrust[1] += turnPower;
+			thrust[2] -= turnPower;
+			thrust[3] += turnPower;
+			for(int i=0;i<numberOfThruster;i++){
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
+        }else if (Input.GetKey(KeyCode.E)){//------------------ E
+            thrust[0] += turnPower;
+			thrust[1] -= turnPower;
+			thrust[2] += turnPower;
+			thrust[3] -= turnPower;
+			for(int i=0;i<numberOfThruster;i++){
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
         }else{
-			//sim.SetYawTorque(0);
+			needToRunManual = false;
 		}
 	}
 }
