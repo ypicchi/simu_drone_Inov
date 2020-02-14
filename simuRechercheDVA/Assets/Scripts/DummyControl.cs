@@ -18,7 +18,7 @@ public class DummyControl : DroneControl
     public override void ControlLoop(){
         modeDisplayText = ("mode : auto");
 
-        
+        rb.velocity = Vector3.Normalize(target.transform.position - transform.position) * speed;
         
         float stepDistance = speed*Time.deltaTime;
         Vector3 nextPosition = Vector3.MoveTowards(transform.position, 

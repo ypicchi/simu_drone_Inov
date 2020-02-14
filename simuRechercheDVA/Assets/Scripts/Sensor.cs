@@ -26,6 +26,8 @@ public class Sensor : MonoBehaviour
 	
 	private float lastRollValue = 0;
 	private float lastPitchValue = 0;
+
+	private GameObject sphere;
 	
     // Start is called before the first frame update
     void Start()
@@ -34,13 +36,18 @@ public class Sensor : MonoBehaviour
         emissionSources[0] = new Vector3(50,0,100);
 		
 		for(int i =0; i<numberOfSources ;i++ ){
-			GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+			sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			sphere.transform.position = emissionSources[i];
 			sphere.name = "signalTransmitter";
 		}
 		
 		
 
+    }
+
+	void OnDestroy()
+    {
+        Object.Destroy(sphere);
     }
 
     // Update is called once per frame

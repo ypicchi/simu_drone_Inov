@@ -29,9 +29,9 @@ public abstract class DroneFlightSim : MonoBehaviour
 	
 
     // Start is called before the first frame update
-    protected void Start(DroneSimProperties simProperties)
+    protected void Start()
     {
-		this.simProperties = simProperties;
+		simProperties = GetComponent<DroneSimProperties>();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -64,7 +64,7 @@ public abstract class DroneFlightSim : MonoBehaviour
 		//mainThrust = Mathf.Clamp(thrustValue,0,maxThrust);
 	}
 	
-	public void SetThrusterThrust(int thrusterIndex,float thrustValue){
+	public virtual void SetThrusterThrust(int thrusterIndex,float thrustValue){
 		if(thrusterIndex >= 0 && thrusterIndex < simProperties.ThrusterThrustValues.Length)
 			simProperties.ThrusterThrustValues[thrusterIndex] = thrustValue;
 		else
