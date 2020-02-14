@@ -29,9 +29,9 @@ public abstract class DroneFlightSim : MonoBehaviour
 	
 
     // Start is called before the first frame update
-    protected void Start(DroneSimProperties simProperties)
+    protected void Start()
     {
-		this.simProperties = simProperties;
+		simProperties = GetComponent<DroneSimProperties>();
         rb = GetComponent<Rigidbody>();
     }
 
