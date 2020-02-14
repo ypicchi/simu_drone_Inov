@@ -16,7 +16,7 @@ public class QuadcopterSimProperties : DroneSimProperties
 
 
     public Vector3[] thrusterOffset = { new Vector3(-0.5f, 0, 0.5f),new Vector3(0.5f, 0, 0.5f),new Vector3(0.5f, 0, -0.5f),new Vector3(-0.5f, 0, -0.5f) };
-    public Vector3[] thrusterThrustVectors = { new Vector3(0, -1, 0),new Vector3(0, -1, 0),new Vector3(0, -1, 0),new Vector3(0, -1, 0) };
+    public Vector3[] thrusterThrustVectors = { new Vector3(0, 1, 0),new Vector3(0, 1, 0),new Vector3(0, 1, 0),new Vector3(0, 1, 0) };
     public float[] thrusterThrustValues = { 5f,5f,5f,5f };
 
 

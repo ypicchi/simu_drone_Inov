@@ -509,6 +509,51 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustValues.Array.data[0]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustValues.Array.data[1]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustValues.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustValues.Array.data[3]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustVectors.Array.data[0].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustVectors.Array.data[1].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustVectors.Array.data[2].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: thrusterThrustVectors.Array.data[3].y
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f, type: 3}
 --- !u!1 &488462955

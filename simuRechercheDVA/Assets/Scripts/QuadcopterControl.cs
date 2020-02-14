@@ -5,13 +5,19 @@ using UnityEngine;
 public class QuadcopterControl : DroneControl
 {
 
-    private DroneFlightSim sim;
+    protected DroneFlightSim sim;
+
+	protected float[] thrust;
+	protected int nomberOfThruster;
 
     // Start is called before the first frame update
 	public override void Start()
 	{
 		base.Start();
 		sim = GetComponent<DroneFlightSim>();
+		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
+		thrust = simProperties.ThrusterThrustValues;
+		nomberOfThruster = simProperties.ThrusterThrustValues.Length;
 	}
 
     
@@ -25,9 +31,15 @@ public class QuadcopterControl : DroneControl
 
     protected override void HandleKeyboardInput(){
 		if (Input.GetKey(KeyCode.LeftShift)){
-			//sim.SetMainThrust(sim.GetMainThrust()+0.1f);
+			for(int i=0;i<nomberOfThruster;i++){
+				thrust[i] += 0.1f;
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
         }else if (Input.GetKey(KeyCode.LeftControl)){
-			//sim.SetMainThrust(sim.GetMainThrust()-0.1f);
+			for(int i=0;i<nomberOfThruster;i++){
+				thrust[i] -= 0.1f;
+				sim.SetThrusterThrust(i,thrust[i]);
+			}
         }
 		
 		//pitch
