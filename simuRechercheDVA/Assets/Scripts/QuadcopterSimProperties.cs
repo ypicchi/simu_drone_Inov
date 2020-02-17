@@ -12,12 +12,33 @@ public class QuadcopterSimProperties : DroneSimProperties
     public Vector3 zDragCenterOffset = new Vector3(0, -0.1f, 0);
 
 
-    public Vector3[] inducedLift = { new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0) };
+    public Vector3[] inducedLift = {
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0)
+    };
 
 
-    public Vector3[] thrusterOffset = { new Vector3(-0.5f, 0, 0.5f),new Vector3(0.5f, 0, 0.5f),new Vector3(0.5f, 0, -0.5f),new Vector3(-0.5f, 0, -0.5f) };
-    public Vector3[] thrusterThrustVectors = { new Vector3(0, 1, 0),new Vector3(0, 1, 0),new Vector3(0, 1, 0),new Vector3(0, 1, 0) };
-    public float[] thrusterThrustValues = { 0f,0f,0f,0f };
+    public Vector3[] thrusterOffset = {
+        new Vector3(-0.5f, 0, 0.5f),
+        new Vector3(0.5f, 0, 0.5f),
+        new Vector3(0.5f, 0, -0.5f),
+        new Vector3(-0.5f, 0, -0.5f)
+    };
+
+    public Vector3[] thrusterThrustVectors = {
+        new Vector3(0, 1, 0),
+        new Vector3(0, 1, 0),
+        new Vector3(0, 1, 0),
+        new Vector3(0, 1, 0)
+    };
+
+    public float[] thrusterThrustValues = {
+        0f,
+        0f,
+        0f,
+        0f
+    };
 
 
     public override Vector3 DragCoefficients { get => dragCoefficients; set => dragCoefficients = value; }
