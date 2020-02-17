@@ -76,12 +76,12 @@ public class PlaneBasicSearchBehavior : Navigation
 	
 	protected override List<Vector3> computeTargetsPositions(){
 		DataPoint strongestPoint = allDataPoint.Pop();
-		float cutThreshold = 0.9f * strongestPoint.GetPower();
+		float cutThreshold = 0.9f * strongestPoint.SensorPower;
 		
 		List<DataPoint> relevantPoint = new List<DataPoint>();
 		relevantPoint.Add(strongestPoint);
 		
-		while(allDataPoint.Peek().GetPower()>cutThreshold){
+		while(allDataPoint.Peek().SensorPower>cutThreshold){
 			relevantPoint.Add(allDataPoint.Pop());
 		}
 		
@@ -89,7 +89,7 @@ public class PlaneBasicSearchBehavior : Navigation
 		//multiple target in the same area, so for now we find only one target.
 		Vector3 sumVector = Vector3.zero;
 		for(int i=0;i<relevantPoint.Count;i++){
-			sumVector = sumVector + relevantPoint[i].GetPosition();
+			sumVector = sumVector + relevantPoint[i].Position;
 		}
 		sumVector = sumVector / relevantPoint.Count;
 		

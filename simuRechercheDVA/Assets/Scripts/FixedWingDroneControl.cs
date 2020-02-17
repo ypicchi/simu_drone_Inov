@@ -126,7 +126,7 @@ public class FixedWingDroneControl : DroneControl
 			isCircling = true;
 		}else{
 			isFollowingDirectly = true;
-		}//TODO
+		}
 	}
 	
 	private void GoToWaypoint(){

@@ -46,7 +46,7 @@ public abstract class Navigation : MonoBehaviour
 		FileStream stream = new FileStream(path, FileMode.OpenOrCreate,FileAccess.Write);  
 		fileLog = new StreamWriter(stream);
 	
-		fileLog.WriteLine("x z power");
+		fileLog.WriteLine("x y z rx ry rz power");
 		
 	}
 
@@ -78,7 +78,9 @@ public abstract class Navigation : MonoBehaviour
     }
 
 	protected void LogDataPoint(float power){
-		DataPoint currentPoint = new DataPoint(sensor.GetPosition(),power);
+		float heading = Vector2.Angle(Vector2.right, sensor.GetHeading());
+		DataPoint currentPoint = new DataPoint(power,sensor.GetPosition(),
+			new Vector3(sensor.GetPitch(),heading,sensor.GetRoll()));
 		fileLog.Write(currentPoint.ToWSVLine());
 		LoggingOverload(currentPoint);
 	}

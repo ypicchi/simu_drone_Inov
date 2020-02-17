@@ -51,9 +51,9 @@ public class DirectionalDVASearch : Navigation
 		float max = 0f;
 		DataPoint maxPoint;
 		foreach(DataPoint currentPoint in currentSegmentMeasure){
-			if (currentPoint.GetPower() > max)
+			if (currentPoint.SensorPower > max)
 			{
-				max = currentPoint.GetPower();
+				max = currentPoint.SensorPower;
 				maxPoint = currentPoint;
 			}
 		}
