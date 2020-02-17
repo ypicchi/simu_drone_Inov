@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class PlaneBasicSearchBehavior : Navigation
 {
 	
-	
+	protected MaxHeap allDataPoint = new MaxHeap(1000);
+
 	// Start is called before the first frame update
 	public override void Start()
 	{
@@ -16,6 +17,10 @@ public class PlaneBasicSearchBehavior : Navigation
 		ctrl.SetWaypoint(waypointIndicator);
 	
 		
+	}
+
+	protected override void LoggingOverload(DataPoint currentPoint){
+		allDataPoint.Add(currentPoint);
 	}
 
 	

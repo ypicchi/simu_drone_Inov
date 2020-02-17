@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class DirectionalDVASearch : Navigation
 {
-    
+
+	
+	List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
+    protected override void LoggingOverload(DataPoint currentPoint){
+		currentSegmentMeasure.Add(currentPoint);
+	}
+
     //TODO stump from fixed wing
-    public float bandWidth = 10f;
     protected override void GenerateMainWaypoint(){
-		Vector3 nextPoint = researchZoneOrigin;
-		
-		
-		//if(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x){
-			
+		//if(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x)
 		//AddWaypoint(nextPoint);
-		
 		Debug.Log("done generating waypoints. "+mainWaypoints.Count+" generated");
 	}
 	
@@ -37,4 +37,30 @@ public class DirectionalDVASearch : Navigation
         //TODO
         return new List<Vector3>();
     }
+
+
+
+	protected void GenerateHeadingWaypoint(float startHeading,float endHeading,float step){
+		Vector3 position = sensor.GetPosition();
+		for(float heading = startHeading; heading<endHeading; endHeading += step){
+			AddWaypoint(position,new Vector3(0,heading,0));
+		}
+	}
+
+	protected float FindHeadingFromCurrentSegment(){
+		float max = 0f;
+		DataPoint maxPoint;
+		foreach(DataPoint currentPoint in currentSegmentMeasure){
+			if (currentPoint.GetPower() > max)
+			{
+				max = currentPoint.GetPower();
+				maxPoint = currentPoint;
+			}
+		}
+
+		//return maxPoint.heading;
+		return 0f;
+
+		//currentSegmentMeasure.Clear();
+	}
 }
