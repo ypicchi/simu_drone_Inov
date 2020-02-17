@@ -27,7 +27,7 @@ public abstract class Navigation : MonoBehaviour
 	protected StreamWriter fileLog;
 	protected bool isSearching = true;
 	
-	protected Queue<Vector3> mainWaypoints = new Queue<Vector3>();
+	protected Queue<Pair<Vector3, Vector3>> mainWaypoints = new Queue<Pair<Vector3, Vector3>>();
 	
 	// Start is called before the first frame update
 	public virtual void Start()
@@ -79,9 +79,11 @@ public abstract class Navigation : MonoBehaviour
 		
     }
 	
-	
 	public void AddWaypoint(Vector3 nextPoint){
-		mainWaypoints.Enqueue(nextPoint);
+		AddWaypoint(nextPoint, Vector3.zero);
+	}
+	public void AddWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
+		mainWaypoints.Enqueue(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
 	}
 
 	public void ClearWaypoint(){

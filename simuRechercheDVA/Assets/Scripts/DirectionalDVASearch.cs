@@ -10,26 +10,11 @@ public class DirectionalDVASearch : Navigation
     protected override void GenerateMainWaypoint(){
 		Vector3 nextPoint = researchZoneOrigin;
 		
-		bool reverse = false;
-		while(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x){
-			if(reverse){
-				nextPoint.z = researchZoneOrigin.z + researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
-				nextPoint.z -= researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
-				nextPoint.z -= 120;
-				mainWaypoints.Enqueue(nextPoint);
-			}else{
-				nextPoint.z = researchZoneOrigin.z;
-				mainWaypoints.Enqueue(nextPoint);
-				nextPoint.z += researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
-				nextPoint.z += 120;
-				mainWaypoints.Enqueue(nextPoint);
-			}
-			nextPoint.x += bandWidth;
-			reverse = !reverse;
-		}
+		
+		//if(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x){
+			
+		//AddWaypoint(nextPoint);
+		
 		Debug.Log("done generating waypoints. "+mainWaypoints.Count+" generated");
 	}
 	
@@ -37,10 +22,13 @@ public class DirectionalDVASearch : Navigation
 		if(mainWaypoints.Count<=0){
 			
 			waypointIndicator.transform.position = Vector3.zero;
+			waypointIndicator.transform.eulerAngles = Vector3.zero;
 		    ctrl.SetWaypoint(waypointIndicator);
 			
 		}else{
-			waypointIndicator.transform.position = mainWaypoints.Dequeue();
+			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
+			waypointIndicator.transform.position = tmp.First;
+			waypointIndicator.transform.eulerAngles = tmp.Second;
 			ctrl.SetWaypoint(waypointIndicator);
 		}
 	}

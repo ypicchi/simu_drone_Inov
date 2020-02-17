@@ -29,18 +29,18 @@ public class PlaneBasicSearchBehavior : Navigation
 		while(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x){
 			if(reverse){
 				nextPoint.z = researchZoneOrigin.z + researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z -= researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z -= 120;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 			}else{
 				nextPoint.z = researchZoneOrigin.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z += researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z += 120;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 			}
 			nextPoint.x += bandWidth;
 			reverse = !reverse;
@@ -62,7 +62,9 @@ public class PlaneBasicSearchBehavior : Navigation
 				ctrl.SetWaypoint(waypointIndicator);
 			}
 		}else{
-			waypointIndicator.transform.position = mainWaypoints.Dequeue();
+			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
+			waypointIndicator.transform.position = tmp.First;
+			waypointIndicator.transform.eulerAngles = tmp.Second;
 			ctrl.SetWaypoint(waypointIndicator);
 		}
 	}
