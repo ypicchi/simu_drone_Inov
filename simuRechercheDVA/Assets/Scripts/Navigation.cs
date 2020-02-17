@@ -31,14 +31,11 @@ public abstract class Navigation : MonoBehaviour
 	// Start is called before the first frame update
 	public virtual void Start()
 	{
-		
 		sensor = GetComponent<Sensor>();
 		waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		waypointIndicator.transform.position = new Vector3(0,5,-50);
+		waypointIndicator.name = "Waypoint";
+		waypointIndicator.transform.position = new Vector3(0, 5, -50);
 		GenerateMainWaypoint();
-		
-		
-		
 		
 		string path = "Assets/sensorOutput.wsv";
 
