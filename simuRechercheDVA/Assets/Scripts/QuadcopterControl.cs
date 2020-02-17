@@ -24,9 +24,11 @@ public class QuadcopterControl : DroneControl
     
 
     public override void ControlLoop(){
+		/*
 		if(needToRunManual){//To reset the acceleration set in manual
 			HandleKeyboardInput();
 		}
+		*/
 	}
 
     //SetThrusterThrust(int thrusterIndex,float thrustValue)
