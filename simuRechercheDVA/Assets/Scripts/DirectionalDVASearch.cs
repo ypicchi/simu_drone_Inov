@@ -12,7 +12,16 @@ public class DirectionalDVASearch : Navigation
 
 
 	List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
-    protected override void LoggingOverload(DataPoint currentPoint){
+    
+	//TOOD : code sale, il faut récupérer la version MAJ	
+	public override void Start()
+	{
+		base.Start ();
+		ctrl = GetComponent<DroneControl>();
+		ctrl.SetWaypoint(waypointIndicator);
+	}
+	
+	protected override void LoggingOverload(DataPoint currentPoint){
 		currentSegmentMeasure.Add(currentPoint);
 		dataPointNeededBeforeValidatingTheWaypoint--;
 	}
