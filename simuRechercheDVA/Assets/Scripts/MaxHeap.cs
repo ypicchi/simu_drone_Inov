@@ -87,12 +87,12 @@ public class MaxHeap
 		while (HasLeftChild(index))
 		{
 			var biggerIndex = GetLeftChildIndex(index);
-			if (HasRightChild(index) && GetRightChild(index).GetPower() > GetLeftChild(index).GetPower())
+			if (HasRightChild(index) && GetRightChild(index).SensorPower > GetLeftChild(index).SensorPower)
 			{
 				biggerIndex = GetRightChildIndex(index);
 			}
 
-			if (_elements[biggerIndex].GetPower() < _elements[index].GetPower())
+			if (_elements[biggerIndex].SensorPower < _elements[index].SensorPower)
 			{
 				break;
 			}
@@ -105,7 +105,7 @@ public class MaxHeap
 	private void ReCalculateUp()
 	{
 		var index = _size - 1;
-		while (!IsRoot(index) && _elements[index].GetPower() > GetParent(index).GetPower())
+		while (!IsRoot(index) && _elements[index].SensorPower > GetParent(index).SensorPower)
 		{
 			var parentIndex = GetParentIndex(index);
 			Swap(parentIndex, index);

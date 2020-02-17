@@ -17,17 +17,16 @@ public abstract class Navigation : MonoBehaviour
 	public Vector3 researchZoneOrigin = new Vector3(10,5,50);
 	
 	public float samplingInterval = 0.2f;//in second
-	public float waypointValidationDistance = 5;
+	public float waypointValidationDistance = 5;//in m
 	
 	
-	protected int numberWaypointReached = 0;
 	protected float previousSamplingTime = 0;
-	protected MaxHeap allDataPoint = new MaxHeap(1000);
+	
 	
 	protected StreamWriter fileLog;
 	protected bool isSearching = true;
 	
-	protected Queue<Vector3> mainWaypoints = new Queue<Vector3>();
+	protected Queue<Pair<Vector3, Vector3>> mainWaypoints = new Queue<Pair<Vector3, Vector3>>();
 	
 	// Start is called before the first frame update
 	public virtual void Start()
@@ -46,7 +45,7 @@ public abstract class Navigation : MonoBehaviour
 		FileStream stream = new FileStream(path, FileMode.OpenOrCreate,FileAccess.Write);  
 		fileLog = new StreamWriter(stream);
 	
-		fileLog.WriteLine("x z power");
+		fileLog.WriteLine("x y z rx ry rz power");
 		
 	}
 
@@ -70,18 +69,30 @@ public abstract class Navigation : MonoBehaviour
 			float currentTime = Time.time;
 			if(currentTime>previousSamplingTime+samplingInterval){
 				previousSamplingTime = currentTime;
-				DataPoint currentPoint = new DataPoint(sensor.GetPosition(),power);
-				allDataPoint.Add(currentPoint);
-				fileLog.Write(currentPoint.ToWSVLine());
+				LogDataPoint(power);
 			}
 		}
 		
 		
     }
-	
+
+	protected void LogDataPoint(float power){
+		float heading = Vector2.SignedAngle(Vector2.right, sensor.GetHeading());
+		DataPoint currentPoint = new DataPoint(power,sensor.GetPosition(),
+			new Vector3(sensor.GetPitch(),heading,sensor.GetRoll()));
+		fileLog.Write(currentPoint.ToWSVLine());
+		LoggingOverload(currentPoint);
+	}
+
+	protected virtual void LoggingOverload(DataPoint currentPoint){
+
+	}
 	
 	public void AddWaypoint(Vector3 nextPoint){
-		mainWaypoints.Enqueue(nextPoint);
+		AddWaypoint(nextPoint, Vector3.zero);
+	}
+	public void AddWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
+		mainWaypoints.Enqueue(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
 	}
 
 	public void ClearWaypoint(){

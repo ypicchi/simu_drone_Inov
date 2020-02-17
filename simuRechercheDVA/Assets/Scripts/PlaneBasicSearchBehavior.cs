@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class PlaneBasicSearchBehavior : Navigation
 {
 	
-	
+	protected MaxHeap allDataPoint = new MaxHeap(1000);
+
 	// Start is called before the first frame update
 	public override void Start()
 	{
@@ -16,6 +17,10 @@ public class PlaneBasicSearchBehavior : Navigation
 		ctrl.SetWaypoint(waypointIndicator);
 	
 		
+	}
+
+	protected override void LoggingOverload(DataPoint currentPoint){
+		allDataPoint.Add(currentPoint);
 	}
 
 	
@@ -29,18 +34,18 @@ public class PlaneBasicSearchBehavior : Navigation
 		while(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x){
 			if(reverse){
 				nextPoint.z = researchZoneOrigin.z + researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z -= researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z -= 120;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 			}else{
 				nextPoint.z = researchZoneOrigin.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z += researchZoneSize.z;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 				nextPoint.z += 120;
-				mainWaypoints.Enqueue(nextPoint);
+				AddWaypoint(nextPoint);
 			}
 			nextPoint.x += bandWidth;
 			reverse = !reverse;
@@ -62,19 +67,21 @@ public class PlaneBasicSearchBehavior : Navigation
 				ctrl.SetWaypoint(waypointIndicator);
 			}
 		}else{
-			waypointIndicator.transform.position = mainWaypoints.Dequeue();
+			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
+			waypointIndicator.transform.position = tmp.First;
+			waypointIndicator.transform.eulerAngles = tmp.Second;
 			ctrl.SetWaypoint(waypointIndicator);
 		}
 	}
 	
 	protected override List<Vector3> computeTargetsPositions(){
 		DataPoint strongestPoint = allDataPoint.Pop();
-		float cutThreshold = 0.9f * strongestPoint.GetPower();
+		float cutThreshold = 0.9f * strongestPoint.SensorPower;
 		
 		List<DataPoint> relevantPoint = new List<DataPoint>();
 		relevantPoint.Add(strongestPoint);
 		
-		while(allDataPoint.Peek().GetPower()>cutThreshold){
+		while(allDataPoint.Peek().SensorPower>cutThreshold){
 			relevantPoint.Add(allDataPoint.Pop());
 		}
 		
@@ -82,7 +89,7 @@ public class PlaneBasicSearchBehavior : Navigation
 		//multiple target in the same area, so for now we find only one target.
 		Vector3 sumVector = Vector3.zero;
 		for(int i=0;i<relevantPoint.Count;i++){
-			sumVector = sumVector + relevantPoint[i].GetPosition();
+			sumVector = sumVector + relevantPoint[i].Position;
 		}
 		sumVector = sumVector / relevantPoint.Count;
 		

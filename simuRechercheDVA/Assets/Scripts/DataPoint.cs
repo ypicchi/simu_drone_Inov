@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DataPoint {
-	private Vector3 m_position;
-	private float m_sensorPower;
-	
-	
-	public DataPoint(Vector3 position,float sensorPower){
-		m_position = position;
-		m_sensorPower = sensorPower;
+    private Vector3 position;
+	private Vector3 orientation;
+    private float sensorPower;
+
+    public Vector3 Position { get => position;}
+    public Vector3 Orientation { get => orientation;}
+
+    public float SensorPower { get => sensorPower;}
+
+
+    public DataPoint(float sensorPower,Vector3 position,Vector3 orientation){
+		this.position = position;
+		this.sensorPower = sensorPower;
+		this.orientation = orientation;
 	}
 	
-	public float GetPower(){
-		return m_sensorPower;
-	}
-	
-	public Vector3 GetPosition(){
-		return m_position;
-	}
+
 	
 	public string ToWSVLine(){
-		return ""+m_position.x+" "+m_position.z+" "+m_sensorPower+"\n";
+		return ""+Position.x+" "+Position.y+" "+Position.z+" "+Orientation.x+" "+Orientation.y+" "+Position.z+" "+SensorPower+"\n";
 	}
 }
