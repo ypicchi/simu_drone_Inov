@@ -20,7 +20,6 @@ public abstract class Navigation : MonoBehaviour
 	public float waypointValidationDistance = 5;//in m
 	
 	
-	protected int numberWaypointReached = 0;
 	protected float previousSamplingTime = 0;
 	
 	
@@ -78,7 +77,7 @@ public abstract class Navigation : MonoBehaviour
     }
 
 	protected void LogDataPoint(float power){
-		float heading = Vector2.Angle(Vector2.right, sensor.GetHeading());
+		float heading = Vector2.SignedAngle(Vector2.right, sensor.GetHeading());
 		DataPoint currentPoint = new DataPoint(power,sensor.GetPosition(),
 			new Vector3(sensor.GetPitch(),heading,sensor.GetRoll()));
 		fileLog.Write(currentPoint.ToWSVLine());
