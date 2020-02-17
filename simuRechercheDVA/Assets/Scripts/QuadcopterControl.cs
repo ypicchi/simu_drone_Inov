@@ -19,20 +19,48 @@ public class QuadcopterControl : DroneControl
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
 		thrust = simProperties.ThrusterThrustValues;
 		numberOfThruster = simProperties.ThrusterThrustValues.Length;
+
+		/* 
+		Debug.Log("Cible : " + target);
+		Debug.Log("Cible_position : " + target.transform.position);
+		Debug.Log("Cible_angle : " + target.transform.eulerAngles.y);
+		*/
+
 	}
 
     
 
     public override void ControlLoop(){
-		/*
-		if(needToRunManual){//To reset the acceleration set in manual
-			HandleKeyboardInput();
+
+		// Si la cible existe, on peut calculer un itinéraire
+		//Vector3 target3DHeading = target.transform.position - sensor.GetPosition();
+
+		if(hasTarget){
+			GoToWaypoint();
 		}
-		*/
+
 	}
 
-    //SetThrusterThrust(int thrusterIndex,float thrustValue)
-	
+
+	private void GoToWaypoint(){
+		if(hasTarget==false){
+			return;
+		}
+		
+		Vector3 target3DHeading = target.transform.position - sensor.GetPosition();
+		Debug.Log("Direction : " + target3DHeading);
+
+
+
+		//TODO : agir sur les moteurs, selon la cible
+
+		for(int i=0; i<numberOfThruster; i++){
+			thrust[i] += 0.01f;
+			sim.SetThrusterThrust(i, thrust[i]);
+		}
+
+		
+	}
 
     protected override void HandleKeyboardInput(){
 		if (Input.GetKey(KeyCode.LeftShift)){
