@@ -559,6 +559,16 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: xDragCenterOffset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: zDragCenterOffset.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: propellerYawTorqueMultiplier

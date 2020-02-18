@@ -10,40 +10,35 @@ public class DirectionalDVASearch : Navigation
 	protected float heading;
 	protected float stepDistance = 20f;
 	protected int dataPointNeededBeforeValidatingTheWaypoint = 0;
+	protected int dataPointAquiredSinceLastValidation = 0;
 
 
-	List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
+	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
     
-	//TOOD : code sale, il faut récupérer la version MAJ	
-	public override void Start()
-	{
-		base.Start ();
-		ctrl = GetComponent<DroneControl>();
-		ctrl.SetWaypoint(waypointIndicator);
+	//Called on instantiation, thus replacing the parent's class default values
+	private void Reset() {
+		waypointValidationDistance = 0.5f;//in m
+		waypointValidationAngularThreshold = 1f;
 	}
 	
 	protected override void LoggingOverload(DataPoint currentPoint){
 		currentSegmentMeasure.Add(currentPoint);
-		dataPointNeededBeforeValidatingTheWaypoint--;
+		dataPointAquiredSinceLastValidation++;
 	}
 
-    
-    protected override void GenerateMainWaypoint(){
-		//if(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x)
-		//AddWaypoint(nextPoint);
-		//Debug.Log("done generating waypoints. "+mainWaypoints.Count+" generated");
-	}
 	
 	protected override void GenerateNextNavigationWaypoint(){
 		if(mainWaypoints.Count<=0){
 			
 			SelectMode();
 			
-		}else if(dataPointNeededBeforeValidatingTheWaypoint<=0){
+		}
+		if(dataPointAquiredSinceLastValidation>=dataPointNeededBeforeValidatingTheWaypoint){
 			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
 			waypointIndicator.transform.position = tmp.First;
 			waypointIndicator.transform.eulerAngles = tmp.Second;
 			ctrl.SetWaypoint(waypointIndicator);
+			dataPointAquiredSinceLastValidation = 0;
 		}
 	}
 	
@@ -58,10 +53,9 @@ public class DirectionalDVASearch : Navigation
 
 	protected void GenerateHeadingWaypoint(float startHeading,float endHeading,float step){
 		Vector3 position = sensor.GetPosition();
-		dataPointNeededBeforeValidatingTheWaypoint = 0;
-		for(float heading = startHeading; heading<endHeading; heading += step){
+		dataPointNeededBeforeValidatingTheWaypoint = 1;
+		for(float heading = startHeading; heading<=endHeading; heading += step){
 			AddWaypoint(position,new Vector3(0,heading,0));
-			dataPointNeededBeforeValidatingTheWaypoint++;
 		}
 		
 	}
@@ -85,9 +79,9 @@ public class DirectionalDVASearch : Navigation
 	}
 
 	protected void StepForward(float stepSize){//go forward for a distance up to stepSize
-		dataPointNeededBeforeValidatingTheWaypoint = 3 - currentSegmentMeasure.Count;
-		
-		Vector3 nextPosition = sensor.GetPosition() + new Vector3(Mathf.Cos(heading),0,Mathf.Sin(heading)) * stepSize;
+		dataPointNeededBeforeValidatingTheWaypoint = 3;
+
+		Vector3 nextPosition = sensor.GetPosition() + new Vector3(Mathf.Sin(heading * (Mathf.PI / 180)),0,Mathf.Cos(heading * (Mathf.PI / 180))) * stepSize;
 		AddWaypoint(nextPosition,new Vector3(0,heading,0));
 	}
 
@@ -110,14 +104,15 @@ public class DirectionalDVASearch : Navigation
 
 	
 	protected void SelectMode(){//TODO to test
-		Debug.Log("Previous state : "+state);
+		//Debug.Log("Previous state : "+state);
 		switch(state){
 			case "badHeading":
-				GenerateHeadingWaypoint(-90,90,30);
+				GenerateHeadingWaypoint(-120,120,30);
 				state = "findingHeading";
 				break;
 			case "findingHeading":
 				heading = FindHeadingFromCurrentSegment();
+				currentSegmentMeasure.Clear();
 				GenerateHeadingWaypoint(heading-20,heading+20,5);
 				state = "refiningHeading";
 				break;
@@ -128,10 +123,9 @@ public class DirectionalDVASearch : Navigation
 				state = "goodHeading";
 				break;
 			case "goodHeading":
-				if(IsSignalIncreasing()){
-					StepForward(stepDistance);
-				}else{
-					//stepDistance /= 2;
+				StepForward(stepDistance);
+				if( ! IsSignalIncreasing()){
+					stepDistance /= 2;
 					currentSegmentMeasure.Clear();
 					state = "badHeading";
 				}

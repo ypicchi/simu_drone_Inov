@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8064075806751912276}
   - component: {fileID: 8064075806751912272}
   - component: {fileID: 1139989092614759097}
-  - component: {fileID: 8064075806751912266}
+  - component: {fileID: 6217137124354869735}
   m_Layer: 0
   m_Name: Dummy
   m_TagString: Untagged
@@ -142,7 +142,8 @@ MonoBehaviour:
   researchZoneOrigin: {x: 10, y: 5, z: 50}
   samplingInterval: 0.2
   waypointValidationDistance: 5
---- !u!114 &8064075806751912266
+  waypointValidationAngularThreshold: 10
+--- !u!114 &6217137124354869735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,11 +152,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8064075806751912267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac2261a5e66ee994bbeb7ba557993750, type: 3}
+  m_Script: {fileID: 11500000, guid: 843283cfb1340b64f9ec2c3be73c6670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rollDisplayText: 
-  pitchDisplayText: 
-  climbAngleDisplayText: 
-  realClimbAngleDisplayText: 
-  forwardSpeedDisplayText: 
