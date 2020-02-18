@@ -59,7 +59,7 @@ public class DirectionalDVASearch : Navigation
 	protected void GenerateHeadingWaypoint(float startHeading,float endHeading,float step){
 		Vector3 position = sensor.GetPosition();
 		dataPointNeededBeforeValidatingTheWaypoint = 0;
-		for(float heading = startHeading; heading<endHeading; endHeading += step){
+		for(float heading = startHeading; heading<endHeading; heading += step){
 			AddWaypoint(position,new Vector3(0,heading,0));
 			dataPointNeededBeforeValidatingTheWaypoint++;
 		}
@@ -110,6 +110,7 @@ public class DirectionalDVASearch : Navigation
 
 	
 	protected void SelectMode(){//TODO to test
+		Debug.Log("Previous state : "+state);
 		switch(state){
 			case "badHeading":
 				GenerateHeadingWaypoint(-90,90,30);
@@ -130,7 +131,7 @@ public class DirectionalDVASearch : Navigation
 				if(IsSignalIncreasing()){
 					StepForward(stepDistance);
 				}else{
-					stepDistance /= 2;
+					//stepDistance /= 2;
 					currentSegmentMeasure.Clear();
 					state = "badHeading";
 				}
@@ -138,6 +139,7 @@ public class DirectionalDVASearch : Navigation
 			default:
 				break;
 		}
+		Debug.Log("Next state : "+state);
 		
 	}
 }
