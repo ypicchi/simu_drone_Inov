@@ -462,7 +462,7 @@ PrefabInstance:
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.866
+      value: -5.74
       objectReference: {fileID: 0}
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -512,7 +512,12 @@ PrefabInstance:
     - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_UseGravity
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -558,6 +563,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: xDragCenterOffset.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: zDragCenterOffset.y
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
