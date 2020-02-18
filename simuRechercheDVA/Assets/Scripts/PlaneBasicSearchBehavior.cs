@@ -9,15 +9,7 @@ public class PlaneBasicSearchBehavior : Navigation
 	
 	protected MaxHeap allDataPoint = new MaxHeap(1000);
 
-	// Start is called before the first frame update
-	public override void Start()
-	{
-		base.Start ();
-		ctrl = GetComponent<DroneControl>();
-		ctrl.SetWaypoint(waypointIndicator);
-	
-		
-	}
+
 
 	protected override void LoggingOverload(DataPoint currentPoint){
 		allDataPoint.Add(currentPoint);

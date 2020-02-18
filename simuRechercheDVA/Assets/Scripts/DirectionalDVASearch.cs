@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DirectionalDVASearch : Navigation
 {
+	
 
 	protected string state = "badHeading";
 	protected float heading;
@@ -26,7 +27,7 @@ public class DirectionalDVASearch : Navigation
 		dataPointNeededBeforeValidatingTheWaypoint--;
 	}
 
-    //TODO stump from fixed wing
+    
     protected override void GenerateMainWaypoint(){
 		//if(nextPoint.x < researchZoneOrigin.x + researchZoneSize.x)
 		//AddWaypoint(nextPoint);
@@ -68,7 +69,7 @@ public class DirectionalDVASearch : Navigation
 	protected float FindHeadingFromCurrentSegment(){
 		if(currentSegmentMeasure.Count <= 0){
 			Debug.Log("Error, can't find the heading when no measure are logged");
-			return Vector2.SignedAngle(Vector2.right, sensor.GetHeading());
+			return sensor.GetHeadingAsFloat();
 		}
 
 		float max = 0f;

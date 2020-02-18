@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8064075806751912279}
   - component: {fileID: 8064075806751912276}
   - component: {fileID: 8064075806751912272}
-  - component: {fileID: 8064075806751912277}
+  - component: {fileID: 1139989092614759097}
   - component: {fileID: 8064075806751912266}
   m_Layer: 0
   m_Name: Dummy
@@ -123,9 +123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ea4a37bab8d0b644a6b7179002ceb55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modeDisplayText: 
   manualOverride: 0
   speed: 10
---- !u!114 &8064075806751912277
+--- !u!114 &1139989092614759097
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,14 +135,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8064075806751912267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01e6dff90806ab94a82493b48d35b15d, type: 3}
+  m_Script: {fileID: 11500000, guid: 370b520c3d56a4a49b562b678599400f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   researchZoneSize: {x: 100, y: 0, z: 100}
   researchZoneOrigin: {x: 10, y: 5, z: 50}
   samplingInterval: 0.2
   waypointValidationDistance: 5
-  bandWidth: 10
 --- !u!114 &8064075806751912266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,3 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac2261a5e66ee994bbeb7ba557993750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rollDisplayText: 
+  pitchDisplayText: 
+  climbAngleDisplayText: 
+  realClimbAngleDisplayText: 
+  forwardSpeedDisplayText: 

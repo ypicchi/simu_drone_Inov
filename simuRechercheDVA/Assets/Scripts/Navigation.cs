@@ -17,7 +17,8 @@ public abstract class Navigation : MonoBehaviour
 	public Vector3 researchZoneOrigin = new Vector3(10,5,50);
 	
 	public float samplingInterval = 0.2f;//in second
-	public float waypointValidationDistance = 5;//in m
+	public float waypointValidationDistance = 5f;//in m
+	public float waypointValidationAngularThreshold = 10f;
 	
 	
 	protected float previousSamplingTime = 0;
@@ -31,10 +32,13 @@ public abstract class Navigation : MonoBehaviour
 	// Start is called before the first frame update
 	public virtual void Start()
 	{
+
+		ctrl = GetComponent<DroneControl>();
 		sensor = GetComponent<Sensor>();
 		waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		waypointIndicator.name = "Waypoint";
-		waypointIndicator.transform.position = new Vector3(0, 5, -50);
+		waypointIndicator.transform.position = new Vector3(0,5,-50);
+		ctrl.SetWaypoint(waypointIndicator);
 		GenerateMainWaypoint();
 		
 		string path = "Assets/sensorOutput.wsv";
@@ -54,8 +58,10 @@ public abstract class Navigation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		Vector3 target3DHeading = waypointIndicator.transform.position-sensor.GetPosition();
-		if(target3DHeading.magnitude < waypointValidationDistance){
+		Vector3 linearDifference = waypointIndicator.transform.position-sensor.GetPosition();
+		Vector2 targetHeadingt = new Vector2(waypointIndicator.transform.forward.x,waypointIndicator.transform.forward.z);
+		float angularDifference = Vector2.SignedAngle(targetHeadingt, sensor.GetHeading());
+		if(ValidateWaypoint(linearDifference,angularDifference)){
 			GenerateNewWaypoint();
 		}
 		
@@ -74,7 +80,7 @@ public abstract class Navigation : MonoBehaviour
     }
 
 	protected void LogDataPoint(float power){
-		float heading = Vector2.SignedAngle(Vector2.right, sensor.GetHeading());
+		float heading = sensor.GetHeadingAsFloat();
 		DataPoint currentPoint = new DataPoint(power,sensor.GetPosition(),
 			new Vector3(sensor.GetPitch(),heading,sensor.GetRoll()));
 		fileLog.Write(currentPoint.ToWSVLine());
@@ -83,6 +89,10 @@ public abstract class Navigation : MonoBehaviour
 
 	protected virtual void LoggingOverload(DataPoint currentPoint){
 
+	}
+
+	protected virtual bool ValidateWaypoint(Vector3 linearDifference,float angularDifference){
+		return linearDifference.magnitude < waypointValidationDistance && angularDifference < waypointValidationAngularThreshold;
 	}
 	
 	public void AddWaypoint(Vector3 nextPoint){

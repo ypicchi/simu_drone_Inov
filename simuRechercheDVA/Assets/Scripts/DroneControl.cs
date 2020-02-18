@@ -39,12 +39,13 @@ public abstract class DroneControl : MonoBehaviour
 			
 			modeDisplayText = ("Mode : Manuel");
 			HandleKeyboardInput();//keyboard override
-
-		}
-		else{
+		}else if(hasTarget){
 			
-			modeDisplayText = ("Mode : Automatique");
+			modeDisplayText = ("mode : Automatic");
+			
 			ControlLoop();
+		}else{
+			modeDisplayText = ("mode : None");
 		}
 	}
 	

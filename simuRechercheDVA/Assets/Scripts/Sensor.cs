@@ -100,6 +100,12 @@ public class Sensor : MonoBehaviour
 		
 		return new Vector2(heading.x,heading.z);
 	}
+
+	public float GetHeadingAsFloat(){
+		Vector3 heading = transform.forward;
+		
+		return Vector2.SignedAngle(Vector2.right, GetHeading());
+	}
 	
 	public float GetAttitudeClimbAngle(){
 		Vector3 heading = transform.forward;
@@ -113,7 +119,7 @@ public class Sensor : MonoBehaviour
 		return Mathf.Rad2Deg * Mathf.Atan2(velocityVector.y,horizontalComponant);
 	}
 	
-	public float GetPitch(){//TODO valeur erroné quand roll ~90° ??
+	public float GetPitch(){
 		Vector3 planeIntersection = Vector3.Cross(transform.right,Vector3.up);
 		float pitch = Vector3.Angle(planeIntersection,transform.forward);
 		if(pitch>90){

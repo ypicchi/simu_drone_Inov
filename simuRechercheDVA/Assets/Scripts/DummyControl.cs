@@ -6,19 +6,19 @@ public class DummyControl : DroneControl
 {
 
 
-    private Rigidbody rb;
+    //private Rigidbody rb;
     public float speed = 10;
     
 
     public override void Start(){
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
         base.Start();
     }
 
     public override void ControlLoop(){
         modeDisplayText = ("mode : auto");
 
-        rb.velocity = Vector3.Normalize(target.transform.position - transform.position) * speed;
+        //rb.velocity = Vector3.Normalize(target.transform.position - transform.position) * speed;
         
         float stepDistance = speed*Time.deltaTime;
         Vector3 nextPosition = Vector3.MoveTowards(transform.position, 
