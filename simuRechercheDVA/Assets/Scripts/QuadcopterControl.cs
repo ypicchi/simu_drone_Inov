@@ -8,6 +8,10 @@ public class QuadcopterControl : DroneControl
     protected DroneFlightSim sim;
 
 	protected float[] thrust;
+	private float maxThrust = 5;
+	private float heightThreshold = 0.5f;
+
+
 	protected int numberOfThruster;
 	protected bool needToRunManual = false;
 
@@ -47,15 +51,36 @@ public class QuadcopterControl : DroneControl
 			return;
 		}
 		
-		Vector3 target3DHeading = target.transform.position - sensor.GetPosition();
-		Debug.Log("Direction : " + target3DHeading);
+		float targetHeightDifference = target.transform.position.y - sensor.GetPosition().y;
+		//Debug.Log("Hauteur : " + targetHeightDifference);
 
 
 
 		//TODO : agir sur les moteurs, selon la cible
 
+		// Height calculation
 		for(int i=0; i<numberOfThruster; i++){
-			thrust[i] += 0.01f;
+
+			if(targetHeightDifference > heightThreshold){
+				thrust[i] += 0.001f;
+				if(i==0){
+					Debug.Log("UP : " + targetHeightDifference + " > " + thrust[i]);
+				}
+			}
+
+			else if(targetHeightDifference < -heightThreshold){
+				thrust[i] -= 0.001f;
+				if(i==0){
+					Debug.Log("DOWN : " + targetHeightDifference + " > " + thrust[i]);
+				}
+			}
+
+			else{
+				if(i==0){
+					Debug.Log("STALL : " + targetHeightDifference + " > " + thrust[i]);
+				}
+			}
+			
 			sim.SetThrusterThrust(i, thrust[i]);
 		}
 
