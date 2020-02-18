@@ -35,7 +35,8 @@ public abstract class Navigation : MonoBehaviour
 
 		ctrl = GetComponent<DroneControl>();
 		sensor = GetComponent<Sensor>();
-		waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		//waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		waypointIndicator = GameObject.Instantiate(Resources.Load<GameObject>("Arrow"));
 		waypointIndicator.name = "Waypoint";
 		waypointIndicator.transform.position = new Vector3(0,5,-50);
 		ctrl.SetWaypoint(waypointIndicator);

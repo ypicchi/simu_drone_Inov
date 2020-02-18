@@ -24,6 +24,8 @@ public class DummyControl : DroneControl
         Vector3 nextPosition = Vector3.MoveTowards(transform.position, 
                     target.transform.position, stepDistance);
         transform.position = nextPosition;
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, target.transform.rotation, stepDistance*10);
         
     }
 
