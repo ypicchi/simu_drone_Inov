@@ -16,16 +16,16 @@ public class Sensor : MonoBehaviour
 	public string forwardSpeedDisplayText;
 
 	
-	private const int numberOfSources = 1;
-	private Vector3[] emissionSources = new Vector3[numberOfSources];
+	protected const int numberOfSources = 1;
+	protected Vector3[] emissionSources = new Vector3[numberOfSources];
 	
 	
-	private bool hasComputedThisFrame = false;
-	private Vector3 fromWhere;
-	private float lastComputedPowerValue;
+	protected bool hasComputedThisFrame = false;
+	protected Vector3 fromWhere;
+	protected float lastComputedPowerValue;
 	
-	private float lastRollValue = 0;
-	private float lastPitchValue = 0;
+	protected float lastRollValue = 0;
+	protected float lastPitchValue = 0;
 
 	private GameObject sphere;
 	
@@ -91,20 +91,13 @@ public class Sensor : MonoBehaviour
 	
 	public Vector2 GetHeading(){
 		Vector3 heading = transform.forward;
-		/*
-		float horizontalComponant = Mathf.Sqrt (Mathf.Pow(heading.x,2) + Mathf.Pow(heading.z,2));
-		float globalPitch = Mathf.Rad2Deg * Mathf.Atan2(heading.y,horizontalComponant);
-		
-		float horizontalHeading = Mathf.Atan2(heading.z,heading.x);
-		*/
-		
 		return new Vector2(heading.x,heading.z);
 	}
 
 	public float GetHeadingAsFloat(){
 		Vector3 heading = transform.forward;
 		
-		return Vector2.SignedAngle(Vector2.right, GetHeading());
+		return - Vector2.SignedAngle(Vector2.up, GetHeading());
 	}
 	
 	public float GetAttitudeClimbAngle(){
@@ -171,7 +164,7 @@ public class Sensor : MonoBehaviour
 	
 	
 	
-	private void ComputePowerValue(){
+	protected virtual void ComputePowerValue(){
 		lastComputedPowerValue = 0;
 		for(int i =0; i<numberOfSources ;i++ ){
 			float dist = Vector3.Distance(fromWhere, emissionSources[i]);
@@ -180,7 +173,7 @@ public class Sensor : MonoBehaviour
 		lastComputedPowerValue = Mathf.Clamp(lastComputedPowerValue,0,100);
 	}
 	
-	private float GetPowerFromDist(float dist){
+	protected float GetPowerFromDist(float dist){
 		float rawValue = 100f/ (1+Mathf.Pow((dist/70f),2));
 		return Mathf.Clamp(rawValue,0,100);
 	}

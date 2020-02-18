@@ -35,7 +35,6 @@ public abstract class Navigation : MonoBehaviour
 
 		ctrl = GetComponent<DroneControl>();
 		sensor = GetComponent<Sensor>();
-		//waypointIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		waypointIndicator = GameObject.Instantiate(Resources.Load<GameObject>("Arrow"));
 		waypointIndicator.name = "Waypoint";
 		waypointIndicator.transform.position = new Vector3(0,5,-50);
@@ -61,7 +60,7 @@ public abstract class Navigation : MonoBehaviour
     {
 		Vector3 linearDifference = waypointIndicator.transform.position-sensor.GetPosition();
 		Vector2 targetHeadingt = new Vector2(waypointIndicator.transform.forward.x,waypointIndicator.transform.forward.z);
-		float angularDifference = Vector2.SignedAngle(targetHeadingt, sensor.GetHeading());
+		float angularDifference = Vector2.Angle(targetHeadingt, sensor.GetHeading());
 		if(ValidateWaypoint(linearDifference,angularDifference)){
 			GenerateNewWaypoint();
 		}
@@ -119,7 +118,9 @@ public abstract class Navigation : MonoBehaviour
 	
 	
 	
-	protected abstract void GenerateMainWaypoint();
+	protected virtual void GenerateMainWaypoint(){
+		//nothing
+	}
 	
 	protected abstract void GenerateNextNavigationWaypoint();
 	
