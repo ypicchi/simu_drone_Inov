@@ -22,6 +22,6 @@ public class DataPoint {
 
 	
 	public string ToWSVLine(){
-		return ""+Position.x+" "+Position.y+" "+Position.z+" "+Orientation.x+" "+Orientation.y+" "+Position.z+" "+SensorPower+"\n";
+		return "" + Position.x + " " + Position.y + " "+Position.z + " " + Orientation.x + " " + Orientation.y + " " + Position.z + " " + SensorPower + "\n";
 	}
 }
