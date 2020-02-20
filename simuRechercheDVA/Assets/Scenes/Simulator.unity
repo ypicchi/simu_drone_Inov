@@ -581,13 +581,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
+      propertyPath: dragCoefficients.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
       propertyPath: xDragCenterOffset.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: zDragCenterOffset.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}

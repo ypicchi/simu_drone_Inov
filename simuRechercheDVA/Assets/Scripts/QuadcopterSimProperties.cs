@@ -7,9 +7,10 @@ public class QuadcopterSimProperties : DroneSimProperties
     public Vector3 dragCoefficients = new Vector3(0.1f, 0.5f, 0.1f);
 
 
-    public Vector3 xDragCenterOffset = new Vector3(0, 0, 0);
+
+    public Vector3 xDragCenterOffset = new Vector3(0, 0.1f, 0);
     public Vector3 yDragCenterOffset = new Vector3(0, 0, 0);
-    public Vector3 zDragCenterOffset = new Vector3(0, 0, 0);
+    public Vector3 zDragCenterOffset = new Vector3(0, 0.1f, 0);
 
 
     public Vector3[] inducedLift = {

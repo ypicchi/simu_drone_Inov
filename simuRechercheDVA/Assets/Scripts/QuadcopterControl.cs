@@ -8,12 +8,20 @@ public class QuadcopterControl : DroneControl
     protected DroneFlightSim sim;
 
 	protected float[] thrust;
+	private float thrustEquilibrium = 2.035f;
+	private float thrustMax = 10.0f;
+	private float thrustMaxNegative;
+	private float heightThreshold = 2.0f;
+
+
 	protected int numberOfThruster;
 	protected bool needToRunManual = false;
 
     // Start is called before the first frame update
 	public override void Start()
 	{
+		initVariables();
+
 		base.Start();
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
@@ -28,7 +36,9 @@ public class QuadcopterControl : DroneControl
 
 	}
 
-    
+    private void initVariables(){
+		thrustMaxNegative = -thrustMax;
+	}
 
     public override void ControlLoop(){
 
@@ -42,20 +52,60 @@ public class QuadcopterControl : DroneControl
 	}
 
 
+	private float GetThrurstVertical(float heightDifference){
+		
+		
+		float thrustVertical = 0f;
+		float thrustRatio;
+
+
+		// Need to go UP, the drone is below the waypoint
+		if(heightDifference > 0){
+			
+			// Need to go UP slowly, the drone is just below the waypoint
+			if(heightDifference < heightThreshold){
+				thrustRatio = heightDifference  / heightThreshold;
+				thrustVertical = thrustEquilibrium + thrustRatio * (thrustMax - thrustEquilibrium);
+				Debug.Log("UP : " + heightDifference);	
+			}
+			else{
+				thrustVertical = thrustMax;
+				Debug.Log("UP++ : " + heightDifference);
+			}
+		}
+
+		// Need to go DOWN, the drone is above the waypoint
+		else if(heightDifference < 0 ){
+			
+			// Need to go DOWN slowly, the drone is just below the waypoint
+			if(heightDifference > - heightThreshold){
+				thrustRatio = heightDifference  / heightThreshold;
+				thrustVertical = thrustEquilibrium - thrustRatio * (thrustMaxNegative - thrustEquilibrium);
+				Debug.Log("DOWN : " + heightDifference);	
+			}
+			else{
+				thrustVertical = thrustMaxNegative;
+				Debug.Log("DOWN-- : " + heightDifference);	
+			}
+		}
+
+		else{//Non reachable code
+			Debug.Log("??? : " + heightDifference);	
+		}
+
+		return thrustVertical;
+	}
+
 	private void GoToWaypoint(){
 		if(hasTarget==false){
 			return;
 		}
 		
-		Vector3 target3DHeading = target.transform.position - sensor.GetPosition();
-		Debug.Log("Direction : " + target3DHeading);
-
-
-
-		//TODO : agir sur les moteurs, selon la cible
+		// Height calculation
+		float heightDifference = target.transform.position.y - sensor.GetPosition().y;
 
 		for(int i=0; i<numberOfThruster; i++){
-			thrust[i] += 0.01f;
+			thrust[i] = GetThrurstVertical(heightDifference);//GetVerticalThrurst(targetHeightDifference, thrust[i]);
 			sim.SetThrusterThrust(i, thrust[i]);
 		}
 
