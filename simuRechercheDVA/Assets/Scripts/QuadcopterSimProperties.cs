@@ -7,9 +7,9 @@ public class QuadcopterSimProperties : DroneSimProperties
     public Vector3 dragCoefficients = new Vector3(0.1f, 0.5f, 0.1f);
 
 
-    public Vector3 xDragCenterOffset = new Vector3(0, -0.1f, 0);
+    public Vector3 xDragCenterOffset = new Vector3(0, 0, 0);
     public Vector3 yDragCenterOffset = new Vector3(0, 0, 0);
-    public Vector3 zDragCenterOffset = new Vector3(0, -0.1f, 0);
+    public Vector3 zDragCenterOffset = new Vector3(0, 0, 0);
 
 
     public Vector3[] inducedLift = {
@@ -19,19 +19,9 @@ public class QuadcopterSimProperties : DroneSimProperties
     };
 
 
-    public Vector3[] thrusterOffset = {
-        new Vector3(-0.5f, 0, 0.5f),
-        new Vector3(0.5f, 0, 0.5f),
-        new Vector3(0.5f, 0, -0.5f),
-        new Vector3(-0.5f, 0, -0.5f)
-    };
+    private Vector3[] thrusterOffset = new Vector3[4];
 
-    public Vector3[] thrusterThrustVectors = {
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 0)
-    };
+    private Vector3[] thrusterThrustVectors = new Vector3[4];
 
     public float[] thrusterThrustValues = {
         0f,
@@ -39,6 +29,18 @@ public class QuadcopterSimProperties : DroneSimProperties
         0f,
         0f
     };
+
+
+    public override void Start(){
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Vector3 CG = rb.centerOfMass;
+        for (int i=0;i<thrusterThrustValues.Length;i++){
+            GameObject axis = GameObject.Find("MotorModule"+i.ToString()+"/Axis");
+		    thrusterOffset[i] = transform.InverseTransformPoint(axis.transform.position) - CG;
+            GameObject propeller = GameObject.Find("MotorModule"+i.ToString()+"/Propeller");
+            thrusterThrustVectors[i] = transform.InverseTransformDirection(propeller.transform.up);
+        }
+	}
 
 
     public override Vector3 DragCoefficients { get => dragCoefficients; set => dragCoefficients = value; }

@@ -88,7 +88,7 @@ public class QuadcopterControl : DroneControl
 		}
 
 
-		float turnPower = 0.01f;
+		float turnPower = 3f;
 		needToRunManual = true;
 		
         if(Input.GetKey(KeyCode.Z)){      //------------------ Z

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -462,7 +462,7 @@ PrefabInstance:
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.866
+      value: -5.727
       objectReference: {fileID: 0}
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -509,50 +509,70 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.684
+      objectReference: {fileID: 0}
+    - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.684
+      objectReference: {fileID: 0}
+    - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_Constraints
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustValues.Array.data[0]
-      value: 0
+      value: 205
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustValues.Array.data[1]
-      value: 0
+      value: 205
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustValues.Array.data[2]
-      value: 0
+      value: 205
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustValues.Array.data[3]
-      value: 0
+      value: 205
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustVectors.Array.data[0].y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustVectors.Array.data[1].y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustVectors.Array.data[2].y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: thrusterThrustVectors.Array.data[3].y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -569,15 +589,40 @@ PrefabInstance:
       propertyPath: zDragCenterOffset.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: dragCoefficients.x
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: propellerYawTorqueMultiplier
-      value: 0.01
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: propellerAnimationSpeedMultiplier
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: manualOverride
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}

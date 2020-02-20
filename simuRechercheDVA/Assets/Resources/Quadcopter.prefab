@@ -4432,7 +4432,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5695683824817154127}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10.498, z: -282.072}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2524237710711529226}
@@ -4455,7 +4455,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5695683824817154127}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 86
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -4476,28 +4476,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragCoefficients: {x: 0.1, y: 0.5, z: 0.1}
-  xDragCenterOffset: {x: 0, y: -0.1, z: 0}
+  xDragCenterOffset: {x: 0, y: 0, z: 0}
   yDragCenterOffset: {x: 0, y: 0, z: 0}
-  zDragCenterOffset: {x: 0, y: -0.1, z: 0}
+  zDragCenterOffset: {x: 0, y: 0, z: 0}
   inducedLift:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  thrusterOffset:
-  - {x: -0.5, y: 0, z: 0.5}
-  - {x: 0.5, y: 0, z: 0.5}
-  - {x: 0.5, y: 0, z: -0.5}
-  - {x: -0.5, y: 0, z: -0.5}
-  thrusterThrustVectors:
-  - {x: 0, y: -1, z: 0}
-  - {x: 0, y: -1, z: 0}
-  - {x: 0, y: -1, z: 0}
-  - {x: 0, y: -1, z: 0}
   thrusterThrustValues:
-  - 5
-  - 5
-  - 5
-  - 5
+  - 0
+  - 0
+  - 0
+  - 0
 --- !u!114 &2584008151948179719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4510,6 +4500,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55783ec0fa1fe4143af727ae4110c4d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  propellerAnimationSpeedMultiplier: 200
+  propellerYawTorqueMultiplier: 0.05
 --- !u!114 &5523172647426025564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4540,7 +4532,7 @@ MonoBehaviour:
   researchZoneOrigin: {x: 10, y: 5, z: 50}
   samplingInterval: 0.2
   waypointValidationDistance: 5
-  bandWidth: 10
+  waypointValidationAngularThreshold: 10
 --- !u!114 &3070195190946575045
 MonoBehaviour:
   m_ObjectHideFlags: 0
