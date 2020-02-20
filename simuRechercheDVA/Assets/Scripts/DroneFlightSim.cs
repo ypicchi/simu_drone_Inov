@@ -38,10 +38,12 @@ public abstract class DroneFlightSim : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-		
-		HandleForces();
 		combinedTorque = Vector3.zero;//may be an issue with the update ordres of the various classes
     }
+
+	public virtual void FixedUpdate(){
+		HandleForces();
+	}
 	
 	
 	//----getters----
