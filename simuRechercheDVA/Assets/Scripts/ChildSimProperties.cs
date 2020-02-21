@@ -8,9 +8,9 @@ public class ChildSimProperties : DroneSimProperties
 
 
 
-    public Vector3 xDragCenterOffset = new Vector3(0, 0.1f, 0);
+    public Vector3 xDragCenterOffset = new Vector3(0, 0, 0);
     public Vector3 yDragCenterOffset = new Vector3(0, 0, 0);
-    public Vector3 zDragCenterOffset = new Vector3(0, 0.1f, 0);
+    public Vector3 zDragCenterOffset = new Vector3(0, 0, 0);
 
 
     public Vector3[] inducedLift = {
@@ -20,17 +20,19 @@ public class ChildSimProperties : DroneSimProperties
     };
 
 
-    private Vector3[] thrusterOffset = {
-        new Vector3(0.1f, -0.1f, 0),
-        new Vector3(-0.1f, -0.1f, 0)
-    };
+    private Vector3[] thrusterOffset = new Vector3[4];
 
     private Vector3[] thrusterThrustVectors = {
+        new Vector3(0, 0, 1),
+        new Vector3(0, 0, 1),
         new Vector3(0, 0, 1),
         new Vector3(0, 0, 1)
     };
 
+
     public float[] thrusterThrustValues = {
+        0f,
+        0f,
         0f,
         0f
     };
@@ -38,8 +40,20 @@ public class ChildSimProperties : DroneSimProperties
     
     private float[] thrusterPowerDrain = {// W/kg
         50f,
+        50f,
+        50f,
         50f
     };
+
+
+    public override void Start(){
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Vector3 CG = rb.centerOfMass;
+        for (int i=0;i<thrusterThrustValues.Length;i++){
+            GameObject wheel = GameObject.Find("Wheel"+i.ToString());
+		    thrusterOffset[i] = new Vector3(0, -wheel.transform.lossyScale.y/2, 0) + transform.InverseTransformPoint(wheel.transform.position) - CG;
+        }
+	}
 
 
     public override Vector3 DragCoefficients { get => dragCoefficients; set => dragCoefficients = value; }
