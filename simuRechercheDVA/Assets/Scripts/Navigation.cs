@@ -25,6 +25,7 @@ public abstract class Navigation : MonoBehaviour
 	
 	
 	protected StreamWriter fileLog;
+	protected bool isMissionStarted = false;
 	protected bool isSearching = true;
 	
 	protected Queue<Pair<Vector3, Vector3>> mainWaypoints = new Queue<Pair<Vector3, Vector3>>();
@@ -32,22 +33,21 @@ public abstract class Navigation : MonoBehaviour
 	// Start is called before the first frame update
 	public virtual void Start()
 	{
-
 		ctrl = GetComponent<DroneControl>();
 		sensor = GetComponent<Sensor>();
+
 		waypointIndicator = GameObject.Instantiate(Resources.Load<GameObject>("Arrow"));
 		waypointIndicator.name = "Waypoint";
 		waypointIndicator.transform.position = new Vector3(0,5,-50);
-		ctrl.SetWaypoint(waypointIndicator);
-		GenerateMainWaypoint();
-		
+	}
+
+	protected virtual void StartLog(){
 		string path = "Assets/sensorOutput.wsv";
 
 		FileStream stream = new FileStream(path, FileMode.OpenOrCreate,FileAccess.Write);  
 		fileLog = new StreamWriter(stream);
 	
 		fileLog.WriteLine("x y z rx ry rz power");
-		
 	}
 
 	void OnDestroy()
@@ -55,28 +55,36 @@ public abstract class Navigation : MonoBehaviour
         Object.Destroy(waypointIndicator);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-		Vector3 linearDifference = waypointIndicator.transform.position-sensor.GetPosition();
-		Vector2 targetHeadingt = new Vector2(waypointIndicator.transform.forward.x,waypointIndicator.transform.forward.z);
-		float angularDifference = Vector2.Angle(targetHeadingt, sensor.GetHeading());
-		if(ValidateWaypoint(linearDifference,angularDifference)){
-			GenerateNewWaypoint();
-		}
-		
-		float power = sensor.GetSignalPower(transform.position);
+	public virtual void StartMission(){
+		ctrl.SetWaypoint(waypointIndicator);
+		GenerateMainWaypoint();
+		StartLog();
+		isMissionStarted = true;
+    }
 
-		
-		if(isSearching){
-			float currentTime = Time.time;
-			if(currentTime>previousSamplingTime+samplingInterval){
-				previousSamplingTime = currentTime;
-				LogDataPoint(power);
+    // Update is called once per frame
+    public virtual void Update()
+    {
+		if(isMissionStarted){
+			Vector3 linearDifference = waypointIndicator.transform.position-sensor.GetPosition();
+			Vector2 targetHeadingt = new Vector2(waypointIndicator.transform.forward.x,waypointIndicator.transform.forward.z);
+			float angularDifference = Vector2.Angle(targetHeadingt, sensor.GetHeading());
+			if(ValidateWaypoint(linearDifference,angularDifference)){
+				GenerateNewWaypoint();
 			}
+			
+			float power = sensor.GetSignalPower(transform.position);
+
+			
+			if(isSearching){
+				float currentTime = Time.time;
+				if(currentTime>previousSamplingTime+samplingInterval){
+					previousSamplingTime = currentTime;
+					LogDataPoint(power);
+				}
+			}
+			
 		}
-		
-		
     }
 
 	protected void LogDataPoint(float power){

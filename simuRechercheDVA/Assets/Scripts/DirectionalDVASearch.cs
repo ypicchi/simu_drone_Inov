@@ -15,6 +15,12 @@ public class DirectionalDVASearch : Navigation
 
 	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
     
+
+	public override void Start(){
+		base.Start();
+		StartMission();
+	}
+
 	//Called on instantiation, thus replacing the parent's class default values
 	private void Reset() {
 		waypointValidationDistance = 0.5f;//in m
