@@ -31,6 +31,10 @@ public class FixedWingDroneSimProperties : DroneSimProperties
         15f
     };
 
+    private float[] thrusterPowerDrain = {// W/kg
+        300f,
+    };
+
     public FixedWingDroneSimProperties()
     {
     }
@@ -43,4 +47,5 @@ public class FixedWingDroneSimProperties : DroneSimProperties
     public override Vector3[] ThrusterOffset { get => thrusterOffset; set => thrusterOffset = value; }
     public override Vector3[] ThrusterThrustVectors { get => thrusterThrustVectors; set => thrusterThrustVectors = value; }
     public override float[] ThrusterThrustValues { get => thrusterThrustValues; set => thrusterThrustValues = value; }
+    public override float[] ThrusterPowerDrain { get => thrusterPowerDrain;}
 }
