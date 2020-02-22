@@ -18,6 +18,7 @@ public abstract class DroneSimProperties : MonoBehaviour
 	public abstract Vector3[] ThrusterOffset { get; set; }
 	public abstract Vector3[] ThrusterThrustVectors { get; set; }
 	public abstract float[] ThrusterThrustValues { get; set; }
+	public abstract float[] ThrusterPowerDrain { get;}
 
     public DroneSimProperties()
     {

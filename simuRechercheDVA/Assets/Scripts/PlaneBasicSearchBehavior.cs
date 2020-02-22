@@ -6,7 +6,11 @@ using UnityEngine.UI;
 
 public class PlaneBasicSearchBehavior : Navigation
 {
-	
+	public override void Start(){
+		base.Start();
+		StartMission();
+	}
+
 	protected MaxHeap allDataPoint = new MaxHeap(1000);
 
 

@@ -31,6 +31,15 @@ public class QuadcopterSimProperties : DroneSimProperties
         0f
     };
 
+    //TODO find the real value (we approximate grossly the power drain to be linear with thrust)
+    private float[] thrusterPowerDrain = {// W/kg
+        230f,
+        230f,
+        230f,
+        230f
+    };
+    //360N max / motor
+
 
     public override void Start(){
         Rigidbody rb = GetComponent<Rigidbody>();
@@ -52,4 +61,5 @@ public class QuadcopterSimProperties : DroneSimProperties
     public override Vector3[] ThrusterOffset { get => thrusterOffset; set => thrusterOffset = value; }
     public override Vector3[] ThrusterThrustVectors { get => thrusterThrustVectors; set => thrusterThrustVectors = value; }
     public override float[] ThrusterThrustValues { get => thrusterThrustValues; set => thrusterThrustValues = value; }
+    public override float[] ThrusterPowerDrain { get => thrusterPowerDrain;}
 }
