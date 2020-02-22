@@ -65,22 +65,18 @@ public class FixedWingDroneControl : DroneControl
 			if(isCircling){
 				if(hasTarget){
 					CircleAround(10);
-				}
-				else{
+				}else{
 					CircleAround(0);
 				}
-			}
-			else if(isFollowingDirectly){
+			}else if(isFollowingDirectly){
 				GoToWaypoint();
 			} 
 			
-		}
-		else{
+		}else{
 			sim.SetRollTorque(0);
 			float pitchCommand = pitchPid.Update(-30,sensor.GetPitch(),Time.deltaTime);
 			sim.SetPitchTorque(-pitchCommand);
 		}
-		
 		if(sensor.IsStalling()){
 			modeDisplayText = ("mode : STALLING");
 		}
@@ -128,8 +124,7 @@ public class FixedWingDroneControl : DroneControl
 		float overallClimbAngle = Mathf.Atan2(elevationDifference,horizontalDistance);
 		if(overallClimbAngle > maximumClimbAngle){
 			isCircling = true;
-		}
-		else{
+		}else{
 			isFollowingDirectly = true;
 		}
 	}
@@ -190,41 +185,34 @@ public class FixedWingDroneControl : DroneControl
 	protected override void HandleKeyboardInput(){
 		if (Input.GetKey(KeyCode.LeftShift)){
 			sim.SetMainThrust(sim.GetMainThrust()+0.1f);
-        }
-		else if (Input.GetKey(KeyCode.LeftControl)){
+        }else if (Input.GetKey(KeyCode.LeftControl)){
 			sim.SetMainThrust(sim.GetMainThrust()-0.1f);
         }
 		
 		//pitch
         if (Input.GetKey(KeyCode.Z)){
             sim.SetPitchTorque(15);
-        }
-		else if (Input.GetKey(KeyCode.S)){
+        }else if (Input.GetKey(KeyCode.S)){
             sim.SetPitchTorque(-22);
-        }
-		else{
+        }else{
 			sim.SetPitchTorque(0);
 		}
 		
 		//roll
 		if (Input.GetKey(KeyCode.Q)){
             sim.SetRollTorque(15);
-        }
-		else if (Input.GetKey(KeyCode.D)){
+        }else if (Input.GetKey(KeyCode.D)){
             sim.SetRollTorque(-15);
-        }
-		else{
+        }else{
 			sim.SetRollTorque(0);
 		}
 		
 		//yaw
 		if (Input.GetKey(KeyCode.A)){
             sim.SetYawTorque(15);
-        }
-		else if (Input.GetKey(KeyCode.E)) {
+        }else if (Input.GetKey(KeyCode.E)) {
             sim.SetYawTorque(-15);
-        }
-		else{
+        }else{
 			sim.SetYawTorque(0);
 		}
 	}
