@@ -137,7 +137,7 @@ public class DirectionalDVASearch : Navigation
 			default:
 				break;
 		}
+
 		Debug.Log("Next state : "+state);
-		
 	}
 }
