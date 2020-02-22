@@ -80,6 +80,10 @@ public class Sensor : MonoBehaviour
 	public float GetSpeed(){
 		return transform.InverseTransformDirection(rb.velocity).z;
 	}
+
+	public float GetVerticalSpeed(){
+		return transform.InverseTransformDirection(rb.velocity).y;
+	}
 	
 	public float GetAltitude(){//in m
 		return 100f; //TODO
