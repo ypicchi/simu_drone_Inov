@@ -42,3 +42,7 @@ simuRechercheDVA/ProjectSettings/ProjectSettings.asset
 simuRechercheDVA/Assets/sensorOutput.wsv.meta
 simuRechercheDVA/Assets/null
 simuRechercheDVA/Assets/null.meta
+
+# Temporary files pour PID tunning
+simuRechercheDVA/pid_tunning_v2.txt
+simuRechercheDVA/pid_tunning.txt
