@@ -2,18 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
+using System.IO;
 public class QuadcopterControl : DroneControl
 {
 
     protected DroneFlightSim sim;
 
 	protected float[] thrust;
-	private float thrustEquilibrium = 211f;
+	private float thrustEquilibrium = 211.1668f;
 	private float thrustMax;
 	private float thrustMin;
 	private float heightThreshold;
 
-	public PID speedPid = new PID(3f, 0.05f, 0.01f);
+	public PID speedPid = new PID(10000f, 10000f, 10000f);
+	//public PID speedPid = new PID(3f, 0.05f, 0.01f);
+
+	public PID verticalSpeedPid;
+
+	public StreamWriter file;
+	public Boolean isFileOpen = false;
 
 	protected int numberOfThruster;
 	protected bool needToRunManual = false;
@@ -64,12 +72,19 @@ public class QuadcopterControl : DroneControl
 	private float GetThrurstVertical(float heightDifference){
 		
 		
-		float thrustVertical = 0f;
-		float targetSpeed = 0f;
-
+		float targetSpeed = 6.9999f;
 		
 		float thrustCommand = speedPid.Update(targetSpeed, sensor.GetVerticalSpeed(), Time.deltaTime);
-		Debug.Log("Speed : " + sensor.GetVerticalSpeed() );
+
+
+		Debug.Log(Time.fixedTime);
+
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetSpeed + ";" + sensor.GetVerticalSpeed() + ";" + thrustCommand + ";" + sensor.GetPosition().y);
+		}
+		
+
+		//Debug.Log( Time.fixedTime + ":" + sensor.GetVerticalSpeed() + " -> " + thrustCommand + " , " + verticalThrustCommand);
 
 		#region old vertical thrust
 		/*
@@ -108,7 +123,7 @@ public class QuadcopterControl : DroneControl
 		#endregion
 
 
-		return thrustVertical;
+		return thrustCommand;
 	}
 
 	private void GoToWaypoint(){
@@ -128,6 +143,19 @@ public class QuadcopterControl : DroneControl
 	}
 
     protected override void HandleKeyboardInput(){
+
+		//Open file
+		if (Input.GetKey(KeyCode.O)){
+			file = new StreamWriter("pid_tunning.txt");
+			isFileOpen = true;
+		}
+
+		//Close file
+		if (Input.GetKey(KeyCode.C)){
+			isFileOpen = false;
+			file.Close();
+		}
+
 		if (Input.GetKey(KeyCode.LeftShift)){
 			for(int i = 0; i < numberOfThruster; i++){
 				thrust[i] += 0.05f;
