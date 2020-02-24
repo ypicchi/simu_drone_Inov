@@ -2,17 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
+using System.IO;
 public class QuadcopterControl : DroneControl
 {
 
     protected DroneFlightSim sim;
 
 	protected float[] thrust;
-	private float thrustEquilibrium = 2.035f;
-	private float thrustMax = 10.0f;
-	private float thrustMaxNegative;
-	private float heightThreshold = 2.0f;
+	private float thrustEquilibrium = 211.1668f;
+	private float thrustMax;
+	private float thrustMin;
+	private float heightThreshold;
 
+	public PID speedPid = new PID(10000f, 10000f, 10000f);
+	//public PID speedPid = new PID(3f, 0.05f, 0.01f);
+
+	public PID verticalSpeedPid;
+
+	public StreamWriter file;
+	public Boolean isFileOpen = false;
 
 	protected int numberOfThruster;
 	protected bool needToRunManual = false;
@@ -20,7 +29,7 @@ public class QuadcopterControl : DroneControl
     // Start is called before the first frame update
 	public override void Start()
 	{
-		initVariables();
+		InitVariables();
 
 		base.Start();
 		sim = GetComponent<DroneFlightSim>();
@@ -36,14 +45,22 @@ public class QuadcopterControl : DroneControl
 
 	}
 
-    private void initVariables(){
-		thrustMaxNegative = -thrustMax;
+	// Variables depending of other variables
+    private void InitVariables(){
+
+		// Maximum thrust could be more powerful tho
+		thrustMax = thrustEquilibrium * 2;
+
+		// Thrusting in the opposite direction to go down is too extreme
+		// Using no thrust is good enough
+		thrustMin = 0;
+
+		// Weird (force => height) conversion
+		heightThreshold = thrustEquilibrium * 1;
+
 	}
 
     public override void ControlLoop(){
-
-		// Si la cible existe, on peut calculer un itinéraire
-		//Vector3 target3DHeading = target.transform.position - sensor.GetPosition();
 
 		if(hasTarget){
 			GoToWaypoint();
@@ -55,22 +72,33 @@ public class QuadcopterControl : DroneControl
 	private float GetThrurstVertical(float heightDifference){
 		
 		
-		float thrustVertical = 0f;
-		float thrustRatio;
+		float targetSpeed = 6.9999f;
+		
+		float thrustCommand = speedPid.Update(targetSpeed, sensor.GetVerticalSpeed(), Time.deltaTime);
 
 
+		Debug.Log(Time.fixedTime);
+
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetSpeed + ";" + sensor.GetVerticalSpeed() + ";" + thrustCommand + ";" + sensor.GetPosition().y);
+		}
+		
+
+		//Debug.Log( Time.fixedTime + ":" + sensor.GetVerticalSpeed() + " -> " + thrustCommand + " , " + verticalThrustCommand);
+
+		#region old vertical thrust
+		/*
 		// Need to go UP, the drone is below the waypoint
 		if(heightDifference > 0){
 			
 			// Need to go UP slowly, the drone is just below the waypoint
 			if(heightDifference < heightThreshold){
-				thrustRatio = heightDifference  / heightThreshold;
-				thrustVertical = thrustEquilibrium + thrustRatio * (thrustMax - thrustEquilibrium);
-				Debug.Log("UP : " + heightDifference);	
+				thrustVertical = GetRawThrurstVertical(heightDifference);
+				Debug.Log("UP : " + heightDifference + "=>"+ thrustVertical);	
 			}
 			else{
 				thrustVertical = thrustMax;
-				Debug.Log("UP++ : " + heightDifference);
+				Debug.Log("UP++ : " + heightDifference + "=>" + thrustVertical );
 			}
 		}
 
@@ -79,21 +107,23 @@ public class QuadcopterControl : DroneControl
 			
 			// Need to go DOWN slowly, the drone is just below the waypoint
 			if(heightDifference > - heightThreshold){
-				thrustRatio = heightDifference  / heightThreshold;
-				thrustVertical = thrustEquilibrium - thrustRatio * (thrustMaxNegative - thrustEquilibrium);
-				Debug.Log("DOWN : " + heightDifference);	
+				thrustVertical = thrustMin + ( thrustMax - GetRawThrurstVertical(heightDifference) );
+				Debug.Log("DOWN : " + heightDifference + "=>" + thrustVertical );	
 			}
 			else{
-				thrustVertical = thrustMaxNegative;
-				Debug.Log("DOWN-- : " + heightDifference);	
+				thrustVertical = thrustMin;
+				Debug.Log("DOWN-- : " + heightDifference + "=>" + thrustVertical );
 			}
 		}
 
 		else{//Non reachable code
 			Debug.Log("??? : " + heightDifference);	
 		}
+		*/
+		#endregion
 
-		return thrustVertical;
+
+		return thrustCommand;
 	}
 
 	private void GoToWaypoint(){
@@ -103,38 +133,52 @@ public class QuadcopterControl : DroneControl
 		
 		// Height calculation
 		float heightDifference = target.transform.position.y - sensor.GetPosition().y;
-
-		for(int i=0; i<numberOfThruster; i++){
-			thrust[i] = GetThrurstVertical(heightDifference);//GetVerticalThrurst(targetHeightDifference, thrust[i]);
+		float thrustVertical = GetThrurstVertical(heightDifference);
+		
+		for(int i = 0; i < numberOfThruster; i++){
+			thrust[i] = thrustVertical; 
 			sim.SetThrusterThrust(i, thrust[i]);
 		}
-
 		
 	}
 
     protected override void HandleKeyboardInput(){
+
+		//Open file
+		if (Input.GetKey(KeyCode.O)){
+			file = new StreamWriter("pid_tunning.txt");
+			isFileOpen = true;
+		}
+
+		//Close file
+		if (Input.GetKey(KeyCode.C)){
+			isFileOpen = false;
+			file.Close();
+		}
+
 		if (Input.GetKey(KeyCode.LeftShift)){
-			for(int i=0;i<numberOfThruster;i++){
+			for(int i = 0; i < numberOfThruster; i++){
 				thrust[i] += 0.05f;
-				sim.SetThrusterThrust(i,thrust[i]);
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else if (Input.GetKey(KeyCode.LeftControl)){
-			for(int i=0;i<numberOfThruster;i++){
+        }
+		else if (Input.GetKey(KeyCode.LeftControl)){
+			for(int i = 0; i<numberOfThruster; i++){
 				thrust[i] -= 0.05f;
-				sim.SetThrusterThrust(i,thrust[i]);
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
         }
 
 		float averageThrust = 0;
-		for(int i=0;i<numberOfThruster;i++){
+		for(int i = 0; i < numberOfThruster;i++){
 			averageThrust += thrust[i];
 		}
 		averageThrust /= numberOfThruster;
 
 
-		for(int i=0;i<numberOfThruster;i++){
+		for(int i = 0; i < numberOfThruster; i++){
 			thrust[i] = averageThrust;
-			sim.SetThrusterThrust(i,thrust[i]);
+			sim.SetThrusterThrust(i, thrust[i]);
 		}
 
 
@@ -146,50 +190,56 @@ public class QuadcopterControl : DroneControl
 			thrust[1] -= turnPower;
 			thrust[2] += turnPower;
 			thrust[3] += turnPower;
-			for(int i=0;i<numberOfThruster;i++){
-				sim.SetThrusterThrust(i,thrust[i]);
+			for(int i = 0; i < numberOfThruster; i++){
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else if (Input.GetKey(KeyCode.S)){//------------------ S
+        }
+		else if (Input.GetKey(KeyCode.S)){//------------------ S
             thrust[0] += turnPower;
 			thrust[1] += turnPower;
 			thrust[2] -= turnPower;
 			thrust[3] -= turnPower;
-			for(int i=0;i<numberOfThruster;i++){
-				sim.SetThrusterThrust(i,thrust[i]);
+			for(int i = 0; i < numberOfThruster; i++){
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else if (Input.GetKey(KeyCode.Q)){//------------------ Q
+        }
+		else if (Input.GetKey(KeyCode.Q)){//------------------ Q
 			thrust[0] -= turnPower;
 			thrust[1] += turnPower;
 			thrust[2] += turnPower;
 			thrust[3] -= turnPower;
-			for(int i=0;i<numberOfThruster;i++){
-				sim.SetThrusterThrust(i,thrust[i]);
+			for(int i = 0; i < numberOfThruster; i++){
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else if (Input.GetKey(KeyCode.D)){//------------------ D
+        }
+		else if (Input.GetKey(KeyCode.D)){//------------------ D
             thrust[0] += turnPower;
 			thrust[1] -= turnPower;
 			thrust[2] -= turnPower;
 			thrust[3] += turnPower;
-			for(int i=0;i<numberOfThruster;i++){
-				sim.SetThrusterThrust(i,thrust[i]);
+			for(int i = 0; i < numberOfThruster; i++){
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else if (Input.GetKey(KeyCode.A)){//------------------ A
+        }
+		else if (Input.GetKey(KeyCode.A)){//------------------ A
             thrust[0] -= turnPower;
 			thrust[1] += turnPower;
 			thrust[2] -= turnPower;
 			thrust[3] += turnPower;
-			for(int i=0;i<numberOfThruster;i++){
-				sim.SetThrusterThrust(i,thrust[i]);
+			for(int i = 0; i < numberOfThruster; i++){
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else if (Input.GetKey(KeyCode.E)){//------------------ E
+        }
+		else if (Input.GetKey(KeyCode.E)){//------------------ E
             thrust[0] += turnPower;
 			thrust[1] -= turnPower;
 			thrust[2] += turnPower;
 			thrust[3] -= turnPower;
-			for(int i=0;i<numberOfThruster;i++){
-				sim.SetThrusterThrust(i,thrust[i]);
+			for(int i = 0; i < numberOfThruster; i++){
+				sim.SetThrusterThrust(i, thrust[i]);
 			}
-        }else{
+        }
+		else{
 			needToRunManual = false;
 		}
 	}

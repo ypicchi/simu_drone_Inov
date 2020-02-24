@@ -116,18 +116,21 @@ public class DirectionalDVASearch : Navigation
 				GenerateHeadingWaypoint(-120,120,30);
 				state = "findingHeading";
 				break;
+
 			case "findingHeading":
 				heading = FindHeadingFromCurrentSegment();
 				currentSegmentMeasure.Clear();
 				GenerateHeadingWaypoint(heading-20,heading+20,5);
 				state = "refiningHeading";
 				break;
+
 			case "refiningHeading":
 				heading = FindHeadingFromCurrentSegment();
 				currentSegmentMeasure.Clear();
 				StepForward(stepDistance);
 				state = "goodHeading";
 				break;
+
 			case "goodHeading":
 				StepForward(stepDistance);
 				if( ! IsSignalIncreasing()){
@@ -136,10 +139,11 @@ public class DirectionalDVASearch : Navigation
 					state = "badHeading";
 				}
 				break;
+				
 			default:
 				break;
 		}
+
 		Debug.Log("Next state : "+state);
-		
 	}
 }
