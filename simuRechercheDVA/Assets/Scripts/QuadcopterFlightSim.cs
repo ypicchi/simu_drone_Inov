@@ -13,6 +13,7 @@ public class QuadcopterFlightSim : DroneFlightSim
     {
         base.Update();
 
+        //animation
 		for (int i=0;i<simProperties.ThrusterOffset.Length;i++){
             float speed = simProperties.ThrusterThrustValues[i] * propellerAnimationSpeedMultiplier;
             float delta = Time.deltaTime * speed;
@@ -25,7 +26,9 @@ public class QuadcopterFlightSim : DroneFlightSim
             
             propeller.transform.localEulerAngles += new Vector3(0, delta, 0);
         }
+    }
 
+    public override void FixedUpdate(){
         float totalYawTorque = 0;
         for (int i=0;i<simProperties.ThrusterOffset.Length;i++){
             float currentBladeTorque = - simProperties.ThrusterThrustValues[i] * propellerYawTorqueMultiplier;
@@ -40,7 +43,8 @@ public class QuadcopterFlightSim : DroneFlightSim
             totalYawTorque += currentBladeTorque;
         }
         SetYawTorque(totalYawTorque);
-		
+
+        base.FixedUpdate();
     }
 
 

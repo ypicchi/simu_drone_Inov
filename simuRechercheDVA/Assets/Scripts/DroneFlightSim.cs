@@ -29,7 +29,7 @@ public abstract class DroneFlightSim : MonoBehaviour
 	
 
     // Start is called before the first frame update
-    protected void Start()
+    public virtual void Start()
     {
 		simProperties = GetComponent<DroneSimProperties>();
         rb = GetComponent<Rigidbody>();
