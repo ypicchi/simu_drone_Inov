@@ -15,10 +15,11 @@ public class QuadcopterControl : DroneControl
 	private float thrustMin;
 	private float heightThreshold;
 
-	public PID speedPid = new PID(10000f, 10000f, 10000f);
-	//public PID speedPid = new PID(3f, 0.05f, 0.01f);
+	// These values are tuned for stabilization
+	public PID speedPid = new PID(400f, 800f, 10f);
 
-	public PID verticalSpeedPid;
+	// TOOD
+	public PID altitudePid = new PID(3f, 0.05f, 0.01f);
 
 	public StreamWriter file;
 	public Boolean isFileOpen = false;
@@ -37,12 +38,6 @@ public class QuadcopterControl : DroneControl
 		thrust = simProperties.ThrusterThrustValues;
 		numberOfThruster = simProperties.ThrusterThrustValues.Length;
 
-		/* 
-		Debug.Log("Cible : " + target);
-		Debug.Log("Cible_position : " + target.transform.position);
-		Debug.Log("Cible_angle : " + target.transform.eulerAngles.y);
-		*/
-
 	}
 
 	// Variables depending of other variables
@@ -55,9 +50,6 @@ public class QuadcopterControl : DroneControl
 		// Using no thrust is good enough
 		thrustMin = 0;
 
-		// Weird (force => height) conversion
-		heightThreshold = thrustEquilibrium * 1;
-
 	}
 
     public override void ControlLoop(){
@@ -69,60 +61,36 @@ public class QuadcopterControl : DroneControl
 	}
 
 
-	private float GetThrurstVertical(float heightDifference){
+	private float GetThrustToReachWaypointAltitude(){
+
+		float targetAltitude = target.transform.position.y;
+		float actualAltitude = sensor.GetPosition().y;
+		float actualVerticalSpeed = sensor.GetVerticalSpeed();
+
+		float targetVerticalSpeed = altitudePid.Update(targetAltitude, actualAltitude, Time.deltaTime);
+		float thrustCommand = speedPid.Update(targetVerticalSpeed, actualVerticalSpeed, Time.deltaTime);
+
+		//Log
+		Debug.Log(Time.fixedTime);
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetAltitude + ";" + actualAltitude + ";" + targetVerticalSpeed + ";" + actualVerticalSpeed + ";" + thrustCommand);
+		}
+
+		return thrustCommand;
+	}
+
+
+	private float GetThrustToStabilizeAltitude(){
 		
-		
-		float targetSpeed = 6.9999f;
-		
+		float targetSpeed = 0f;
 		float thrustCommand = speedPid.Update(targetSpeed, sensor.GetVerticalSpeed(), Time.deltaTime);
 
-
+		//Log
 		Debug.Log(Time.fixedTime);
-
 		if(isFileOpen){
 			file.WriteLine(Time.fixedTime + ";" + targetSpeed + ";" + sensor.GetVerticalSpeed() + ";" + thrustCommand + ";" + sensor.GetPosition().y);
 		}
 		
-
-		//Debug.Log( Time.fixedTime + ":" + sensor.GetVerticalSpeed() + " -> " + thrustCommand + " , " + verticalThrustCommand);
-
-		#region old vertical thrust
-		/*
-		// Need to go UP, the drone is below the waypoint
-		if(heightDifference > 0){
-			
-			// Need to go UP slowly, the drone is just below the waypoint
-			if(heightDifference < heightThreshold){
-				thrustVertical = GetRawThrurstVertical(heightDifference);
-				Debug.Log("UP : " + heightDifference + "=>"+ thrustVertical);	
-			}
-			else{
-				thrustVertical = thrustMax;
-				Debug.Log("UP++ : " + heightDifference + "=>" + thrustVertical );
-			}
-		}
-
-		// Need to go DOWN, the drone is above the waypoint
-		else if(heightDifference < 0 ){
-			
-			// Need to go DOWN slowly, the drone is just below the waypoint
-			if(heightDifference > - heightThreshold){
-				thrustVertical = thrustMin + ( thrustMax - GetRawThrurstVertical(heightDifference) );
-				Debug.Log("DOWN : " + heightDifference + "=>" + thrustVertical );	
-			}
-			else{
-				thrustVertical = thrustMin;
-				Debug.Log("DOWN-- : " + heightDifference + "=>" + thrustVertical );
-			}
-		}
-
-		else{//Non reachable code
-			Debug.Log("??? : " + heightDifference);	
-		}
-		*/
-		#endregion
-
-
 		return thrustCommand;
 	}
 
@@ -132,8 +100,12 @@ public class QuadcopterControl : DroneControl
 		}
 		
 		// Height calculation
-		float heightDifference = target.transform.position.y - sensor.GetPosition().y;
-		float thrustVertical = GetThrurstVertical(heightDifference);
+		//float heightDifference = target.transform.position.y - sensor.GetPosition().y;
+
+		float thrustVertical;
+
+		//thrustVertical = GetThrustToReachWaypointAltitude();
+		thrustVertical = GetThrustToStabilizeAltitude();
 		
 		for(int i = 0; i < numberOfThruster; i++){
 			thrust[i] = thrustVertical; 
