@@ -16,24 +16,26 @@ def format_data():
 
 
 
-def display():
+def display(size):
     time = [] # s
     objective = [] # speed
     vertical_speed = [] # speed
     thrust = [] # force
     altitude = [] # distance
 
-    with open('pid_tunning_v2.txt','rt')as f:
+    with open('pid_tunning_v2.txt', 'rt') as f:
         data = csv.reader(f, delimiter=';')
         for row in data:
-            
-            time = time + [float(row[0])]
-            
-            objective = objective + [float(row[1])]
-            vertical_speed = vertical_speed + [float(row[2])]
-            thrust = thrust + [float(row[3])]
-            altitude = altitude + [float(row[4])]
 
+            if(size==len(row)):
+                
+                time = time + [float(row[0])]
+            
+                objective = objective + [float(row[1])]
+                vertical_speed = vertical_speed + [float(row[2])]
+                thrust = thrust + [float(row[3])]
+                altitude = altitude + [float(row[4])]
+            
     objective = np.array(objective)
     vertical_speed = np.array(vertical_speed)
 
@@ -64,6 +66,6 @@ def display():
 
 
 format_data()
-display()
+display(5)
 
 
