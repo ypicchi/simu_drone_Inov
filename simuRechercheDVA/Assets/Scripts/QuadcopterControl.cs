@@ -104,8 +104,8 @@ public class QuadcopterControl : DroneControl
 
 		float thrustVertical;
 
-		//thrustVertical = GetThrustToReachWaypointAltitude();
-		thrustVertical = GetThrustToStabilizeAltitude();
+		thrustVertical = GetThrustToReachWaypointAltitude();
+		//thrustVertical = GetThrustToStabilizeAltitude();
 		
 		for(int i = 0; i < numberOfThruster; i++){
 			thrust[i] = thrustVertical; 
