@@ -39,10 +39,10 @@ public class FixedWingDroneControl : DroneControl
 	
 	
 	public override void ControlLoop(){
-		float thrustCommand = speedPid.Update(targetSpeed,sensor.GetSpeed(),Time.deltaTime);
+		float thrustCommand = speedPid.Update(targetSpeed,sensor.GetForwardSpeed(),Time.deltaTime);
 		sim.SetMainThrust(thrustCommand);
 		
-		if(sensor.GetSpeed()>18){
+		if(sensor.GetForwardSpeed()>18){
 		
 			//CircleAround(10f);
 			Vector3 target3DHeading = target.transform.position-sensor.GetPosition();
