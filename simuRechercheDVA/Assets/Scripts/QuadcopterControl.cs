@@ -27,6 +27,11 @@ public class QuadcopterControl : DroneControl
 	public PID yawPid = new PID(0.2f, 0f, 0.3f);
 	private float yawThrustLimit = 10f;
 
+
+	public PID pitchPid = new PID(2f, 1f, 5f);
+
+	private float pitchThrustLimit = 100f;
+
 	public StreamWriter file;
 	private Boolean isFileOpen = false;
 
@@ -121,7 +126,7 @@ public class QuadcopterControl : DroneControl
 		float thrustDifference = 0f;
 
 		float targetAngle = target.transform.eulerAngles.y;
-		float actualAngle = sensor.GetYaw();
+		float actualAngle = sensor.GetUnityYaw();
 
 		float targetAngleDifference = 0f;
 		float actualAngleDifference = Mathf.DeltaAngle(actualAngle, targetAngle);
@@ -141,33 +146,64 @@ public class QuadcopterControl : DroneControl
 		return thrustDifference;
 	}
 
+	private float GetThrustDifferenceToPitch(){
+
+		float thrustDifference = 0f;
+
+		float targetPitch = -10f;
+		float actualPitch = sensor.GetPitch();
+
+		thrustDifference = pitchPid.Update(targetPitch, actualPitch, Time.deltaTime);
+
+		if( Math.Abs(thrustDifference) > pitchThrustLimit){
+			float sign  = Math.Abs(thrustDifference) / thrustDifference;
+			thrustDifference = pitchThrustLimit * sign;
+		}
+
+		Debug.Log(Time.fixedTime);
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetPitch + ";" + actualPitch + ";" + thrustDifference);
+		}
+
+		return thrustDifference;
+	}
+
 	private void GoToWaypoint(){
 		if(hasTarget==false){
 			return;
 		}
 		
 		// Height calculation
-		//float heightDifference = target.transform.position.y - sensor.GetPosition().y;
+		// float heightDifference = target.transform.position.y - sensor.GetPosition().y;
 
 		float mainThrust = thrustEquilibrium;
-		//float thrustDifference = 0f;
+		float thrustDifference =  GetThrustDifferenceToPitch();
 
-		//mainThrust = GetThrustToReachWaypointAltitude();
-		//mainThrust = GetThrustToStabilizeAltitude();
-		//thrustDifference = GetThrustDifferenceToYaw();
+		// mainThrust = GetThrustToReachWaypointAltitude();
+		// mainThrust = GetThrustToStabilizeAltitude();
+		// thrustDifference = GetThrustDifferenceToYaw();
 
 		/*
+		// YAW
 		sim.SetThrusterThrust(0, mainThrust - thrustDifference);
 		sim.SetThrusterThrust(1, mainThrust + thrustDifference);
 		sim.SetThrusterThrust(2, mainThrust - thrustDifference);
 		sim.SetThrusterThrust(3, mainThrust + thrustDifference);
 		*/
 
-				
+		// PITCH
+		sim.SetThrusterThrust(0, mainThrust + thrustDifference);
+		sim.SetThrusterThrust(1, mainThrust + thrustDifference);
+		sim.SetThrusterThrust(2, mainThrust - thrustDifference);
+		sim.SetThrusterThrust(3, mainThrust - thrustDifference);
+		
+
+		/*	
 		for(int i = 0; i < numberOfThruster; i++){
 			thrust[i] = mainThrust; 
 			sim.SetThrusterThrust(i, thrust[i]);
 		}
+		*/
 		
 		if(false){
 			Vector3[] tmp = bangbang.GetTarget(Time.time);
