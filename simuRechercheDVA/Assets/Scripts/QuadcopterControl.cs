@@ -15,11 +15,13 @@ public class QuadcopterControl : DroneControl
 	private float thrustMin;
 	private float heightThreshold;
 
-	// These values are tuned for stabilization
-	public PID speedPid = new PID(400f, 800f, 10f);
+	public PID altitudePid = new PID(3f, 0.03f, 0.05f);
+	//public PID altitudePid = new PID(3f, 0.05f, 0.01f);
 
-	// TOOD
-	public PID altitudePid = new PID(3f, 0.05f, 0.01f);
+
+	public PID speedPid = new PID(2f, 0.02f, 0f);
+	//public PID speedPid = new PID(400f, 800f, 10f);
+
 
 	public StreamWriter file;
 	public Boolean isFileOpen = false;
