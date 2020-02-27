@@ -136,7 +136,7 @@ public class Sensor : MonoBehaviour
 		return pitch;
 	}
 	
-	
+
 	public float GetPitchSpeed(){
 		return (GetPitch() - lastPitchValue) / Time.deltaTime;
 	}
@@ -164,13 +164,20 @@ public class Sensor : MonoBehaviour
 		return Mathf.Abs(angleOfAttack)>10f;
 	}
 	
-	public float GetYaw(){
+	//BAD
+	public float GetUnityPitch(){
+		return rb.rotation.eulerAngles.x;
+	}
+
+	//OK
+	public float GetUnityYaw(){
 		return rb.rotation.eulerAngles.y;
 	}
 	
-	
-	
-	
+	//BAD
+	public float GetUnityRoll(){
+		return rb.rotation.eulerAngles.z;
+	}
 	
 	
 	
