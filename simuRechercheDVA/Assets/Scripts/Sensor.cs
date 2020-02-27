@@ -164,7 +164,9 @@ public class Sensor : MonoBehaviour
 		return Mathf.Abs(angleOfAttack)>10f;
 	}
 	
-	
+	public float GetYaw(){
+		return rb.rotation.eulerAngles.y;
+	}
 	
 	
 	
