@@ -5,7 +5,7 @@ import numpy as np
 hover_mode = (5, "hover")
 altitude_mode = (6, "altitude")
 yaw_mode = (6, "yaw")
-
+pitch_mode = (4, "pitch")
 
 def format_data():
     fin = open("pid_tunning.txt", "rt")
@@ -45,6 +45,12 @@ def display(mode):
         actual_angle_difference = []
         thrust = []
         
+    elif(mode == pitch_mode):
+        target_pitch = []
+        actual_pitch = []
+        thrust = []
+
+
         
 
     with open('pid_tunning_v2.txt', 'rt') as f:
@@ -74,9 +80,12 @@ def display(mode):
                     actual_angle = actual_angle + [float(row[2])]
                     target_angle_difference = target_angle_difference + [float(row[3])]
                     actual_angle_difference = actual_angle_difference + [float(row[4])]
-  
                     thrust = thrust + [float(row[5])]
 
+                elif(mode == pitch_mode):
+                    target_pitch = target_pitch + [float(row[1])]
+                    actual_pitch = actual_pitch + [float(row[2])]
+                    thrust = thrust + [float(row[3])]
 
             
     #objective = np.array(objective)
@@ -98,7 +107,7 @@ def display(mode):
         fig.text(0.5, 0.03, 'Time', ha='center', va='center')
 
         ax1.legend( ('objective', 'actual'))
-        fig.show()
+      
 
 
 
@@ -119,7 +128,7 @@ def display(mode):
         ax1.legend( ('objective', 'actual'))
         ax2.legend( ('objective', 'actual'))
         
-        fig.show()
+       
 
 
 
@@ -140,12 +149,30 @@ def display(mode):
         ax1.legend( ('objective', 'actual'))
         ax2.legend( ('objective', 'actual'))
         
-        fig.show()
+        
+        
+    elif(mode == pitch_mode):
+
+        fig, (ax1, ax2) = plt.subplots(2)
+        fig.suptitle('PID tunning')
+        
+        ax1.plot(time, target_pitch, 'r', time, actual_pitch, 'b')
+        ax2.plot(time, thrust, 'g')
+  
+        fig.text(0.03, 0.66, 'Pitch', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.33, 'Thrust', ha='center', va='center', rotation='vertical')
+        
+        fig.text(0.5, 0.03, 'Time', ha='center', va='center')
+
+        ax1.legend( ('objective', 'actual'))
+
+    fig.show()
+
 
 
 
 format_data()
 
-display( yaw_mode )
+display( pitch_mode )
 
 
