@@ -5,21 +5,13 @@ using UnityEngine;
 public class BangBangVector3 : BangBang <Vector3>
 {
     
-    
-
-    //TODO make it so the accelerations are modular (get them through the constructor)
-    protected float maxAngularAcceleration = 1f;
-	protected float maxLinearAcceleration = 1f;//bound to maxThrust and maxTiltAngle, but we simplify with this
-	protected float maxLinearSpeed = 10f;
-	protected float maxThrust = 300f;
-
 	
     protected BangBangFloat[] linearBangbang = new BangBangFloat[3];
 
-    public BangBangVector3(){
-        linearBangbang[0] = new BangBangFloat(maxLinearSpeed,maxLinearAcceleration);
-		linearBangbang[1] = new BangBangFloat(maxLinearSpeed,maxLinearAcceleration);
-		linearBangbang[2] = new BangBangFloat(maxLinearSpeed,maxLinearAcceleration);
+    public BangBangVector3(Vector3 maxSpeed, Vector3 maxAcceleration){
+		for(int i=0;i<3;i++){
+			linearBangbang[i] = new BangBangFloat(maxSpeed[i],maxAcceleration[i]);
+		}
     }
 
 	public override Vector3[] GetTarget(float currentTime){

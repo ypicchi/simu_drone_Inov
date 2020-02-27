@@ -60,7 +60,7 @@ public class Sensor : MonoBehaviour
 		pitchDisplayText = "pitch : "+currentPitch.ToString();
 		climbAngleDisplayText = "climb angle : "+GetAttitudeClimbAngle().ToString();
 		realClimbAngleDisplayText = "real climb angle : "+GetRealClimbAngle().ToString();
-		forwardSpeedDisplayText = "forward speed : "+GetSpeed().ToString();
+		forwardSpeedDisplayText = "forward speed : "+GetForwardSpeed().ToString();
 		
         hasComputedThisFrame = false;
 		
@@ -77,8 +77,16 @@ public class Sensor : MonoBehaviour
 		return lastComputedPowerValue;
 	}
 	
-	public float GetSpeed(){
+	public float GetForwardSpeed(){
 		return transform.InverseTransformDirection(rb.velocity).z;
+	}
+
+	public float GetSpeedAsFloat(){
+		return rb.velocity.magnitude;
+	}
+
+	public Vector3 GetSpeed(){
+		return transform.InverseTransformDirection(rb.velocity);
 	}
 
 	public float GetVerticalSpeed(){
