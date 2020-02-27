@@ -4,6 +4,7 @@ import numpy as np
 
 hover_mode = (5, "hover")
 altitude_mode = (6, "altitude")
+yaw_mode = (6, "yaw")
 
 
 def format_data():
@@ -36,14 +37,22 @@ def display(mode):
         target_speed = []
         actual_speed = []
         thrust = []
+
+    elif(mode == yaw_mode):
+        target_angle = []
+        actual_angle = []
+        target_angle_difference = []
+        actual_angle_difference = []
+        thrust = []
         
         
 
     with open('pid_tunning_v2.txt', 'rt') as f:
         data = csv.reader(f, delimiter=';')
+        
         for row in data:
 
-            if(size==len(row)):
+            if(size==len(row) and len(row[len(row)-1]) > 0):
                 
                 time = time + [float(row[0])]
 
@@ -60,7 +69,13 @@ def display(mode):
                     actual_speed = actual_speed + [float(row[4])]
                     thrust = thrust + [float(row[5])]
 
-
+                elif(mode == yaw_mode):
+                    target_angle = target_angle + [float(row[1])]
+                    actual_angle = actual_angle + [float(row[2])]
+                    target_angle_difference = target_angle_difference + [float(row[3])]
+                    actual_angle_difference = actual_angle_difference + [float(row[4])]
+  
+                    thrust = thrust + [float(row[5])]
 
 
             
@@ -108,10 +123,29 @@ def display(mode):
 
 
 
+    elif(mode == yaw_mode):
+        fig, (ax1, ax2, ax3 ) = plt.subplots(3)
+        fig.suptitle('PID tunning')
+        
+        ax1.plot(time, target_angle, 'r', time, actual_angle, 'b')
+        ax2.plot(time, target_angle_difference, 'm', time, actual_angle_difference, 'k')
+        ax3.plot(time, thrust, 'g--')
+
+        fig.text(0.03, 0.75, 'Angle', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.5, 'Angle difference', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.25, 'Thrust', ha='center', va='center', rotation='vertical')
+        
+        fig.text(0.5, 0.03, 'Time', ha='center', va='center')
+
+        ax1.legend( ('objective', 'actual'))
+        ax2.legend( ('objective', 'actual'))
+        
+        fig.show()
+
 
 
 format_data()
 
-display( altitude_mode )
+display( yaw_mode )
 
 
