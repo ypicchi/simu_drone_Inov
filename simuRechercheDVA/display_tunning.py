@@ -4,6 +4,8 @@ import numpy as np
 
 hover_mode = (5, "hover")
 altitude_mode = (6, "altitude")
+bangbang_mode = (6
+                 , "bangbang")
 
 
 def format_data():
@@ -36,6 +38,13 @@ def display(mode):
         target_speed = []
         actual_speed = []
         thrust = []
+
+    elif(mode == bangbang_mode):
+        target_position = []
+        actual_position = []
+        target_speed = []
+        actual_speed = []
+        thrust = []
         
         
 
@@ -59,6 +68,14 @@ def display(mode):
                     target_speed = target_speed + [float(row[3])]
                     actual_speed = actual_speed + [float(row[4])]
                     thrust = thrust + [float(row[5])]
+
+                elif(mode == bangbang_mode):
+                    target_position = target_position + [float(row[1])]
+                    actual_position = actual_position + [float(row[2])]
+                    target_speed = target_speed + [float(row[3])]
+                    actual_speed = actual_speed + [float(row[4])]
+                    thrust = thrust + [float(row[5])]
+
 
 
 
@@ -107,11 +124,31 @@ def display(mode):
         fig.show()
 
 
+    elif(mode == bangbang_mode):
+        fig, (ax1, ax2, ax3) = plt.subplots(3)
+        fig.suptitle('PID tunning')
+        
+        ax1.plot(time, target_position, 'r', time, actual_position, 'b')
+        ax2.plot(time, target_speed, 'm', time, actual_speed, 'k')
+        ax3.plot(time, thrust, 'g--')
+        
+        fig.text(0.03, 0.75, 'Position', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.5, 'Speed', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.25, 'Thrust', ha='center', va='center', rotation='vertical')
+        
+        fig.text(0.5, 0.03, 'Time', ha='center', va='center')
+
+        ax1.legend( ('objective', 'actual'))
+        ax2.legend( ('objective', 'actual'))
+        
+        fig.show()
+
+
 
 
 
 format_data()
 
-display( altitude_mode )
+display( bangbang_mode )
 
 

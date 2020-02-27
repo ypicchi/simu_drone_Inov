@@ -51,7 +51,7 @@ public abstract class DroneControl : MonoBehaviour
 	
 	public abstract void ControlLoop();
 	
-	public void SetWaypoint(GameObject waypointIndicator){
+	public virtual void SetWaypoint(GameObject waypointIndicator){
 		target = waypointIndicator;
 		hasTarget = true;
 	}

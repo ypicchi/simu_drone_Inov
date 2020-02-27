@@ -13,7 +13,22 @@ public class BangBangFloat: BangBang<float>
         this.maxAcceleration = maxAcceleration;
     }
 
-    
+    public override float TimeRemaining(float currentTime){
+        float dist = Mathf.Abs(targetPos-startPos);
+        float maxSpeedlocalTime = maxSpeed/maxAcceleration;
+        float distanceToMaxSpeed = maxAcceleration/2 * maxSpeedlocalTime*maxSpeedlocalTime;
+
+
+        if(distanceToMaxSpeed > dist/2){
+            //we never reach max speed
+
+            float midCourseLocalTime = Mathf.Sqrt(dist/maxAcceleration);
+            return Mathf.Max(2*midCourseLocalTime-currentTime,0);
+        }else{
+            float timeAtMaxSpeed = (dist - 2*distanceToMaxSpeed)/maxSpeed;
+            return Mathf.Max(2*maxSpeedlocalTime + timeAtMaxSpeed - currentTime,0);
+        }
+    }
     
     public override float[] GetTarget(float currentTime)
     {
@@ -54,7 +69,7 @@ public class BangBangFloat: BangBang<float>
                 //idling
                 isMoving = false;
                 speed = 0;
-                pos = dist;
+                pos = targetPos;
                 return new float[2]{pos,speed};
 			}
         }else{
@@ -85,7 +100,7 @@ public class BangBangFloat: BangBang<float>
                 //idling
                 isMoving = false;
                 speed = 0;
-                pos = dist;
+                pos = targetPos;
                 return new float[2]{pos,speed};
 			}
         }    
