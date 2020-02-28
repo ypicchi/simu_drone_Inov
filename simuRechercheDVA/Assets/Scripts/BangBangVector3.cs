@@ -9,6 +9,7 @@ public class BangBangVector3 : BangBang <Vector3>
     protected BangBangFloat[] linearBangbang = new BangBangFloat[3];
 	protected Vector3 maxSpeed;
 	protected Vector3 maxAcceleration;
+	protected Vector3 speedFactor;
 
     public BangBangVector3(Vector3 maxSpeed, Vector3 maxAcceleration){
 		this.maxSpeed = maxSpeed;
@@ -28,25 +29,20 @@ public class BangBangVector3 : BangBang <Vector3>
 
 
 
-		//Here we scale the max speed and acceleration of each componant so 
-		//they all take the same time to complete
-		/*
-		for (int i=0;i<3;i++){
-			linearBangbang[i] = new BangBangFloat(maxSpeed[i],maxAcceleration[i]);
-		}
+		//TODO make it so all three components take the same time to complete
+		//(it reduce the accelerations and make the ride smoother)
+
+		
 		for (int i=0;i<3;i++){
 			linearBangbang[i].StartMovement(startPos[i],targetPos[i],currentTime);
 		}
 
-		float slowestTime = TimeRemaining(currentTime);
-		for(int i=0;i<3;i++){
-			float componantRemainingTime = linearBangbang[i].TimeRemaining(currentTime);
-			linearBangbang[i] = new BangBangFloat(maxSpeed[i] * componantRemainingTime / slowestTime,maxAcceleration[i] * componantRemainingTime / slowestTime);
-		}
-		*/
+		float longestTime = TimeRemaining(currentTime);
 		for (int i=0;i<3;i++){
-			linearBangbang[i].StartMovement(startPos[i],targetPos[i],currentTime);
+			float currentRemainingTime = linearBangbang[i].TimeRemaining(currentTime);
+			speedFactor[i] = currentRemainingTime/longestTime;
 		}
+		
 		
 	}
 
@@ -70,9 +66,10 @@ public class BangBangVector3 : BangBang <Vector3>
 
 		//combine the various bangbangs into a vector bangbang
 		for(int i=0;i<3;i++){
-			float[] command = linearBangbang[i].GetTarget(Time.time);
+			float[] command = linearBangbang[i].GetTarget(movementStartTime 
+				+ (currentTime-movementStartTime) * speedFactor[i]);
 			expectedPos[i] = command[0];
-			expectedSpeed[i] = command[1];
+			expectedSpeed[i] = command[1] * speedFactor[i];
 		}
 		output[0] = expectedPos;
 		output[1] = expectedSpeed;

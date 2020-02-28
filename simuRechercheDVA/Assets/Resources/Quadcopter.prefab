@@ -4516,6 +4516,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modeDisplayText: 
   manualOverride: 0
+  altitudePid:
+    pFactor: 3
+    iFactor: 0.03
+    dFactor: 0.05
+  speedPid:
+    pFactor: 400
+    iFactor: 800
+    dFactor: 10
+  isFileOpen: 0
+  xPosPid:
+    pFactor: 0.6
+    iFactor: 0.3
+    dFactor: 0
+  yPosPid:
+    pFactor: 1
+    iFactor: 0
+    dFactor: 0
+  zPosPid:
+    pFactor: 0.6
+    iFactor: 0.3
+    dFactor: 0
+  xSpeedPid:
+    pFactor: 2
+    iFactor: 0
+    dFactor: 0
+  ySpeedPid:
+    pFactor: 2
+    iFactor: 0
+    dFactor: 0
+  zSpeedPid:
+    pFactor: 2
+    iFactor: 0
+    dFactor: 0
 --- !u!114 &4614144869298956488
 MonoBehaviour:
   m_ObjectHideFlags: 0

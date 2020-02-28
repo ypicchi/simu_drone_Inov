@@ -146,25 +146,21 @@ public class QuadcopterControl : DroneControl
 			Vector3 expectedPosition = tmp[0];
 			Vector3 expectedSpeed = tmp[1];
 			Vector3 currentPosition = sensor.GetPosition();
-			Vector3 currentSpeed = sensor.GetSpeed();
+			Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
 
-			//Position is in the world reference
+			//Everything is in the world's reference
+			
 			Vector3 speedCorrection = Vector3.zero;
 			speedCorrection[0] = xPosPid.Update(expectedPosition[0], currentPosition[0], Time.deltaTime);
 			speedCorrection[1] = yPosPid.Update(expectedPosition[1], currentPosition[1], Time.deltaTime);
 			speedCorrection[2] = zPosPid.Update(expectedPosition[2], currentPosition[2], Time.deltaTime);
 			
-			//Speed is in the drone's reference
-			speedCorrection = transform.InverseTransformDirection(speedCorrection);
-			//speedCorrection = Vector3.zero;
+			
 			Vector3 accelerationCommand = Vector3.zero;
 			accelerationCommand[0] = xSpeedPid.Update(expectedSpeed[0]+speedCorrection[0], currentSpeed[0], Time.deltaTime);
 			accelerationCommand[1] = ySpeedPid.Update(expectedSpeed[1]+speedCorrection[1], currentSpeed[1], Time.deltaTime);
 			accelerationCommand[2] = zSpeedPid.Update(expectedSpeed[2]+speedCorrection[2], currentSpeed[2], Time.deltaTime);
 			
-			//go back to the global referential
-			accelerationCommand = transform.TransformDirection(accelerationCommand);
-
 			//Add the gravity in the acceleration/force required
 			Vector3 counterGravityAcceleration = - Physics.gravity;
 			accelerationCommand += counterGravityAcceleration;
@@ -205,7 +201,10 @@ public class QuadcopterControl : DroneControl
 
 
 			if(isFileOpen){
-				file.WriteLine(Time.fixedTime + ";" + expectedPosition[2] + ";" + currentPosition[2] + ";" + (expectedSpeed[2]+speedCorrection[2]) + ";" + currentSpeed[2] + ";" + totalThrust);
+				int axis = 2;
+				file.WriteLine(Time.fixedTime + ";" + expectedPosition[axis] 
+					+ ";" + currentPosition[axis] + ";" + (expectedSpeed[axis]+speedCorrection[axis])
+					+ ";" + currentSpeed[axis] + ";" + totalThrust);
 			}
 			
 		}
