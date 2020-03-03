@@ -29,18 +29,19 @@ public class BangBangVector3 : BangBang <Vector3>
 
 
 
-		//TODO make it so all three components take the same time to complete
-		//(it reduce the accelerations and make the ride smoother)
-
 		
 		for (int i=0;i<3;i++){
 			linearBangbang[i].StartMovement(startPos[i],targetPos[i],currentTime);
 		}
 
 		float longestTime = TimeRemaining(currentTime);
-		for (int i=0;i<3;i++){
-			float currentRemainingTime = linearBangbang[i].TimeRemaining(currentTime);
-			speedFactor[i] = currentRemainingTime/longestTime;
+		if(longestTime == 0){
+			speedFactor = Vector3.one;
+		}else{
+			for (int i=0;i<3;i++){
+				float currentRemainingTime = linearBangbang[i].TimeRemaining(currentTime);
+				speedFactor[i] = currentRemainingTime/longestTime;
+			}
 		}
 		
 		
