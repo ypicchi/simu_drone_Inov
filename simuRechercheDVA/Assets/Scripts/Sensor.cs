@@ -15,6 +15,7 @@ public class Sensor : MonoBehaviour
 	public string realClimbAngleDisplayText;
 	public string forwardSpeedDisplayText;
 
+	protected float ultrasonicRange = 3f;//used to detect the ground distance
 	
 	protected const int numberOfSources = 1;
 	protected Vector3[] emissionSources = new Vector3[numberOfSources];
@@ -93,8 +94,25 @@ public class Sensor : MonoBehaviour
 		return transform.InverseTransformDirection(rb.velocity).y;
 	}
 	
-	public float GetAltitude(){//in m
-		return 100f; //TODO
+	public float GetAltitude(){
+		return rb.position.y;
+	}
+
+	public float GetTheoricalRangefinderRange(){
+		return ultrasonicRange;
+	}
+	
+	public float GetDistanceToGround(){//simulate an ultrasonic rangefinder so it have a limited range
+		RaycastHit hit;
+        Ray downRay = new Ray(transform.position, -transform.up);
+
+		float distance = float.PositiveInfinity;
+
+        if (Physics.Raycast(downRay, out hit)){
+			if(hit.distance<ultrasonicRange)
+			distance = hit.distance;
+		}
+		return distance;
 	}
 	
 	public Vector3 GetPosition(){
