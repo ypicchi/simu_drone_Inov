@@ -55,7 +55,7 @@ public class PlaneBasicSearchBehavior : Navigation
 				isSearching = false;
 				fileLog.Close();
 				
-				List<Vector3> allTarget = computeTargetsPositions();
+				List<Vector3> allTarget = ComputeTargetsPositions();
 				Debug.Log("estimated target at : "+allTarget[0]);
 				
 			}else{
@@ -70,7 +70,7 @@ public class PlaneBasicSearchBehavior : Navigation
 		}
 	}
 	
-	protected override List<Vector3> computeTargetsPositions(){
+	protected override List<Vector3> ComputeTargetsPositions(){
 		DataPoint strongestPoint = allDataPoint.Pop();
 		float cutThreshold = 0.9f * strongestPoint.SensorPower;
 		

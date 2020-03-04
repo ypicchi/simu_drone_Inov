@@ -39,12 +39,10 @@ public class QuadcopterControl : DroneControl
 	public PID ySpeedPid = new PID(1f, 0f, 0f);
 	public PID zSpeedPid = new PID(1f, 0f, 0f);
 
-    // Start is called before the first frame update
-	public override void Start()
-	{
+	//Awake is made to initialize variables. It is called before any Start()
+	public override void Awake(){
+		base.Awake();
 		InitVariables();
-
-		base.Start();
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
 		thrust = simProperties.ThrusterThrustValues;
@@ -58,6 +56,8 @@ public class QuadcopterControl : DroneControl
 		*/
 		bangbang = new BangBangVector3(Vector3.one * 20f, Vector3.one * 3f);
 	}
+
+    
 
 	// Variables depending of other variables
     private void InitVariables(){
@@ -115,6 +115,7 @@ public class QuadcopterControl : DroneControl
 
 	public override void SetWaypoint(GameObject waypointIndicator){
 		base.SetWaypoint(waypointIndicator);
+		bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
 	}
 
 	private void GoToWaypoint(){
@@ -125,19 +126,7 @@ public class QuadcopterControl : DroneControl
 			bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
 		}
 		
-		// Height calculation
-		//float heightDifference = target.transform.position.y - sensor.GetPosition().y;
-
-		float thrustVertical = 0f;
-
-		//thrustVertical = GetThrustToReachWaypointAltitude();
-		//thrustVertical = GetThrustToStabilizeAltitude();
 		
-		for(int i = 0; i < numberOfThruster; i++){
-			thrust[i] = thrustVertical; 
-			sim.SetThrusterThrust(i, thrust[i]);
-		}
-
 		if(true){
 			
 
@@ -185,12 +174,15 @@ public class QuadcopterControl : DroneControl
 			//positive roll = roll to the left, so an acceleration in negative x
 
 			
-			
+			float targetHeading = target.transform.eulerAngles.y;
+
 			//TODO temporary
-			transform.eulerAngles = new Vector3(requiredPitch,0,requiredRoll);
-			//Quaternion.LookRotation(forceVector);
+			transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0,targetHeading,0);
+			//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
+			//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
 			
-			//float targetHeading = target.transform.eulerAngles.y;
+			
+			
 			//float currentHeading = Sensor.getHeadingAsfloat();
 
 

@@ -9,11 +9,14 @@ public class DirectionalDVASearch : Navigation
 	protected string state = "badHeading";
 	protected float heading;
 	protected float stepDistance = 20f;
+	protected float findPrecisionThreshold = 0.5f;
 	protected int dataPointNeededBeforeValidatingTheWaypoint = 0;
 	protected int dataPointAquiredSinceLastValidation = 0;
 
 
 	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
+	protected List<Vector3> targetsFound = new List<Vector3>();
+
     
 
 	public override void Start(){
@@ -34,10 +37,13 @@ public class DirectionalDVASearch : Navigation
 
 	
 	protected override void GenerateNextNavigationWaypoint(){
-		if(mainWaypoints.Count<=0){
-			
-			SelectMode();
-			
+		if(isSearching){
+			if(mainWaypoints.Count<=0){
+				SelectMode();
+			}
+		}else{
+			Vector3 targetPos = targetsFound[0];
+			GetCloseToGround(targetPos, 1f);
 		}
 		if(dataPointAquiredSinceLastValidation>=dataPointNeededBeforeValidatingTheWaypoint){
 			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
@@ -47,15 +53,9 @@ public class DirectionalDVASearch : Navigation
 			dataPointAquiredSinceLastValidation = 0;
 		}
 	}
-	
-	protected override List<Vector3> computeTargetsPositions(){
-        //TODO
-		List<Vector3> targets = new List<Vector3>();
-		targets.Add(sensor.GetPosition());
-        return targets;
-    }
 
 
+	//-----generating the waypoints------
 
 	protected void GenerateHeadingWaypoint(float startHeading,float endHeading,float step){
 		Vector3 position = sensor.GetPosition();
@@ -109,9 +109,15 @@ public class DirectionalDVASearch : Navigation
 	}
 
 	
-	protected void SelectMode(){//TODO to test
-		//Debug.Log("Previous state : "+state);
-		switch(state){
+	protected void SelectMode(){
+		if(stepDistance<findPrecisionThreshold/2){
+			//we found the source
+			state = "sourceFound";
+			ComputeTargetsPositions();
+			isSearching = false;//TODO sauf si d'autres signal trouvé
+		}else{
+			//we haven't found the source yet
+			switch(state){
 			case "badHeading":
 				GenerateHeadingWaypoint(-120,120,30);
 				state = "findingHeading";
@@ -142,8 +148,52 @@ public class DirectionalDVASearch : Navigation
 				
 			default:
 				break;
+			}
+			Debug.Log("Next state : "+state);
+		}
+		
+
+		
+	}
+
+
+	//-----after zeroing in-----
+
+	protected override List<Vector3> ComputeTargetsPositions(){
+		if(currentSegmentMeasure.Count != 0){
+			DataPoint max = currentSegmentMeasure[0];
+			foreach(DataPoint point in currentSegmentMeasure){
+				if(max.SensorPower < point.SensorPower){
+					max = point;
+				}
+			}
+			targetsFound.Add(max.Position);
+		}else{
+			targetsFound.Add(sensor.GetPosition());
+		}
+		
+        return targetsFound;
+    }
+
+	protected void GetCloseToGround(Vector3 basePosition,float requestedDistance){
+		float rangeFinderRange = sensor.GetTheoricalRangefinderRange();
+
+		if(requestedDistance>rangeFinderRange){
+			Debug.Log("Invalid parameters : the drone can't hover at "
+			+requestedDistance+"m from the ground when it can't detect the ground from above"
+			+rangeFinderRange+"m");
+			return;
 		}
 
-		Debug.Log("Next state : "+state);
+		if(sensor.GetDistanceToGround()>rangeFinderRange){
+			//far from the ground
+			basePosition.y-= (rangeFinderRange*0.8f);
+			//we only go down for 80% of the theorical range to be safer from oscillation and bad measures
+		}else{
+			//near the ground
+			basePosition.y -= (sensor.GetDistanceToGround()-requestedDistance);
+		}
+
+		AddWaypoint(basePosition,new Vector3(0,0,0));//TODO to test ? (ejecté du cremi avant de test)
 	}
 }

@@ -55,7 +55,7 @@ public class ChildNavigation : Navigation
 
     }
 	
-	protected override List<Vector3> computeTargetsPositions(){
+	protected override List<Vector3> ComputeTargetsPositions(){
         //TODO
 		List<Vector3> targets = new List<Vector3>();
 		targets.Add(sensor.GetPosition());

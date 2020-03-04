@@ -21,12 +21,14 @@ public abstract class DroneControl : MonoBehaviour
 	protected GameObject target;
 	protected bool hasTarget = false;
 	
-	
+	public virtual void Awake(){
+		sensor = GetComponent<Sensor>();
+	}
+
+
 	// Start is called before the first frame update
 	public virtual void Start()
 	{
-		sensor = GetComponent<Sensor>();
-		
 		
 		
 		
