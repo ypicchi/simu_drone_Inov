@@ -17,16 +17,16 @@ public class BangBangFloat: BangBang<float>
         float dist = Mathf.Abs(targetPos-startPos);
         float maxSpeedlocalTime = maxSpeed/maxAcceleration;
         float distanceToMaxSpeed = maxAcceleration/2 * maxSpeedlocalTime*maxSpeedlocalTime;
-
+        float localT = currentTime - movementStartTime;
 
         if(distanceToMaxSpeed > dist/2){
             //we never reach max speed
 
             float midCourseLocalTime = Mathf.Sqrt(dist/maxAcceleration);
-            return Mathf.Max(2*midCourseLocalTime-currentTime,0);
+            return Mathf.Max(2*midCourseLocalTime-localT,0);
         }else{
             float timeAtMaxSpeed = (dist - 2*distanceToMaxSpeed)/maxSpeed;
-            return Mathf.Max(2*maxSpeedlocalTime + timeAtMaxSpeed - currentTime,0);
+            return Mathf.Max(2*maxSpeedlocalTime + timeAtMaxSpeed - localT,0);
         }
     }
     
