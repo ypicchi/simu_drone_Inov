@@ -4415,7 +4415,7 @@ GameObject:
   - component: {fileID: 2584008151948179719}
   - component: {fileID: 5523172647426025564}
   - component: {fileID: 4614144869298956488}
-  - component: {fileID: 3070195190946575045}
+  - component: {fileID: 564594640383613354}
   - component: {fileID: 8544615066308981523}
   m_Layer: 0
   m_Name: Quadcopter
@@ -4566,7 +4566,7 @@ MonoBehaviour:
   samplingInterval: 0.2
   waypointValidationDistance: 5
   waypointValidationAngularThreshold: 10
---- !u!114 &3070195190946575045
+--- !u!114 &564594640383613354
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4575,7 +4575,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5695683824817154127}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac2261a5e66ee994bbeb7ba557993750, type: 3}
+  m_Script: {fileID: 11500000, guid: 843283cfb1340b64f9ec2c3be73c6670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rollDisplayText: 
