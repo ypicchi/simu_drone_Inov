@@ -104,11 +104,20 @@ public class Sensor : MonoBehaviour
 	
 	public float GetDistanceToGround(){//simulate an ultrasonic rangefinder so it have a limited range
 		RaycastHit hit;
-        Ray downRay = new Ray(transform.position, -transform.up);
+		Ray downRay;
+
+		GameObject rangefinder = GameObject.Find("Ultrason");
+		if(rangefinder==null){
+			downRay = new Ray(transform.position, -transform.up);
+		}else{
+			downRay = new Ray(rangefinder.transform.position, -transform.up);
+		}
 
 		float distance = float.PositiveInfinity;
 
-        if (Physics.Raycast(downRay, out hit)){
+		//int layerMask = 1 << Physics.IgnoreRaycastLayer;
+		//layerMask = ~layerMask; //everything but this layer
+        if (Physics.Raycast(downRay, out hit,ultrasonicRange)){
 			if(hit.distance<ultrasonicRange)
 			distance = hit.distance;
 		}

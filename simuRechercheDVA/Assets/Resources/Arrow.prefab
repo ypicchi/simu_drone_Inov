@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4933095038408849147}
   - component: {fileID: 1965176028515487642}
   - component: {fileID: 8549635778336548464}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4823410432739960300}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 5678654607600873975}
   - component: {fileID: 1546734952168965339}
   - component: {fileID: 4814643980092996692}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 4756919529762472109}
   - component: {fileID: 1853485137025025907}
   - component: {fileID: 2972696618854684542}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
