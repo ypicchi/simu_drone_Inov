@@ -28,9 +28,13 @@ public class QuadcopterControl : DroneControl
 	private float yawThrustLimit = 10f;
 
 
-	public PID pitchPid = new PID(2f, 1f, 5f);
-
+	private float pitchTarget = 0f;
+	public PID pitchPid = new PID(10f, 0f, 2f);
 	private float pitchThrustLimit = 100f;
+
+	public float rollTarget = 0f;
+	public PID rollPid = new PID(10f, 0f, 2f);
+	private float rollThrustLimit = 100f;
 
 	public StreamWriter file;
 	private Boolean isFileOpen = false;
@@ -146,11 +150,9 @@ public class QuadcopterControl : DroneControl
 		return thrustDifference;
 	}
 
-	private float GetThrustDifferenceToPitch(){
+	private float GetThrustDifferenceToPitch(float targetPitch){
 
 		float thrustDifference = 0f;
-
-		float targetPitch = -10f;
 		float actualPitch = sensor.GetPitch();
 
 		thrustDifference = pitchPid.Update(targetPitch, actualPitch, Time.deltaTime);
@@ -168,6 +170,29 @@ public class QuadcopterControl : DroneControl
 		return thrustDifference;
 	}
 
+
+	private float GetThrustDifferenceToRoll(float targetRoll){
+
+		float thrustDifference = 0f;
+
+		// Unity Z rotation is not like Roll
+		float actualRoll = -1 * sensor.GetRoll();
+
+		thrustDifference = rollPid.Update(targetRoll, actualRoll, Time.deltaTime);
+
+		if( Math.Abs(thrustDifference) > rollThrustLimit){
+			float sign  = Math.Abs(thrustDifference) / thrustDifference;
+			thrustDifference = rollThrustLimit * sign;
+		}
+
+		Debug.Log(Time.fixedTime);
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetRoll + ";" + actualRoll + ";" + thrustDifference);
+		}
+
+		return thrustDifference;
+	}
+
 	private void GoToWaypoint(){
 		if(hasTarget==false){
 			return;
@@ -177,7 +202,9 @@ public class QuadcopterControl : DroneControl
 		// float heightDifference = target.transform.position.y - sensor.GetPosition().y;
 
 		float mainThrust = thrustEquilibrium;
-		float thrustDifference =  GetThrustDifferenceToPitch();
+		float thrustDifference = 0f;
+		//thrustDifference = GetThrustDifferenceToPitch( pitchTarget );
+		thrustDifference = GetThrustDifferenceToRoll( rollTarget ); 
 
 		// mainThrust = GetThrustToReachWaypointAltitude();
 		// mainThrust = GetThrustToStabilizeAltitude();
@@ -191,12 +218,23 @@ public class QuadcopterControl : DroneControl
 		sim.SetThrusterThrust(3, mainThrust + thrustDifference);
 		*/
 
+		/*
 		// PITCH
 		sim.SetThrusterThrust(0, mainThrust + thrustDifference);
 		sim.SetThrusterThrust(1, mainThrust + thrustDifference);
 		sim.SetThrusterThrust(2, mainThrust - thrustDifference);
 		sim.SetThrusterThrust(3, mainThrust - thrustDifference);
-		
+		*/
+
+		/*
+		// ROLL
+		sim.SetThrusterThrust(0, mainThrust + thrustDifference);
+		sim.SetThrusterThrust(1, mainThrust - thrustDifference);
+		sim.SetThrusterThrust(2, mainThrust - thrustDifference);
+		sim.SetThrusterThrust(3, mainThrust + thrustDifference);
+		*/
+
+		//TODO : mix forces 
 
 		/*	
 		for(int i = 0; i < numberOfThruster; i++){
