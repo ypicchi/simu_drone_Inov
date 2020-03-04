@@ -138,6 +138,16 @@ public class QuadcopterControl : DroneControl
 			Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
 
 			//Everything is in the world's reference
+
+
+			//Rise the target position and velocity if too close to the ground
+			float requiredGroundClearance = 2f;
+			if(sensor.GetDistanceToGround()<requiredGroundClearance){
+				float currentClearance = sensor.GetDistanceToGround();
+				float delta = requiredGroundClearance - currentClearance;
+				expectedPosition.y += sensor.GetPosition().y + 2*delta;
+				expectedSpeed.y = Mathf.Max(expectedSpeed.y+delta,delta);
+			}
 			
 			Vector3 speedCorrection = Vector3.zero;
 			speedCorrection[0] = xPosPid.Update(expectedPosition[0], currentPosition[0], Time.deltaTime);
@@ -153,7 +163,7 @@ public class QuadcopterControl : DroneControl
 			//Add the gravity in the acceleration/force required
 			Vector3 counterGravityAcceleration = - Physics.gravity;
 			accelerationCommand += counterGravityAcceleration;
-
+			accelerationCommand.y = Mathf.Max(accelerationCommand.y,0);//we don't allow the drone to flip
 
 			//Now we have the acceleration required.
 			//We can find the angle and the trust to apply
