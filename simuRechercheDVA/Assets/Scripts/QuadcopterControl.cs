@@ -41,15 +41,23 @@ public class QuadcopterControl : DroneControl
 	public PID ySpeedPid = new PID(1f, 0f, 0f);
 	public PID zSpeedPid = new PID(1f, 0f, 0f);
 
+	protected GameObject[] allChildsGameobject;
+
 	//Awake is made to initialize variables. It is called before any Start()
 	public override void Awake(){
 		base.Awake();
 		InitVariables();
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
+		allChildsGameobject = GameObject.FindGameObjectsWithTag("Child");
+
+
 		thrust = simProperties.ThrusterThrustValues;
 		numberOfThruster = simProperties.ThrusterThrustValues.Length;
 		mass = GetComponent<Rigidbody>().mass;
+		foreach(var child in allChildsGameobject){
+			mass += child.GetComponent<Rigidbody>().mass;
+		}
 
 		/* 
 		Debug.Log("Cible : " + target);
