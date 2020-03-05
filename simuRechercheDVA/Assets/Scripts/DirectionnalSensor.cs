@@ -15,9 +15,9 @@ public class DirectionnalSensor : Sensor
 	}
 
     protected float DirectionalMultiplier(Vector3 source){
-        Vector2 heading = GetHeading();
-        Vector2 targetHeading = new Vector2(source.x - fromWhere.x, source.z - fromWhere.z);
-        float angle = Vector2.Angle(heading, targetHeading);
+        Vector3 heading = transform.forward;
+        Vector3 targetHeading = source - fromWhere;
+        float angle = Vector3.Angle(heading, targetHeading);
         return Map(1f,0f,0f,180f,angle);
     }
 
