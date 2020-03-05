@@ -201,10 +201,10 @@ public class QuadcopterControl : DroneControl
 		// Height calculation
 		// float heightDifference = target.transform.position.y - sensor.GetPosition().y;
 
-		float mainThrust = thrustEquilibrium;
-		float thrustDifference = 0f;
+		//float mainThrust = thrustEquilibrium;
+		//float thrustDifference = 0f;
 		//thrustDifference = GetThrustDifferenceToPitch( pitchTarget );
-		thrustDifference = GetThrustDifferenceToRoll( rollTarget ); 
+		//thrustDifference = GetThrustDifferenceToRoll( rollTarget ); 
 
 		// mainThrust = GetThrustToReachWaypointAltitude();
 		// mainThrust = GetThrustToStabilizeAltitude();
@@ -243,8 +243,12 @@ public class QuadcopterControl : DroneControl
 		}
 		*/
 		
-		if(false){
+		if(true){
 			Vector3[] tmp = bangbang.GetTarget(Time.time);
+
+			//TODO : comprendre bangbang
+			Debug.Log(tmp);
+
 			Vector3 expectedPosition = tmp[0];
 			Vector3 expectedSpeed = tmp[1];
 			Vector3 currentPosition = sensor.GetPosition();
@@ -276,21 +280,28 @@ public class QuadcopterControl : DroneControl
 			Vector3 forceVector = accelerationCommand/mass;
 			float totalThrust = forceVector.magnitude;
 
-			Vector2 pitchAxis = new Vector2(forceVector.z,forceVector.y);
-			float requiredPitch = Vector2.SignedAngle(Vector2.right,pitchAxis);
+			Vector2 pitchAxis = new Vector2(forceVector.z, forceVector.y);
+			float requiredPitch = Vector2.SignedAngle(Vector2.right, pitchAxis);
 			//positive pitch means an acceleration in negative z
 
 
-			Vector2 rollAxis = new Vector2(forceVector.x,forceVector.y);
-			float requiredRoll = Vector2.SignedAngle(Vector2.right,rollAxis);
+			Vector2 rollAxis = new Vector2(forceVector.x, forceVector.y);
+			float requiredRoll = Vector2.SignedAngle(Vector2.right, rollAxis);
 			//positive roll = roll to the left, so an acceleration in negative x
 
 
 
-			
 			//float targetHeading = target.transform.eulerAngles.y;
 			//float currentHeading = Sensor.getHeadingAsfloat();
 			
+
+
+	
+			//Debug.Log(currentPosition + ";" + expectedPosition);
+			//Debug.Log(Time.fixedTime + " ; pitch:" +  requiredPitch + " ; roll:" + requiredRoll);
+
+
+
 		}
 		
 	}
