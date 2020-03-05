@@ -29,11 +29,11 @@ public class QuadcopterControl : DroneControl
 
 
 	private float pitchTarget = 0f;
-	public PID pitchPid = new PID(10f, 0f, 2f);
+	private PID pitchPid = new PID(10f, 0f, 2f);
 	private float pitchThrustLimit = 100f;
 
-	public float rollTarget = 0f;
-	public PID rollPid = new PID(10f, 0f, 2f);
+	private float rollTarget = 0f;
+	private PID rollPid = new PID(10f, 0f, 2f);
 	private float rollThrustLimit = 100f;
 
 	public StreamWriter file;
@@ -162,7 +162,7 @@ public class QuadcopterControl : DroneControl
 			thrustDifference = pitchThrustLimit * sign;
 		}
 
-		Debug.Log(Time.fixedTime);
+		Debug.Log(targetPitch + " ; " + actualPitch);
 		if(isFileOpen){
 			file.WriteLine(Time.fixedTime + ";" + targetPitch + ";" + actualPitch + ";" + thrustDifference);
 		}
@@ -202,7 +202,7 @@ public class QuadcopterControl : DroneControl
 			return;
 		}
 		if(!bangbang.IsMoving){
-			bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
+			bangbang.StartMovement(sensor.GetPosition(), target.transform.position, Time.time);
 		}
 		
 		// Height calculation
@@ -210,8 +210,7 @@ public class QuadcopterControl : DroneControl
 
 		//float mainThrust = thrustEquilibrium;
 		//float thrustDifference = 0f;
-		//thrustDifference = GetThrustDifferenceToPitch( pitchTarget );
-		//thrustDifference = GetThrustDifferenceToRoll( rollTarget ); 
+		 
 
 		// mainThrust = GetThrustToReachWaypointAltitude();
 		// mainThrust = GetThrustToStabilizeAltitude();
@@ -227,23 +226,26 @@ public class QuadcopterControl : DroneControl
 
 		/*
 		// PITCH
-		sim.SetThrusterThrust(0, mainThrust + thrustDifference);
-		sim.SetThrusterThrust(1, mainThrust + thrustDifference);
-		sim.SetThrusterThrust(2, mainThrust - thrustDifference);
-		sim.SetThrusterThrust(3, mainThrust - thrustDifference);
+		sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference);
+		sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference);
+		sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference);
+		sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference);
 		*/
 
 		/*
 		// ROLL
-		sim.SetThrusterThrust(0, mainThrust + thrustDifference);
-		sim.SetThrusterThrust(1, mainThrust - thrustDifference);
-		sim.SetThrusterThrust(2, mainThrust - thrustDifference);
-		sim.SetThrusterThrust(3, mainThrust + thrustDifference);
+		sim.SetThrusterThrust(0, mainThrust + thrustRollDifference);
+		sim.SetThrusterThrust(1, mainThrust - thrustRollDifference);
+		sim.SetThrusterThrust(2, mainThrust - thrustRollDifference);
+		sim.SetThrusterThrust(3, mainThrust + thrustRollDifference);
 		*/
 
 		//TODO : mix forces 
 
-		/*	
+
+	
+
+		/*
 		for(int i = 0; i < numberOfThruster; i++){
 			thrust[i] = mainThrust; 
 			sim.SetThrusterThrust(i, thrust[i]);
@@ -254,20 +256,15 @@ public class QuadcopterControl : DroneControl
 		if(true){
 			Vector3[] tmp = bangbang.GetTarget(Time.time);
 
-			//TODO : comprendre bangbang
-			Debug.Log(tmp);
-
 			Vector3 expectedPosition = tmp[0];
 			Vector3 expectedSpeed = tmp[1];
 			Vector3 currentPosition = sensor.GetPosition();
 			Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
-
 			//Everything is in the world's reference
-
 
 			//Rise the target position and velocity if too close to the ground
 			float requiredGroundClearance = 2f;
-			if(sensor.GetDistanceToGround()<requiredGroundClearance){
+			if(sensor.GetDistanceToGround() < requiredGroundClearance){
 				float currentClearance = sensor.GetDistanceToGround();
 				float delta = requiredGroundClearance - currentClearance;
 				expectedPosition.y += sensor.GetPosition().y + 2*delta;
@@ -288,7 +285,7 @@ public class QuadcopterControl : DroneControl
 			//Add the gravity in the acceleration/force required
 			Vector3 counterGravityAcceleration = - Physics.gravity;
 			accelerationCommand += counterGravityAcceleration;
-			accelerationCommand.y = Mathf.Max(accelerationCommand.y,0);//we don't allow the drone to flip
+			accelerationCommand.y = Mathf.Max(accelerationCommand.y, 0);//we don't allow the drone to flip
 
 			//Now we have the acceleration required.
 			//We can find the angle and the trust to apply
@@ -303,31 +300,40 @@ public class QuadcopterControl : DroneControl
 			float requiredPitch = -Vector2.SignedAngle(Vector2.up, pitchAxis);
 			//positive pitch means an acceleration in negative z
 
-
 			Vector2 rollAxis = new Vector2(forceVector.x, forceVector.y);
 			float requiredRoll = Vector2.SignedAngle(Vector2.up, rollAxis);
 			//positive roll = roll to the left, so an acceleration in negative x
 
-			
-			float targetHeading = target.transform.eulerAngles.y;
+
+
+			//TODO : tester bangbang
+			float mainThrust = thrustEquilibrium;
+			float thrustPitchDifference = GetThrustDifferenceToPitch( requiredPitch );
+			float thrustRollDifference = GetThrustDifferenceToRoll( requiredRoll );
+			Debug.Log(mainThrust + " ; P:" + requiredPitch + " ; R:" + requiredRoll);
+
+			sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference);
+			sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference - thrustRollDifference);
+			sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference - thrustRollDifference);
+			sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference + thrustRollDifference);
+
 
 
 			//float targetHeading = target.transform.eulerAngles.y;
+
 			//TODO temporary
-			//transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0,targetHeading,0);
+			//transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0, targetHeading, 0);
+
 			//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
 			//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
-			
-			
-			
 			//float currentHeading = Sensor.getHeadingAsfloat();
 
-
+			/*
 			for(int i = 0; i < numberOfThruster; i++){
 				thrust[i] = totalThrust/4; 
 				sim.SetThrusterThrust(i, thrust[i]);
 			}
-
+			*/
 
 			if(isFileOpen){
 				int axis = 2;
@@ -335,15 +341,9 @@ public class QuadcopterControl : DroneControl
 					+ ";" + currentPosition[axis] + ";" + (expectedSpeed[axis]+speedCorrection[axis])
 					+ ";" + currentSpeed[axis] + ";" + totalThrust);
 			}
-			
 
-
-	
 			//Debug.Log(currentPosition + ";" + expectedPosition);
 			//Debug.Log(Time.fixedTime + " ; pitch:" +  requiredPitch + " ; roll:" + requiredRoll);
-
-
-
 		}
 		
 	}
