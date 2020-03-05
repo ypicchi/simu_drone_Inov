@@ -17,6 +17,7 @@ public abstract class DroneControl : MonoBehaviour
 	
 	
 	public bool manualOverride = false;
+	public bool enableGroundClearance = true;
 	
 	protected GameObject target;
 	protected bool hasTarget = false;

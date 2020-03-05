@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 6713565197627188922}
   m_Layer: 0
   m_Name: Child
-  m_TagString: Untagged
+  m_TagString: Child
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -310,6 +310,7 @@ MonoBehaviour:
   waypointValidationDistance: 5
   waypointValidationAngularThreshold: 10
   parentDrone: {fileID: 0}
+  debugClickStartMission: 0
 --- !u!114 &6713565197627188922
 MonoBehaviour:
   m_ObjectHideFlags: 0
