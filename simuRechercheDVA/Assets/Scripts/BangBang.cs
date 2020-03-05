@@ -11,7 +11,9 @@ public abstract class BangBang <T>
     protected T startPos;
     protected T targetPos;
 
+
     public bool IsMoving { get => isMoving;}
+    public abstract float TimeRemaining(float currentTime);
     public virtual void StartMovement(T startPos,T targetPos,float currentTime){
         this.isMoving = true;
         this.movementStartTime = currentTime;

@@ -462,7 +462,7 @@ PrefabInstance:
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.727
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -628,31 +628,6 @@ PrefabInstance:
         type: 3}
       propertyPath: propellerAnimationSpeedMultiplier
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: manualOverride
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: speedPid.pFactor
-      value: 400
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: speedPid.iFactor
-      value: 800
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: speedPid.dFactor
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}

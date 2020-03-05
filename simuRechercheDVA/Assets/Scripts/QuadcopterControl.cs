@@ -51,12 +51,10 @@ public class QuadcopterControl : DroneControl
 	public PID ySpeedPid = new PID(1f, 0f, 0f);
 	public PID zSpeedPid = new PID(1f, 0f, 0f);
 
-    // Start is called before the first frame update
-	public override void Start()
-	{
+	//Awake is made to initialize variables. It is called before any Start()
+	public override void Awake(){
+		base.Awake();
 		InitVariables();
-
-		base.Start();
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
 		thrust = simProperties.ThrusterThrustValues;
@@ -68,8 +66,10 @@ public class QuadcopterControl : DroneControl
 		Debug.Log("Cible_position : " + target.transform.position);
 		Debug.Log("Cible_angle : " + target.transform.eulerAngles.y);
 		*/
-		bangbang = new BangBangVector3(Vector3.one * 10f, Vector3.one * 1f);
+		bangbang = new BangBangVector3(Vector3.one * 20f, Vector3.one * 3f);
 	}
+
+    
 
 	// Variables depending of other variables
     private void InitVariables(){
@@ -192,10 +192,17 @@ public class QuadcopterControl : DroneControl
 
 		return thrustDifference;
 	}
+	public override void SetWaypoint(GameObject waypointIndicator){
+		base.SetWaypoint(waypointIndicator);
+		bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
+	}
 
 	private void GoToWaypoint(){
 		if(hasTarget==false){
 			return;
+		}
+		if(!bangbang.IsMoving){
+			bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
 		}
 		
 		// Height calculation
@@ -243,6 +250,7 @@ public class QuadcopterControl : DroneControl
 		}
 		*/
 		
+		
 		if(true){
 			Vector3[] tmp = bangbang.GetTarget(Time.time);
 
@@ -252,47 +260,81 @@ public class QuadcopterControl : DroneControl
 			Vector3 expectedPosition = tmp[0];
 			Vector3 expectedSpeed = tmp[1];
 			Vector3 currentPosition = sensor.GetPosition();
-			Vector3 currentSpeed = sensor.GetSpeed();
+			Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
 
-			//Position is in the world reference
+			//Everything is in the world's reference
+
+
+			//Rise the target position and velocity if too close to the ground
+			float requiredGroundClearance = 2f;
+			if(sensor.GetDistanceToGround()<requiredGroundClearance){
+				float currentClearance = sensor.GetDistanceToGround();
+				float delta = requiredGroundClearance - currentClearance;
+				expectedPosition.y += sensor.GetPosition().y + 2*delta;
+				expectedSpeed.y = Mathf.Max(expectedSpeed.y+delta,delta);
+			}
+			
 			Vector3 speedCorrection = Vector3.zero;
 			speedCorrection[0] = xPosPid.Update(expectedPosition[0], currentPosition[0], Time.deltaTime);
 			speedCorrection[1] = yPosPid.Update(expectedPosition[1], currentPosition[1], Time.deltaTime);
-			speedCorrection[2] = zPosPid.Update(expectedPosition[2], currentPosition[1], Time.deltaTime);
+			speedCorrection[2] = zPosPid.Update(expectedPosition[2], currentPosition[2], Time.deltaTime);
 			
-			//Speed is in the drone's reference
-			speedCorrection = transform.InverseTransformDirection(speedCorrection);
+			
 			Vector3 accelerationCommand = Vector3.zero;
-			accelerationCommand[0] = xSpeedPid.Update(expectedSpeed[0]-speedCorrection[0], currentSpeed[0], Time.deltaTime);
-			accelerationCommand[1] = ySpeedPid.Update(expectedSpeed[1]-speedCorrection[1], currentSpeed[1], Time.deltaTime);
-			accelerationCommand[2] = zSpeedPid.Update(expectedSpeed[2]-speedCorrection[2], currentSpeed[1], Time.deltaTime);
+			accelerationCommand[0] = xSpeedPid.Update(expectedSpeed[0]+speedCorrection[0], currentSpeed[0], Time.deltaTime);
+			accelerationCommand[1] = ySpeedPid.Update(expectedSpeed[1]+speedCorrection[1], currentSpeed[1], Time.deltaTime);
+			accelerationCommand[2] = zSpeedPid.Update(expectedSpeed[2]+speedCorrection[2], currentSpeed[2], Time.deltaTime);
 			
+			//Add the gravity in the acceleration/force required
+			Vector3 counterGravityAcceleration = - Physics.gravity;
+			accelerationCommand += counterGravityAcceleration;
+			accelerationCommand.y = Mathf.Max(accelerationCommand.y,0);//we don't allow the drone to flip
+
 			//Now we have the acceleration required.
 			//We can find the angle and the trust to apply
 
-			//TODO add the gravity in the acceleration/force required
-
-			//TODO find in what direction does the force go (thrust direction or force direction ??)
-			//this will change the pitch and roll required
 
 
 			//Forces are in the drone's reference
-			Vector3 forceVector = accelerationCommand/mass;
+			Vector3 forceVector = accelerationCommand*mass;
 			float totalThrust = forceVector.magnitude;
 
 			Vector2 pitchAxis = new Vector2(forceVector.z, forceVector.y);
-			float requiredPitch = Vector2.SignedAngle(Vector2.right, pitchAxis);
+			float requiredPitch = -Vector2.SignedAngle(Vector2.up, pitchAxis);
 			//positive pitch means an acceleration in negative z
 
 
 			Vector2 rollAxis = new Vector2(forceVector.x, forceVector.y);
-			float requiredRoll = Vector2.SignedAngle(Vector2.right, rollAxis);
+			float requiredRoll = Vector2.SignedAngle(Vector2.up, rollAxis);
 			//positive roll = roll to the left, so an acceleration in negative x
 
+			
+			float targetHeading = target.transform.eulerAngles.y;
 
 
 			//float targetHeading = target.transform.eulerAngles.y;
+			//TODO temporary
+			//transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0,targetHeading,0);
+			//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
+			//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
+			
+			
+			
 			//float currentHeading = Sensor.getHeadingAsfloat();
+
+
+			for(int i = 0; i < numberOfThruster; i++){
+				thrust[i] = totalThrust/4; 
+				sim.SetThrusterThrust(i, thrust[i]);
+			}
+
+
+			if(isFileOpen){
+				int axis = 2;
+				file.WriteLine(Time.fixedTime + ";" + expectedPosition[axis] 
+					+ ";" + currentPosition[axis] + ";" + (expectedSpeed[axis]+speedCorrection[axis])
+					+ ";" + currentSpeed[axis] + ";" + totalThrust);
+			}
 			
 
 

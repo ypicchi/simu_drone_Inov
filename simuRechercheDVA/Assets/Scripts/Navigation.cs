@@ -26,19 +26,22 @@ public abstract class Navigation : MonoBehaviour
 	
 	protected StreamWriter fileLog;
 	protected bool isMissionStarted = false;
-	protected bool isSearching = true;
+	protected bool isSearching = false;
 	
 	protected Queue<Pair<Vector3, Vector3>> mainWaypoints = new Queue<Pair<Vector3, Vector3>>();
 	
+	//Awake is made to initialize variables. It is called before any Start()
+	public virtual void Awake(){
+		ctrl = GetComponent<DroneControl>();
+		sensor = GetComponent<Sensor>();
+	}
+
 	// Start is called before the first frame update
 	public virtual void Start()
 	{
-		ctrl = GetComponent<DroneControl>();
-		sensor = GetComponent<Sensor>();
-
 		waypointIndicator = GameObject.Instantiate(Resources.Load<GameObject>("Arrow"));
 		waypointIndicator.name = "Waypoint";
-		waypointIndicator.transform.position = new Vector3(0,5,-50);
+		waypointIndicator.transform.position = sensor.GetPosition();
 	}
 
 	protected virtual void StartLog(){
@@ -57,9 +60,11 @@ public abstract class Navigation : MonoBehaviour
 
 	public virtual void StartMission(){
 		ctrl.SetWaypoint(waypointIndicator);
-		GenerateMainWaypoint();
-		StartLog();
 		isMissionStarted = true;
+		isSearching = true;
+		GenerateMainWaypoint();
+		GenerateNextNavigationWaypoint();
+		StartLog();
     }
 
     // Update is called once per frame
@@ -132,6 +137,6 @@ public abstract class Navigation : MonoBehaviour
 	
 	protected abstract void GenerateNextNavigationWaypoint();
 	
-	protected abstract List<Vector3> computeTargetsPositions();
+	protected abstract List<Vector3> ComputeTargetsPositions();
 	
 }
