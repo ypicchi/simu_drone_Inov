@@ -360,7 +360,7 @@ PrefabInstance:
     - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: debugClickStartMission
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
@@ -397,6 +397,11 @@ PrefabInstance:
       propertyPath: m_AutoConfigureConnectedAnchor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
@@ -412,6 +417,11 @@ PrefabInstance:
       propertyPath: m_AutoConfigureConnectedAnchor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
@@ -427,6 +437,11 @@ PrefabInstance:
       propertyPath: m_AutoConfigureConnectedAnchor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
@@ -441,6 +456,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AutoConfigureConnectedAnchor
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc90aea5318734e4291b49ddb1ad0a58, type: 3}

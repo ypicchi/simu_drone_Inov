@@ -256,7 +256,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5250747596523211902}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5d9e3d87580da7f4a8237e1de5732df6, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
@@ -312,7 +312,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 0.01
   m_ConnectedMassScale: 1
 --- !u!1 &6257679958631805631
 GameObject:
@@ -424,6 +424,7 @@ MonoBehaviour:
   modeDisplayText: 
   manualOverride: 0
   enableGroundClearance: 1
+  isFileOpen: 0
 --- !u!114 &7828526380157436631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -625,7 +626,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6345138174793939886}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5d9e3d87580da7f4a8237e1de5732df6, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
@@ -681,7 +682,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 0.01
   m_ConnectedMassScale: 1
 --- !u!1 &7581124479952261259
 GameObject:
@@ -862,7 +863,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7915873530016229566}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5d9e3d87580da7f4a8237e1de5732df6, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
@@ -918,7 +919,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 0.01
   m_ConnectedMassScale: 1
 --- !u!1 &7975070369865760123
 GameObject:
@@ -1162,7 +1163,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8556036543934329008}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5d9e3d87580da7f4a8237e1de5732df6, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
@@ -1218,5 +1219,5 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 0.01
   m_ConnectedMassScale: 1
