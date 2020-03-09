@@ -357,6 +357,91 @@ PrefabInstance:
       propertyPath: parentDrone
       value: 
       objectReference: {fileID: 441138506}
+    - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: debugClickStartMission
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: waypointValidationDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372489757312543529, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: enableGroundClearance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372489757312543529, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: manualOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: -0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: -0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc90aea5318734e4291b49ddb1ad0a58, type: 3}
 --- !u!1 &102354235
@@ -885,12 +970,22 @@ PrefabInstance:
     - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: manualOverride
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: waypointValidationDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: waypointValidationAngularThreshold
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3070195190946575045, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
