@@ -6,12 +6,13 @@ public class DirectionalDVASearch : Navigation
 {
 	
 
-	protected string state = "badHeading";
+	public string state = "badHeading";
 	protected float heading;
-	protected float stepDistance = 20f;
+	protected float stepDistance = 50f;
 	protected float findPrecisionThreshold = 0.5f;
 	protected int dataPointNeededBeforeValidatingTheWaypoint = 0;
 	protected int dataPointAquiredSinceLastValidation = 0;
+	protected GameObject[] allChildsGameobject;
 
 
 	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
@@ -21,7 +22,9 @@ public class DirectionalDVASearch : Navigation
 
 	public override void Start(){
 		base.Start();
+		allChildsGameobject = GameObject.FindGameObjectsWithTag("Child");
 		StartMission();
+
 	}
 
 	//Called on instantiation, thus replacing the parent's class default values
@@ -37,15 +40,12 @@ public class DirectionalDVASearch : Navigation
 
 	
 	protected override void GenerateNextNavigationWaypoint(){
-		if(isSearching){
-			if(mainWaypoints.Count<=0){
-				SelectMode();
-			}
-		}else{
-			Vector3 targetPos = targetsFound[0];
-			GetCloseToGround(targetPos, 1f);
+		
+		if(mainWaypoints.Count<=0){
+			SelectMode();
 		}
-		if(dataPointAquiredSinceLastValidation>=dataPointNeededBeforeValidatingTheWaypoint){
+		
+		if(dataPointAquiredSinceLastValidation>=dataPointNeededBeforeValidatingTheWaypoint || ! isSearching){
 			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
 			waypointIndicator.transform.position = tmp.First;
 			waypointIndicator.transform.eulerAngles = tmp.Second;
@@ -110,47 +110,71 @@ public class DirectionalDVASearch : Navigation
 
 	
 	protected void SelectMode(){
-		if(stepDistance<findPrecisionThreshold/2){
+		if(stepDistance<findPrecisionThreshold/2 && isSearching){
 			//we found the source
-			state = "sourceFound";
+			state = "startDeliveringChild";
 			ComputeTargetsPositions();
 			isSearching = false;//TODO sauf si d'autres signal trouvé
-		}else{
-			//we haven't found the source yet
-			switch(state){
-			case "badHeading":
-				GenerateHeadingWaypoint(-120,120,30);
-				state = "findingHeading";
-				break;
-
-			case "findingHeading":
-				heading = FindHeadingFromCurrentSegment();
-				currentSegmentMeasure.Clear();
-				GenerateHeadingWaypoint(heading-20,heading+20,5);
-				state = "refiningHeading";
-				break;
-
-			case "refiningHeading":
-				heading = FindHeadingFromCurrentSegment();
-				currentSegmentMeasure.Clear();
-				StepForward(stepDistance);
-				state = "goodHeading";
-				break;
-
-			case "goodHeading":
-				StepForward(stepDistance);
-				if( ! IsSignalIncreasing()){
-					stepDistance /= 2;
-					currentSegmentMeasure.Clear();
-					state = "badHeading";
-				}
-				break;
-				
-			default:
-				break;
-			}
-			Debug.Log("Next state : "+state);
 		}
+		
+		
+		switch(state){
+		case "badHeading":
+			GenerateHeadingWaypoint(-120,120,30);
+			state = "findingHeading";
+			break;
+
+		case "findingHeading":
+			heading = FindHeadingFromCurrentSegment();
+			currentSegmentMeasure.Clear();
+			GenerateHeadingWaypoint(heading-20,heading+20,5);
+			state = "refiningHeading";
+			break;
+
+		case "refiningHeading":
+			heading = FindHeadingFromCurrentSegment();
+			currentSegmentMeasure.Clear();
+			StepForward(stepDistance);
+			state = "goodHeading";
+			break;
+
+		case "goodHeading":
+			StepForward(stepDistance);
+			if( ! IsSignalIncreasing()){
+				stepDistance /= 2;
+				currentSegmentMeasure.Clear();
+				state = "badHeading";
+			}
+			break;
+
+
+		case "startDeliveringChild":
+			Vector3 targetPos = targetsFound[0];
+			ctrl.enableGroundClearance = false;
+			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
+			state = "deliveringChild";
+			break;
+
+		case "deliveringChild"://TODO marche pas
+			targetPos = targetsFound[0];
+			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
+			if(sensor.GetDistanceToGround()<1f){
+				
+				allChildsGameobject[0].GetComponent<Navigation>().StartMission();
+					
+				state = "childDelivered";
+			}
+			break;
+
+		case "childDelivered":
+			ctrl.enableGroundClearance = true;
+			state = "??";//TODO more than one child
+			break;
+		default:
+			Debug.Log("Unknown state : "+state);
+			break;
+		}
+		Debug.Log("Next state : "+state);
 		
 
 		
@@ -175,14 +199,14 @@ public class DirectionalDVASearch : Navigation
         return targetsFound;
     }
 
-	protected void GetCloseToGround(Vector3 basePosition,float requestedDistance){
+	protected Vector3 GetCloseToGround(Vector3 basePosition,float requestedDistance){
 		float rangeFinderRange = sensor.GetTheoricalRangefinderRange();
 
 		if(requestedDistance>rangeFinderRange){
 			Debug.Log("Invalid parameters : the drone can't hover at "
 			+requestedDistance+"m from the ground when it can't detect the ground from above"
 			+rangeFinderRange+"m");
-			return;
+			return basePosition;
 		}
 
 		if(sensor.GetDistanceToGround()>rangeFinderRange){
@@ -195,5 +219,6 @@ public class DirectionalDVASearch : Navigation
 		}
 
 		AddWaypoint(basePosition,new Vector3(0,0,0));//TODO to test ? (ejecté du cremi avant de test)
+		return basePosition;
 	}
 }

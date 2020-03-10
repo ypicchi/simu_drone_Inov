@@ -6,13 +6,12 @@ public class ChildFlightSim : DroneFlightSim
 {
     //TODO child sim
 
-    protected float[] thrusts;
     protected Vector3[] wheelCenters;
     protected float wheelRadius;
+    
     public override void Start(){
         base.Start();
 
-        thrusts = new float[simProperties.ThrusterOffset.Length];
         wheelCenters = new Vector3[simProperties.ThrusterOffset.Length];
 
         GameObject wheel = GameObject.Find("Wheel0");;
@@ -25,32 +24,15 @@ public class ChildFlightSim : DroneFlightSim
     }
 
 
-    public override void Update(){
-        base.Update();
-        /*
-        //animation
-        for (int i=0;i<simProperties.ThrusterOffset.Length;i++){
-            GameObject wheel = GameObject.Find("Wheel"+i.ToString());
-        }
-        */
-    }
+    
 
     public override void FixedUpdate(){
 
-		for(int i=0;i<simProperties.ThrusterOffset.Length;i++){
-            if( ! IsWheelGrounded(i)){
-                thrusts[i] = simProperties.ThrusterThrustValues[i];
-                simProperties.ThrusterThrustValues[i] = 0;
-            }
-        }
-        //we temporarily set the thrust to 0 if not grounded
-        //then restore it after the forces calculation are done
-        base.FixedUpdate();
-
         for(int i=0;i<simProperties.ThrusterOffset.Length;i++){
-            if( ! IsWheelGrounded(i)){
-                simProperties.ThrusterThrustValues[i] = thrusts[i];
-            }
+            float wheelTorque = - simProperties.ThrusterThrustValues[i] / (wheelRadius);
+            GameObject wheel = GameObject.Find("Wheel"+i.ToString());
+            wheel.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.up*wheelTorque);
+
         }
 	}
     

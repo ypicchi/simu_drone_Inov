@@ -16,6 +16,8 @@ public class QuadcopterControl : DroneControl
 	private float thrustMin;
 	private float heightThreshold;
 
+	
+
 	public PID altitudePid = new PID(3f, 0.03f, 0.05f);
 	//public PID altitudePid = new PID(3f, 0.05f, 0.01f);
 
@@ -51,15 +53,23 @@ public class QuadcopterControl : DroneControl
 	public PID ySpeedPid = new PID(1f, 0f, 0f);
 	public PID zSpeedPid = new PID(1f, 0f, 0f);
 
+	protected GameObject[] allChildsGameobject;
+
 	//Awake is made to initialize variables. It is called before any Start()
 	public override void Awake(){
 		base.Awake();
 		InitVariables();
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
+		allChildsGameobject = GameObject.FindGameObjectsWithTag("Child");
+
+
 		thrust = simProperties.ThrusterThrustValues;
 		numberOfThruster = simProperties.ThrusterThrustValues.Length;
 		mass = GetComponent<Rigidbody>().mass;
+		foreach(var child in allChildsGameobject){
+			mass += child.GetComponent<Rigidbody>().mass;
+		}
 
 		/* 
 		Debug.Log("Cible : " + target);
@@ -223,13 +233,16 @@ public class QuadcopterControl : DroneControl
 			Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
 			//Everything is in the world's reference
 
-			//Rise the target position and velocity if too close to the ground
-			float requiredGroundClearance = 2f;
-			if(sensor.GetDistanceToGround() < requiredGroundClearance){
-				float currentClearance = sensor.GetDistanceToGround();
-				float delta = requiredGroundClearance - currentClearance;
-				expectedPosition.y += sensor.GetPosition().y + 2*delta;
-				expectedSpeed.y = Mathf.Max(expectedSpeed.y+delta,delta);
+			if(enableGroundClearance){
+				//Rise the target position and velocity if too close to the ground
+				float requiredGroundClearance = 2f;
+				if(sensor.GetDistanceToGround()<requiredGroundClearance){
+					float currentClearance = sensor.GetDistanceToGround();
+					float delta = requiredGroundClearance - currentClearance;
+					expectedPosition.y += sensor.GetPosition().y + 2*delta;
+					expectedSpeed.y = Mathf.Max(expectedSpeed.y+delta,delta);
+					target.transform.Translate(Vector3.up * delta, Space.World);//move the target up
+				}
 			}
 			
 			Vector3 speedCorrection = Vector3.zero;
@@ -245,7 +258,7 @@ public class QuadcopterControl : DroneControl
 			//Add the gravity in the acceleration/force required
 			Vector3 counterGravityAcceleration = - Physics.gravity;
 			accelerationCommand += counterGravityAcceleration;
-			accelerationCommand.y = Mathf.Max(accelerationCommand.y, 0);//we don't allow the drone to flip
+			accelerationCommand.y = Mathf.Max(accelerationCommand.y,0.1f);//we don't allow the drone to flip
 
 			//Now we have the acceleration required.
 			//We can find the angle and the trust to apply
