@@ -27,11 +27,72 @@ public class ChildControl : DroneControl
     //TODO child control
     public override void ControlLoop(){
 
-		
+		if(hasTarget){
+			GoToTarget();
+		}
 		
 
 	}
 
+	protected void GoToTarget(){
+		Vector3 currentPos3D = sensor.GetPosition();
+		Vector3 targetPos3D = target.transform.position;
+
+		Vector2 currentPos2D = new Vector2(currentPos3D.x,currentPos3D.z);
+		Vector2 targetPos2D = new Vector2(targetPos3D.x,targetPos3D.z);
+
+		float currentHeading = sensor.GetHeadingAsFloat();
+		float targetHeading = - Vector2.SignedAngle(Vector2.up, targetPos2D-currentPos2D);
+
+
+
+		float distance = (targetPos2D-currentPos2D).magnitude;
+		float angularDifference = targetHeading - currentHeading;
+
+		angularDifference = clampAngle180(angularDifference);
+
+		float speedCommand = (100f-1/distance)* (1-(Mathf.Abs(angularDifference)/180f));
+		float turningDifferentialCommand = Mathf.Sign(angularDifference) * 30f + angularDifference;
+		
+
+		speedCommand = Mathf.Clamp(speedCommand,0f,100f);
+
+
+		float[] thrust = new float[4];
+		for(int i = 0; i < numberOfThruster; i++){
+			thrust[i] = speedCommand; 
+		}
+
+		float turnMultiplicator = 1f;
+		turningDifferentialCommand *= turnMultiplicator;
+
+		thrust[0] += turningDifferentialCommand;
+		thrust[1] -= turningDifferentialCommand;
+		thrust[2] -= turningDifferentialCommand;
+		thrust[3] += turningDifferentialCommand;
+		
+		for(int i = 0; i < numberOfThruster; i++){
+			sim.SetThrusterThrust(i, thrust[i]);
+		}
+	}
+
+	//make sure the angle is withing +- 180°
+	protected float clampAngle180(float angle){
+		//we shift the range
+		angle += 180f;
+
+		//now we ensure a range within 0-360°
+		//TODO
+		angle = angle%360f;
+		if(angle<0){
+			angle += 360f;
+		}
+
+		//and we shift again
+		angle -= 180f;
+
+		return angle;
+	}
 
     
     protected override void HandleKeyboardInput(){

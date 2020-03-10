@@ -27,13 +27,21 @@ public class ChildNavigation : Navigation
 	}
 
     public override void StartMission(){
+        waypointValidationDistance = 0.05f;//5cm
+        waypointValidationAngularThreshold = 360f;
         ReleaseAttachment();
+        base.StartMission();
     }
 
     public override void Update(){
+        Vector3 waypointPosition = waypointIndicator.transform.position;
+        waypointPosition.y = sensor.GetPosition().y;
+        waypointIndicator.transform.position = waypointPosition;
+
         base.Update();
         if(debugClickStartMission){
             StartMission();
+            debugClickStartMission = false;
         }
     }
     
