@@ -276,7 +276,6 @@ public class QuadcopterControl : DroneControl
 			speedCorrection[1] = yPosPid.Update(expectedPosition[1], currentPosition[1], Time.deltaTime);
 			speedCorrection[2] = zPosPid.Update(expectedPosition[2], currentPosition[2], Time.deltaTime);
 			
-			
 			Vector3 accelerationCommand = Vector3.zero;
 			accelerationCommand[0] = xSpeedPid.Update(expectedSpeed[0]+speedCorrection[0], currentSpeed[0], Time.deltaTime);
 			accelerationCommand[1] = ySpeedPid.Update(expectedSpeed[1]+speedCorrection[1], currentSpeed[1], Time.deltaTime);
@@ -307,9 +306,9 @@ public class QuadcopterControl : DroneControl
 
 
 			//TODO : tester bangbang
-			float mainThrust = thrustEquilibrium;
-			float thrustPitchDifference = GetThrustDifferenceToPitch( requiredPitch );
-			float thrustRollDifference = GetThrustDifferenceToRoll( requiredRoll );
+			float mainThrust = totalThrust/4;
+			float thrustPitchDifference = GetThrustDifferenceToPitch( -1 * requiredPitch );
+			float thrustRollDifference = GetThrustDifferenceToRoll( -1 * requiredRoll );
 			Debug.Log(mainThrust + " ; P:" + requiredPitch + " ; R:" + requiredRoll);
 
 			sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference);
