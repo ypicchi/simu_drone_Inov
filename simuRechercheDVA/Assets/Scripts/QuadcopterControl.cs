@@ -215,10 +215,71 @@ public class QuadcopterControl : DroneControl
 		bangbang.StartMovement(sensor.GetPosition(), target.transform.position, Time.time);
 	}
 
+
+	private Vector3 GetSpeedCorrection(Vector3 expectedPosition, Vector3 currentPosition){
+
+		Vector3 speedCorrection = Vector3.zero;
+		speedCorrection[0] = xPosPid.Update(expectedPosition[0], currentPosition[0], Time.deltaTime);
+		speedCorrection[1] = yPosPid.Update(expectedPosition[1], currentPosition[1], Time.deltaTime);
+		speedCorrection[2] = zPosPid.Update(expectedPosition[2], currentPosition[2], Time.deltaTime);
+		return speedCorrection;
+	}
+
+	private Vector3 GetAccelerationCommand(Vector3 speedCorrection, Vector3 expectedSpeed, Vector3 currentSpeed){
+
+		Vector3 accelerationCommand = Vector3.zero;
+		accelerationCommand[0] = xSpeedPid.Update(expectedSpeed[0] + speedCorrection[0], currentSpeed[0], Time.deltaTime);
+		accelerationCommand[1] = ySpeedPid.Update(expectedSpeed[1] + speedCorrection[1], currentSpeed[1], Time.deltaTime);
+		accelerationCommand[2] = zSpeedPid.Update(expectedSpeed[2] + speedCorrection[2], currentSpeed[2], Time.deltaTime);
+
+		//Add the gravity in the acceleration/force required
+		Vector3 counterGravityAcceleration = - Physics.gravity;
+		accelerationCommand += counterGravityAcceleration;
+		accelerationCommand.y = Mathf.Max(accelerationCommand.y, 0.1f);//we don't allow the drone to flip
+
+		return accelerationCommand;
+	}
+
+	private float GetRequiredPitch(Vector3 forceVector){
+
+		Vector2 pitchAxis = new Vector2(forceVector.z, forceVector.y);
+		return - Vector2.SignedAngle(Vector2.up, pitchAxis);
+		//positive pitch means an acceleration in negative z
+	}
+
+
+	private float GetRequiredRoll(Vector3 forceVector){
+
+		Vector2 rollAxis = new Vector2(forceVector.x, forceVector.y);
+		return Vector2.SignedAngle(Vector2.up, rollAxis);
+		//positive roll = roll to the left, so an acceleration in negative x
+	}
+
+
+	private void applyThrusterThrust(float mainThrust, float thrustPitchDifference, float thrustRollDifference, float thrustYawDifference){
+
+		sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference - thrustYawDifference);
+		sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference - thrustRollDifference + thrustYawDifference);
+		sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference - thrustRollDifference - thrustYawDifference);
+		sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference + thrustRollDifference + thrustYawDifference);
+
+		/*
+		for(int i = 0; i < numberOfThruster; i++){
+			thrust[i] = thrustEquilibrium; 
+			sim.SetThrusterThrust(i, thrust[i]);
+		}
+		*/
+	}
+
+
+
+
 	private void GoToWaypoint(){
+		
 		if(hasTarget==false){
 			return;
 		}
+		
 		if(!bangbang.IsMoving){
 			bangbang.StartMovement(sensor.GetPosition(), target.transform.position, Time.time);
 		}
@@ -236,75 +297,40 @@ public class QuadcopterControl : DroneControl
 			if(enableGroundClearance){
 				//Rise the target position and velocity if too close to the ground
 				float requiredGroundClearance = 2f;
-				if(sensor.GetDistanceToGround()<requiredGroundClearance){
+				if(sensor.GetDistanceToGround() < requiredGroundClearance){
 					float currentClearance = sensor.GetDistanceToGround();
 					float delta = requiredGroundClearance - currentClearance;
-					expectedPosition.y += sensor.GetPosition().y + 2*delta;
-					expectedSpeed.y = Mathf.Max(expectedSpeed.y+delta,delta);
+					expectedPosition.y += sensor.GetPosition().y + 2 * delta;
+					expectedSpeed.y = Mathf.Max(expectedSpeed.y + delta, delta);
 					target.transform.Translate(Vector3.up * delta, Space.World);//move the target up
 				}
 			}
+
+			Vector3 speedCorrection = GetSpeedCorrection(expectedPosition, currentPosition);
 			
-			Vector3 speedCorrection = Vector3.zero;
-			speedCorrection[0] = xPosPid.Update(expectedPosition[0], currentPosition[0], Time.deltaTime);
-			speedCorrection[1] = yPosPid.Update(expectedPosition[1], currentPosition[1], Time.deltaTime);
-			speedCorrection[2] = zPosPid.Update(expectedPosition[2], currentPosition[2], Time.deltaTime);
-			
-			Vector3 accelerationCommand = Vector3.zero;
-			accelerationCommand[0] = xSpeedPid.Update(expectedSpeed[0]+speedCorrection[0], currentSpeed[0], Time.deltaTime);
-			accelerationCommand[1] = ySpeedPid.Update(expectedSpeed[1]+speedCorrection[1], currentSpeed[1], Time.deltaTime);
-			accelerationCommand[2] = zSpeedPid.Update(expectedSpeed[2]+speedCorrection[2], currentSpeed[2], Time.deltaTime);
-			
-			//Add the gravity in the acceleration/force required
-			Vector3 counterGravityAcceleration = - Physics.gravity;
-			accelerationCommand += counterGravityAcceleration;
-			accelerationCommand.y = Mathf.Max(accelerationCommand.y,0.1f);//we don't allow the drone to flip
+			Vector3 accelerationCommand = GetAccelerationCommand(speedCorrection, expectedSpeed, currentSpeed);
 
 			//Now we have the acceleration required.
 			//We can find the angle and the trust to apply
 
-
-
 			//Forces are in the drone's reference
-			Vector3 forceVector = accelerationCommand*mass;
-			float totalThrust = forceVector.magnitude;
-
-			Vector2 pitchAxis = new Vector2(forceVector.z, forceVector.y);
-			float requiredPitch = -Vector2.SignedAngle(Vector2.up, pitchAxis);
-			//positive pitch means an acceleration in negative z
-
-			Vector2 rollAxis = new Vector2(forceVector.x, forceVector.y);
-			float requiredRoll = Vector2.SignedAngle(Vector2.up, rollAxis);
-			//positive roll = roll to the left, so an acceleration in negative x
-
-			// YAW
+			Vector3 forceVector = accelerationCommand * mass;
+			
+			float requiredPitch = GetRequiredPitch(forceVector);
+			float requiredRoll = GetRequiredRoll(forceVector);
 			float requiredYaw = target.transform.eulerAngles.y;
 
+			float totalThrust = forceVector.magnitude;
+			float mainThrust = totalThrust / 4;
 
-
-			//TODO : tester bangbang
-			float mainThrust = totalThrust/4;
 			float thrustPitchDifference = GetThrustDifferenceToPitch( -1 * requiredPitch );
 			float thrustRollDifference = GetThrustDifferenceToRoll( -1 * requiredRoll );
 			float thrustYawDifference = 0f; //GetThrustDifferenceToYaw( requiredYaw );
 			
-	
 			//Debug.Log(Time.fixedTime + " ; pitch:" +  requiredPitch + " ; roll:" + requiredRoll + " ; yaw:" + requiredYaw);
 			//Debug.Log(Time.fixedTime + " ; p:" +  thrustPitchDifference + " ; r:" + thrustRollDifference + " ; y:" + thrustYawDifference);
 
-			//TODO : réguler les forces
-			sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference - thrustYawDifference);
-			sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference - thrustRollDifference + thrustYawDifference);
-			sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference - thrustRollDifference - thrustYawDifference);
-			sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference + thrustRollDifference + thrustYawDifference);
-			
-
-			/*
-			for(int i = 0; i < numberOfThruster; i++){
-				thrust[i] = thrustEquilibrium; 
-				sim.SetThrusterThrust(i, thrust[i]);
-			}
-			*/
+			applyThrusterThrust(mainThrust, thrustPitchDifference, thrustRollDifference, thrustYawDifference);
 			
 
 			//TODO temporary
@@ -312,12 +338,7 @@ public class QuadcopterControl : DroneControl
 			//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
 			//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
 			//float currentHeading = sensor.GetHeadingAsFloat();
-			/*
-			for(int i = 0; i < numberOfThruster; i++){
-				thrust[i] = totalThrust/4; 
-				sim.SetThrusterThrust(i, thrust[i]);
-			}
-			*/
+
 
 			/*
 			if(isFileOpen){
