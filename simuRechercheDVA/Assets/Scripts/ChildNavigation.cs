@@ -13,6 +13,7 @@ public class ChildNavigation : Navigation
     public bool debugClickStartMission = false;
 
     public override void Start(){
+        useWaypointY = false;
         base.Start();
         ConnectAttachment();
     }
@@ -34,10 +35,7 @@ public class ChildNavigation : Navigation
     }
 
     public override void Update(){
-        Vector3 waypointPosition = waypointIndicator.transform.position;
-        waypointPosition.y = sensor.GetPosition().y;
-        waypointIndicator.transform.position = waypointPosition;
-
+        
         base.Update();
         if(debugClickStartMission){
             StartMission();

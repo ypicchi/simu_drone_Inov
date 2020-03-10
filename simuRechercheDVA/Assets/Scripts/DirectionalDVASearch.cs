@@ -121,6 +121,7 @@ public class DirectionalDVASearch : Navigation
 		switch(state){
 		case "badHeading":
 			GenerateHeadingWaypoint(-120,120,30);
+			useWaypointY = false;
 			state = "findingHeading";
 			break;
 
@@ -128,11 +129,13 @@ public class DirectionalDVASearch : Navigation
 			heading = FindHeadingFromCurrentSegment();
 			currentSegmentMeasure.Clear();
 			GenerateHeadingWaypoint(heading-20,heading+20,5);
+			useWaypointY = false;
 			state = "refiningHeading";
 			break;
 
 		case "refiningHeading":
 			heading = FindHeadingFromCurrentSegment();
+			useWaypointY = false;
 			currentSegmentMeasure.Clear();
 			StepForward(stepDistance);
 			state = "goodHeading";
@@ -140,6 +143,7 @@ public class DirectionalDVASearch : Navigation
 
 		case "goodHeading":
 			StepForward(stepDistance);
+			useWaypointY = true;
 			if( ! IsSignalIncreasing()){
 				stepDistance /= 2;
 				currentSegmentMeasure.Clear();
@@ -155,7 +159,7 @@ public class DirectionalDVASearch : Navigation
 			state = "deliveringChild";
 			break;
 
-		case "deliveringChild"://TODO marche pas
+		case "deliveringChild":
 			targetPos = targetsFound[0];
 			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
 			if(sensor.GetDistanceToGround()<1f){

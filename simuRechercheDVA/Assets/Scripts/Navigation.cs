@@ -30,6 +30,9 @@ public abstract class Navigation : MonoBehaviour
 	
 	protected Queue<Pair<Vector3, Vector3>> mainWaypoints = new Queue<Pair<Vector3, Vector3>>();
 	
+	protected bool useWaypointY = true;
+
+
 	//Awake is made to initialize variables. It is called before any Start()
 	public virtual void Awake(){
 		ctrl = GetComponent<DroneControl>();
@@ -71,6 +74,11 @@ public abstract class Navigation : MonoBehaviour
     public virtual void Update()
     {
 		if(isMissionStarted){
+			if( ! useWaypointY){
+				Vector3 waypointPosition = waypointIndicator.transform.position;
+    			waypointPosition.y = sensor.GetPosition().y;
+        		waypointIndicator.transform.position = waypointPosition;
+			}
 			Vector3 linearDifference = waypointIndicator.transform.position-sensor.GetPosition();
 			Vector2 targetHeadingt = new Vector2(waypointIndicator.transform.forward.x,waypointIndicator.transform.forward.z);
 			float angularDifference = Vector2.Angle(targetHeadingt, sensor.GetHeading());
