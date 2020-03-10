@@ -8,6 +8,8 @@ yaw_mode = (6, "yaw")
 pitch_mode = (4, "pitch")
 bangbang_mode = (6, "bangbang")
 
+yaw_v2_mode = (5, "yaw_v2_mode")
+
 
 def format_data():
     fin = open("pid_tunning.txt", "rt")
@@ -58,6 +60,11 @@ def display(mode):
         actual_pitch = []
         thrust = []
 
+    elif(mode == yaw_v2_mode):
+        unity_yaw = []
+        heading_yaw = []
+        actual_angle = []
+        thrust = []
 
         
 
@@ -65,6 +72,8 @@ def display(mode):
         data = csv.reader(f, delimiter=';')
         
         for row in data:
+
+            #
 
             if(size==len(row) and len(row[len(row)-1]) > 0):
                 
@@ -97,13 +106,19 @@ def display(mode):
                     actual_speed = actual_speed + [float(row[4])]
                     thrust = thrust + [float(row[5])]
 
-
-
                 elif(mode == pitch_mode):
                     target_pitch = target_pitch + [float(row[1])]
                     actual_pitch = actual_pitch + [float(row[2])]
                     thrust = thrust + [float(row[3])]
 
+
+                elif(mode == yaw_v2_mode):
+                    unity_yaw = unity_yaw + [float(row[1])]
+                    heading_yaw = heading_yaw + [float(row[2])]
+                    actual_angle = actual_angle + [float(row[3])]
+                    thrust = thrust + [float(row[4])]
+
+                    
             
     #objective = np.array(objective)
     #vertical_speed = np.array(vertical_speed)
@@ -201,6 +216,26 @@ def display(mode):
 
         ax1.legend( ('objective', 'actual'))
         ax2.legend( ('objective', 'actual'))
+
+
+    elif(mode == yaw_v2_mode):
+        fig, (ax1, ax2, ax3) = plt.subplots(3)
+        fig.suptitle('PID tunning')
+        
+        ax1.plot(time, unity_yaw, 'r', time, actual_angle, 'b')
+        ax2.plot(time, heading_yaw, 'm', time, actual_angle, 'k')
+        ax3.plot(time, thrust, 'g--')
+        
+        fig.text(0.03, 0.75, 'unity_yaw', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.5, 'heading_yaw', ha='center', va='center', rotation='vertical')
+        fig.text(0.03, 0.25, 'Thrust', ha='center', va='center', rotation='vertical')
+
+        fig.text(0.5, 0.03, 'Time', ha='center', va='center')
+
+        ax1.legend( ('actual', 'objective'))
+        ax2.legend( ('actual', 'objective'))
+
+
         
     fig.show()
 
@@ -210,6 +245,6 @@ def display(mode):
 
 format_data()
 
-display( bangbang_mode )
+display( yaw_v2_mode )
 
 
