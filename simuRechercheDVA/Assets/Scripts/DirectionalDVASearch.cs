@@ -5,6 +5,7 @@ using UnityEngine;
 public class DirectionalDVASearch : Navigation
 {
 	
+	protected PayloadControler payloadCtrl;
 
 	public string state = "badHeading";
 	protected float heading;
@@ -12,17 +13,18 @@ public class DirectionalDVASearch : Navigation
 	protected float findPrecisionThreshold = 0.5f;
 	protected int dataPointNeededBeforeValidatingTheWaypoint = 0;
 	protected int dataPointAquiredSinceLastValidation = 0;
-	protected GameObject[] allChildsGameobject;
 
 
 	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
-	protected List<Vector3> targetsFound = new List<Vector3>();
+	
 
-    
+    public override void Awake(){
+		base.Awake();
+		payloadCtrl = GetComponent<PayloadControler>();
+	}
 
 	public override void Start(){
 		base.Start();
-		allChildsGameobject = GameObject.FindGameObjectsWithTag("Child");
 		StartMission();
 
 	}
@@ -163,9 +165,8 @@ public class DirectionalDVASearch : Navigation
 			targetPos = targetsFound[0];
 			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
 			if(sensor.GetDistanceToGround()<1f){
-				
-				allChildsGameobject[0].GetComponent<Navigation>().StartMission();
-					
+				payloadCtrl.ReleaseAChild();
+				//TODO childNav.targetsFound.Add(targetsFound[0]);
 				state = "childDelivered";
 			}
 			break;

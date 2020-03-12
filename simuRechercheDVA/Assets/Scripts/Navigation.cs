@@ -32,6 +32,8 @@ public abstract class Navigation : MonoBehaviour
 	
 	protected bool useWaypointY = true;
 
+	protected List<Vector3> targetsFound = new List<Vector3>();
+
 
 	//Awake is made to initialize variables. It is called before any Start()
 	public virtual void Awake(){

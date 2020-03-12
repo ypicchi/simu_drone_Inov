@@ -10,12 +10,17 @@ public class ChildNavigation : Navigation
     protected FixedJoint attachJoint;
     protected bool isAttached = false;
 
+
     public bool debugClickStartMission = false;
+
+    public override void Awake(){
+        ConnectAttachment();
+        base.Awake();
+    }
 
     public override void Start(){
         useWaypointY = false;
         base.Start();
-        ConnectAttachment();
     }
 
     protected override void StartLog(){
@@ -47,11 +52,13 @@ public class ChildNavigation : Navigation
         if(! isAttached){
             attachJoint = this.gameObject.AddComponent<FixedJoint>();
             attachJoint.connectedBody = parentDrone.GetComponent<Rigidbody>();
+            attachJoint.massScale = 0.09f;
             isAttached = true;
         }
     }
     protected void ReleaseAttachment(){
         if(isAttached){
+            this.gameObject.GetComponent<WheelJointSpawner>().CreateJoints();
             Destroy(attachJoint);
         }
     }

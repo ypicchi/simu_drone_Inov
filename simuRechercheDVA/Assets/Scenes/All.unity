@@ -292,10 +292,155 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6257679958631805631, guid: dc90aea5318734e4291b49ddb1ad0a58,
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
-      propertyPath: m_Name
-      value: Child
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_EnablePreprocessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0.13999939
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: -0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_EnablePreprocessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.13999939
+      objectReference: {fileID: 0}
+    - target: {fileID: 2308610503500257304, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372489757312543529, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: enableGroundClearance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372489757312543529, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: manualOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: -0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_EnablePreprocessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0.13999939
+      objectReference: {fileID: 0}
+    - target: {fileID: 3574123855912958115, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.13999939
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -0.01999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0.1000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_MassScale
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_EnablePreprocessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645357015024639103, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5611309256511625776, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6205880945605283617, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
@@ -305,7 +450,7 @@ PrefabInstance:
     - target: {fileID: 6205880945605283617, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.3877945
+      value: 6.3873
       objectReference: {fileID: 0}
     - target: {fileID: 6205880945605283617, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
@@ -352,6 +497,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6257679958631805631, guid: dc90aea5318734e4291b49ddb1ad0a58,
+        type: 3}
+      propertyPath: m_Name
+      value: Child
+      objectReference: {fileID: 0}
     - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: parentDrone
@@ -360,107 +510,12 @@ PrefabInstance:
     - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: debugClickStartMission
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7828526380157436631, guid: dc90aea5318734e4291b49ddb1ad0a58,
         type: 3}
       propertyPath: waypointValidationDistance
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3372489757312543529, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: enableGroundClearance
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3372489757312543529, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: manualOverride
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.x
-      value: -0.125
-      objectReference: {fileID: 0}
-    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.y
-      value: -0.01999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.z
-      value: 0.1000061
-      objectReference: {fileID: 0}
-    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_AutoConfigureConnectedAnchor
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4595039217146448072, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_MassScale
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.y
-      value: -0.01999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.z
-      value: 0.1000061
-      objectReference: {fileID: 0}
-    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_AutoConfigureConnectedAnchor
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 630612536746495739, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_MassScale
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.y
-      value: -0.01999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.z
-      value: -0.1000061
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_AutoConfigureConnectedAnchor
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442336380462296776, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_MassScale
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.y
-      value: -0.01999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.z
-      value: -0.1000061
-      objectReference: {fileID: 0}
-    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_AutoConfigureConnectedAnchor
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2275929818063189787, guid: dc90aea5318734e4291b49ddb1ad0a58,
-        type: 3}
-      propertyPath: m_MassScale
-      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc90aea5318734e4291b49ddb1ad0a58, type: 3}
@@ -802,10 +857,65 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: propellerYawTorqueMultiplier
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: propellerAnimationSpeedMultiplier
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070195190946575045, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: waypointValidationDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: waypointValidationAngularThreshold
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: manualOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: enableGroundClearance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5695683824817154127, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_Name
       value: Quadcopter
+      objectReference: {fileID: 0}
+    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7018856056097563414, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -876,16 +986,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 2.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: m_UseGravity
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6324250486879183528, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7298125510380590004, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
@@ -971,46 +1071,6 @@ PrefabInstance:
         type: 3}
       propertyPath: dragCoefficients.x
       value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: propellerYawTorqueMultiplier
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2584008151948179719, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: propellerAnimationSpeedMultiplier
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: manualOverride
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: waypointValidationDistance
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4614144869298956488, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: waypointValidationAngularThreshold
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3070195190946575045, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8544615066308981523, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}

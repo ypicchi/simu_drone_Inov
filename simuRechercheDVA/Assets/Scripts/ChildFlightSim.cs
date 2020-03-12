@@ -29,9 +29,13 @@ public class ChildFlightSim : DroneFlightSim
     public override void FixedUpdate(){
 
         for(int i=0;i<simProperties.ThrusterOffset.Length;i++){
-            float wheelTorque = - simProperties.ThrusterThrustValues[i] / (wheelRadius);
+            
             GameObject wheel = GameObject.Find("Wheel"+i.ToString());
-            wheel.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.up*wheelTorque);
+            Rigidbody wheelRb = wheel.GetComponent<Rigidbody>();
+            if(wheelRb != null){
+                float wheelTorque = - simProperties.ThrusterThrustValues[i] / (wheelRadius);
+                wheelRb.AddRelativeTorque(Vector3.up*wheelTorque);
+            }
 
         }
 	}

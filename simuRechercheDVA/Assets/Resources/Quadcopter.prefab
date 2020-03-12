@@ -4416,6 +4416,7 @@ GameObject:
   - component: {fileID: 5523172647426025564}
   - component: {fileID: 4614144869298956488}
   - component: {fileID: 564594640383613354}
+  - component: {fileID: 9083175220934085433}
   - component: {fileID: 8544615066308981523}
   m_Layer: 0
   m_Name: Quadcopter
@@ -4517,6 +4518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modeDisplayText: 
   manualOverride: 0
+  enableGroundClearance: 1
   altitudePid:
     pFactor: 3
     iFactor: 0.03
@@ -4567,6 +4569,7 @@ MonoBehaviour:
   samplingInterval: 0.2
   waypointValidationDistance: 5
   waypointValidationAngularThreshold: 10
+  state: badHeading
 --- !u!114 &564594640383613354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4584,6 +4587,18 @@ MonoBehaviour:
   climbAngleDisplayText: 
   realClimbAngleDisplayText: 
   forwardSpeedDisplayText: 
+--- !u!114 &9083175220934085433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695683824817154127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6413f56c1bde22d4b81f2e79e12974a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8544615066308981523
 MonoBehaviour:
   m_ObjectHideFlags: 0
