@@ -23,8 +23,20 @@ public class QuadcopterControl : DroneControl
 	//public PID speedPid = new PID(400f, 800f, 10f);
 
 
+	public PID yawPid = new PID(0.2f, 0f, 0.3f);
+	private float yawThrustLimit = 10f;
+
+
+	private float pitchTarget = 0f;
+	private PID pitchPid = new PID(10f, 0f, 2f);
+	private float pitchThrustLimit = 100f;
+
+	private float rollTarget = 0f;
+	private PID rollPid = new PID(10f, 0f, 2f);
+	private float rollThrustLimit = 100f;
+
 	public StreamWriter file;
-	public Boolean isFileOpen = false;
+	private Boolean isFileOpen = false;
 
 	protected int numberOfThruster;
 	protected bool needToRunManual = false;
@@ -109,9 +121,88 @@ public class QuadcopterControl : DroneControl
 		return thrustCommand;
 	}
 
+
+	//TODO : change name : actual => current
+	private float GetThrustDifferenceToYaw( float targetAngle ){
+
+		float thrustDifference = 0f;
+
+		//float actualAngle = sensor.GetUnityYaw(); //good but dirty
+		float actualAngle = sensor.GetHeadingAsFloat(); //OK-ish
+	
+		float targetAngleDifference = 0f;
+		float actualAngleDifference = Mathf.DeltaAngle(actualAngle, targetAngle);
+		
+		thrustDifference = yawPid.Update(targetAngleDifference, actualAngleDifference, Time.deltaTime);
+
+		if( Math.Abs(thrustDifference) > yawThrustLimit){
+			float sign  = Math.Abs(thrustDifference) / thrustDifference;
+			thrustDifference = yawThrustLimit * sign;
+		}
+
+		/*
+		Debug.Log(Time.fixedTime);
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetAngle + ";" + actualAngle + ";"  + targetAngleDifference + ";" + actualAngleDifference + ";" + thrustDifference);
+		}
+		*/
+
+		return thrustDifference;
+	}
+
+	private float GetThrustDifferenceToPitch(float targetPitch){
+
+		float thrustDifference = 0f;
+		float actualPitch = sensor.GetPitch();
+
+		thrustDifference = pitchPid.Update(targetPitch, actualPitch, Time.deltaTime);
+
+		if( Math.Abs(thrustDifference) > pitchThrustLimit){
+			float sign  = Math.Abs(thrustDifference) / thrustDifference;
+			thrustDifference = pitchThrustLimit * sign;
+		}
+
+		/*
+		Debug.Log(targetPitch + " ; " + actualPitch);
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetPitch + ";" + actualPitch + ";" + thrustDifference);
+		}
+		*/
+
+		return thrustDifference;
+	}
+
+	private float GetThrustDifferenceToRoll(float targetRoll){
+
+		float thrustDifference = 0f;
+
+		// Unity Z rotation is not like Roll
+		float actualRoll = -1 * sensor.GetRoll();
+
+		thrustDifference = rollPid.Update(targetRoll, actualRoll, Time.deltaTime);
+
+		if( Math.Abs(thrustDifference) > rollThrustLimit){
+			float sign  = Math.Abs(thrustDifference) / thrustDifference;
+			thrustDifference = rollThrustLimit * sign;
+		}
+
+		/*
+		Debug.Log(Time.fixedTime);
+		if(isFileOpen){
+			file.WriteLine(Time.fixedTime + ";" + targetRoll + ";" + actualRoll + ";" + thrustDifference);
+		}
+		*/
+
+		return thrustDifference;
+	}
+
 	public override void SetWaypoint(GameObject waypointIndicator){
 		base.SetWaypoint(waypointIndicator);
+<<<<<<< HEAD
 		bangbang.StartMovement(sensor.GetPosition(),target.transform.position,transform.TransformDirection(sensor.GetSpeed()),Time.time);
+=======
+		bangbang.StartMovement(sensor.GetPosition(), target.transform.position, Time.time);
+>>>>>>> 34189ec2178b8aef5d4f24c0e84401d56f936ed6
 	}
 
 	private void GoToWaypoint(){
@@ -151,6 +242,7 @@ public class QuadcopterControl : DroneControl
 
 		//Everything is in the world's reference
 		
+
 		/*
 		if(enableGroundClearance){
 			//Rise the target position and velocity if too close to the ground
@@ -204,20 +296,49 @@ public class QuadcopterControl : DroneControl
 		
 		float targetHeading = target.transform.eulerAngles.y;
 
+		
+		// YAW
+		float requiredYaw = target.transform.eulerAngles.y;
+
+
+
+		//TODO : tester bangbang
+		float mainThrust = totalThrust/4;
+		float thrustPitchDifference = GetThrustDifferenceToPitch( -1 * requiredPitch );
+		float thrustRollDifference = GetThrustDifferenceToRoll( -1 * requiredRoll );
+		float thrustYawDifference = 0f; //GetThrustDifferenceToYaw( requiredYaw );
+		
+
+		//Debug.Log(Time.fixedTime + " ; pitch:" +  requiredPitch + " ; roll:" + requiredRoll + " ; yaw:" + requiredYaw);
+		//Debug.Log(Time.fixedTime + " ; p:" +  thrustPitchDifference + " ; r:" + thrustRollDifference + " ; y:" + thrustYawDifference);
+
+		//TODO : réguler les forces
+		sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference - thrustYawDifference);
+		sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference - thrustRollDifference + thrustYawDifference);
+		sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference - thrustRollDifference - thrustYawDifference);
+		sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference + thrustRollDifference + thrustYawDifference);
+		
+
+		/*
+		for(int i = 0; i < numberOfThruster; i++){
+			thrust[i] = thrustEquilibrium; 
+			sim.SetThrusterThrust(i, thrust[i]);
+		}
+		*/
+		
+
 		//TODO temporary
-		transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0,targetHeading,0);
+		//transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0, targetHeading, 0);
 		//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
 		//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
-		
-		
-		
-		//float currentHeading = Sensor.getHeadingAsfloat();
-
-
+		//float currentHeading = sensor.GetHeadingAsFloat();
+		/*
 		for(int i = 0; i < numberOfThruster; i++){
 			thrust[i] = totalThrust/4; 
 			sim.SetThrusterThrust(i, thrust[i]);
 		}
+		*/
+		
 
 
 		if(isFileOpen){
