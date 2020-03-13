@@ -6,7 +6,7 @@ public class BangBangVector3 : BangBang <Vector3>
 {
     
 	
-    protected BangBangFloat[] linearBangbang = new BangBangFloat[3];
+    protected AdvBangBang[] linearBangbang = new AdvBangBang[3];
 	protected Vector3 maxSpeed;
 	protected Vector3 maxAcceleration;
 	protected Vector3 speedFactor;
@@ -14,22 +14,15 @@ public class BangBangVector3 : BangBang <Vector3>
     public BangBangVector3(Vector3 maxSpeed, Vector3 maxAcceleration){
 		this.maxSpeed = maxSpeed;
 		this.maxAcceleration = maxAcceleration;
-		/*
-		for(int i=0;i<3;i++){
-			linearBangbang[i] = new BangBangFloat(maxSpeed[i],maxAcceleration[i]);
-		}
-		*/
-		linearBangbang[0] = new BangBangFloat(maxSpeed[0],maxAcceleration[0]);
-		linearBangbang[1] = new BangBangFloat(maxSpeed[1],maxAcceleration[1]);
-		linearBangbang[2] = new BangBangFloat(maxSpeed[2],maxAcceleration[2]);
+		
+		linearBangbang[0] = new AdvBangBang(maxSpeed[0],maxAcceleration[0]);
+		linearBangbang[1] = new AdvBangBang(maxSpeed[1],maxAcceleration[1]);
+		linearBangbang[2] = new AdvBangBang(maxSpeed[2],maxAcceleration[2]);
     }
 
 	public override void StartMovement(Vector3 startPos,Vector3 targetPos,float currentTime){
 		base.StartMovement(startPos,targetPos,currentTime);
 
-
-
-		
 		for (int i=0;i<3;i++){
 			linearBangbang[i].StartMovement(startPos[i],targetPos[i],currentTime);
 		}
@@ -43,8 +36,24 @@ public class BangBangVector3 : BangBang <Vector3>
 				speedFactor[i] = currentRemainingTime/longestTime;
 			}
 		}
-		
-		
+	}
+
+	public override void StartMovement(Vector3 startPos,Vector3 targetPos,Vector3 startSpeed,float currentTime){
+		base.StartMovement(startPos,targetPos,startSpeed,currentTime);
+
+		for (int i=0;i<3;i++){
+			linearBangbang[i].StartMovement(startPos[i],targetPos[i],startSpeed[i],currentTime);
+		}
+
+		float longestTime = TimeRemaining(currentTime);
+		if(longestTime == 0){
+			speedFactor = Vector3.one;
+		}else{
+			for (int i=0;i<3;i++){
+				float currentRemainingTime = linearBangbang[i].TimeRemaining(currentTime);
+				speedFactor[i] = currentRemainingTime/longestTime;
+			}
+		}
 	}
 
 	public override float TimeRemaining(float currentTime){

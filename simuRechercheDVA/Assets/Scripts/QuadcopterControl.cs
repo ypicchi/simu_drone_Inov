@@ -111,15 +111,34 @@ public class QuadcopterControl : DroneControl
 
 	public override void SetWaypoint(GameObject waypointIndicator){
 		base.SetWaypoint(waypointIndicator);
-		bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
+		bangbang.StartMovement(sensor.GetPosition(),target.transform.position,transform.TransformDirection(sensor.GetSpeed()),Time.time);
 	}
 
 	private void GoToWaypoint(){
 		if(hasTarget==false){
 			return;
 		}
+
+		Vector3 currentPosition = sensor.GetPosition();
+		Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
+		
+		if(enableGroundClearance){
+			//Rise the target position and velocity if too close to the ground
+			float requiredGroundClearance = 2f;
+			if(sensor.GetDistanceToGround()<requiredGroundClearance){
+				float currentClearance = sensor.GetDistanceToGround();
+				float delta = requiredGroundClearance - currentClearance;
+				
+				if(target.transform.position.y < currentPosition.y + 2*delta){//TODO marche pas. Le waypoint se met pas a jours
+					//target.transform.Translate(Vector3.up * delta * 2, Space.World);//move the target up
+					target.transform.position = new Vector3(target.transform.position.x,currentPosition.y + 2*delta,target.transform.position.z);
+					bangbang.StartMovement(currentPosition,target.transform.position,currentSpeed,Time.time);
+				}
+			}
+		}
+
 		if(!bangbang.IsMoving){
-			bangbang.StartMovement(sensor.GetPosition(),target.transform.position,Time.time);
+			bangbang.StartMovement(currentPosition,target.transform.position,currentSpeed,Time.time);
 		}
 		
 		//TODO limitation : on considere que le CG est au centre de tout les moteurs. 
@@ -128,24 +147,26 @@ public class QuadcopterControl : DroneControl
 		Vector3[] tmp = bangbang.GetTarget(Time.time);
 		Vector3 expectedPosition = tmp[0];
 		Vector3 expectedSpeed = tmp[1];
-		Vector3 currentPosition = sensor.GetPosition();
-		Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
+		
 
 		//Everything is in the world's reference
-
+		
+		/*
 		if(enableGroundClearance){
 			//Rise the target position and velocity if too close to the ground
 			float requiredGroundClearance = 2f;
 			if(sensor.GetDistanceToGround()<requiredGroundClearance){
 				float currentClearance = sensor.GetDistanceToGround();
 				float delta = requiredGroundClearance - currentClearance;
-				expectedPosition.y += sensor.GetPosition().y + 2*delta;
-				expectedSpeed.y = Mathf.Max(expectedSpeed.y+delta,delta);
+				expectedPosition.y += 2*delta;
+				expectedSpeed.y += delta;
 				if(target.transform.position.y<expectedPosition.y){
-					target.transform.Translate(Vector3.up * delta, Space.World);//move the target up
+					target.transform.Translate(Vector3.up * delta * 2, Space.World);//move the target up
+					bangbang.StartMovement(currentPosition,target.transform.position,currentSpeed,Time.time);
 				}
 			}
 		}
+		*/
 		
 		Vector3 speedCorrection = Vector3.zero;
 		speedCorrection[0] = xPosPid.Update(expectedPosition[0], currentPosition[0], Time.deltaTime);
@@ -168,7 +189,6 @@ public class QuadcopterControl : DroneControl
 
 
 
-		//Forces are in the drone's reference
 		Vector3 forceVector = accelerationCommand*(droneMass+payloadCtrl.GetPayloadMass());
 		float totalThrust = forceVector.magnitude;
 
@@ -203,7 +223,7 @@ public class QuadcopterControl : DroneControl
 		if(isFileOpen){
 			int axis = 2;
 			file.WriteLine(Time.fixedTime + ";" + expectedPosition[axis] 
-				+ ";" + currentPosition[axis] + ";" + (expectedSpeed[axis]+speedCorrection[axis])
+				+ ";" + currentPosition[axis] + ";" + (expectedSpeed[axis]/*+speedCorrection[axis]*/)
 				+ ";" + currentSpeed[axis] + ";" + totalThrust);
 		}
 		
