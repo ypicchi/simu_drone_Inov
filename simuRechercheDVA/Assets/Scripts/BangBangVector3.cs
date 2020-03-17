@@ -6,7 +6,7 @@ public class BangBangVector3 : BangBang <Vector3>
 {
     
 	
-    protected AdvBangBang[] linearBangbang = new AdvBangBang[3];
+    protected BangBangFloat[] linearBangbang = new BangBangFloat[3];
 	protected Vector3 maxSpeed;
 	protected Vector3 maxAcceleration;
 	protected Vector3 speedFactor;
@@ -15,9 +15,9 @@ public class BangBangVector3 : BangBang <Vector3>
 		this.maxSpeed = maxSpeed;
 		this.maxAcceleration = maxAcceleration;
 		
-		linearBangbang[0] = new AdvBangBang(maxSpeed[0],maxAcceleration[0]);
-		linearBangbang[1] = new AdvBangBang(maxSpeed[1],maxAcceleration[1]);
-		linearBangbang[2] = new AdvBangBang(maxSpeed[2],maxAcceleration[2]);
+		linearBangbang[0] = new BangBangFloat(maxSpeed[0],maxAcceleration[0]);
+		linearBangbang[1] = new BangBangFloat(maxSpeed[1],maxAcceleration[1]);
+		linearBangbang[2] = new BangBangFloat(maxSpeed[2],maxAcceleration[2]);
     }
 
 	public override void StartMovement(Vector3 startPos,Vector3 targetPos,float currentTime){

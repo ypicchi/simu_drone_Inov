@@ -52,7 +52,7 @@ public class ChildNavigation : Navigation
         if(! isAttached){
             attachJoint = this.gameObject.AddComponent<FixedJoint>();
             attachJoint.connectedBody = parentDrone.GetComponent<Rigidbody>();
-            attachJoint.massScale = 0.09f;
+            attachJoint.connectedMassScale = 0.09f;
             isAttached = true;
         }
     }
@@ -63,10 +63,23 @@ public class ChildNavigation : Navigation
         }
     }
 
-    //TODO child Navigation
+    
     protected override void GenerateNextNavigationWaypoint(){
-
+        if(navigationWaypoints.Count<=0){
+            if(mainWaypoints.Count>0){
+                navigationWaypoints.Push(mainWaypoints.Peek());
+            }else{
+                Debug.Log("Child doesn't know where to go");
+            }
+            
+        }
+        
+        //in case no waypoint are found, we don't change the order, ie : we hover in place
+		if(navigationWaypoints.Count>0){
+			UpdateWaypoint();
+		}
     }
+
 	
 	protected override List<Vector3> ComputeTargetsPositions(){
         //TODO

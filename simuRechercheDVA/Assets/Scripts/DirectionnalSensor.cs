@@ -15,9 +15,25 @@ public class DirectionnalSensor : Sensor
 	}
 
     protected float DirectionalMultiplier(Vector3 source){
+        
+        //mode reel gimbal
+        Vector3 heading = transform.forward;
+        heading.y = 0;
+        Vector3 targetHeading = source - fromWhere;
+        float angle = Vector3.Angle(heading, targetHeading);
+        
+        /*
+        //mode reel fixe
         Vector3 heading = transform.forward;
         Vector3 targetHeading = source - fromWhere;
         float angle = Vector3.Angle(heading, targetHeading);
+        */
+        /*
+        //mode cylindre
+        Vector2 heading = new Vector2(transform.forward.x,transform.forward.z);
+        Vector3 targetHeading = source - fromWhere;
+        float angle = Vector2.Angle(heading, new Vector2(targetHeading.x,targetHeading.z));
+        */
         return Map(1f,0f,0f,180f,angle);
     }
 

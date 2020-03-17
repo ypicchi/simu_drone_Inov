@@ -29,11 +29,14 @@ public abstract class Navigation : MonoBehaviour
 	protected bool isSearching = false;
 	
 	protected Queue<Pair<Vector3, Vector3>> mainWaypoints = new Queue<Pair<Vector3, Vector3>>();
+	protected Stack<Pair<Vector3, Vector3>> navigationWaypoints = new Stack<Pair<Vector3, Vector3>>();
 	
 	protected bool useWaypointY = true;
 
 	protected List<Vector3> targetsFound = new List<Vector3>();
 
+
+	public bool enableGroundClearance = true;
 
 	//Awake is made to initialize variables. It is called before any Start()
 	public virtual void Awake(){
@@ -68,7 +71,7 @@ public abstract class Navigation : MonoBehaviour
 		isMissionStarted = true;
 		isSearching = true;
 		GenerateMainWaypoint();
-		GenerateNextNavigationWaypoint();
+		GenerateNexWaypoint();
 		StartLog();
     }
 
@@ -85,7 +88,8 @@ public abstract class Navigation : MonoBehaviour
 			Vector2 targetHeadingt = new Vector2(waypointIndicator.transform.forward.x,waypointIndicator.transform.forward.z);
 			float angularDifference = Vector2.Angle(targetHeadingt, sensor.GetHeading());
 			if(ValidateWaypoint(linearDifference,angularDifference)){
-				GenerateNewWaypoint();
+				OnWaypointValidation();
+				GenerateNexWaypoint();
 			}
 			
 			float power = sensor.GetSignalPower(transform.position);
@@ -107,10 +111,10 @@ public abstract class Navigation : MonoBehaviour
 		DataPoint currentPoint = new DataPoint(power,sensor.GetPosition(),
 			new Vector3(sensor.GetPitch(),heading,sensor.GetRoll()));
 		fileLog.Write(currentPoint.ToWSVLine());
-		LoggingOverload(currentPoint);
+		OnLoggingDataPoint(currentPoint);
 	}
 
-	protected virtual void LoggingOverload(DataPoint currentPoint){
+	protected virtual void OnLoggingDataPoint(DataPoint currentPoint){
 
 	}
 
@@ -125,12 +129,34 @@ public abstract class Navigation : MonoBehaviour
 		mainWaypoints.Enqueue(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
 	}
 
+	public void AddNavigationWaypoint(Vector3 nextPoint){
+		AddNavigationWaypoint(nextPoint, Vector3.zero);
+	}
+	public void AddNavigationWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
+		navigationWaypoints.Push(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
+	}
+
+	public void UpdateWaypoint(){
+		Pair<Vector3, Vector3> tmp = navigationWaypoints.Peek();
+		waypointIndicator.transform.position = tmp.First;
+		waypointIndicator.transform.eulerAngles = tmp.Second;
+		ctrl.SetWaypoint(waypointIndicator);
+	}
+
 	public void ClearWaypoint(){
 		mainWaypoints.Clear();
 	}
 
-	protected void GenerateNewWaypoint(){
+	public void ClearNavigationWaypoint(){
+		navigationWaypoints.Clear();
+	}
+
+	protected void GenerateNexWaypoint(){
 		GenerateNextNavigationWaypoint();
+	}
+
+	protected virtual void OnWaypointValidation(){
+		navigationWaypoints.Pop();
 	}
 	
 	protected void GenerateRandomWaypoint(){

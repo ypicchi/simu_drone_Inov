@@ -50,7 +50,8 @@ public class QuadcopterControl : DroneControl
 	public PID ySpeedPid = new PID(1f, 0f, 0f);
 	public PID zSpeedPid = new PID(1f, 0f, 0f);
 
-	protected GameObject[] allChildsGameobject;
+	
+    public int axisRecorded = 2;
 
 	//Awake is made to initialize variables. It is called before any Start()
 	public override void Awake(){
@@ -61,7 +62,6 @@ public class QuadcopterControl : DroneControl
 
 		sim = GetComponent<DroneFlightSim>();
 		DroneSimProperties simProperties = GetComponent<DroneSimProperties>();
-		allChildsGameobject = GameObject.FindGameObjectsWithTag("Child");
 
 
 		thrust = simProperties.ThrusterThrustValues;
@@ -72,7 +72,7 @@ public class QuadcopterControl : DroneControl
 		Debug.Log("Cible_position : " + target.transform.position);
 		Debug.Log("Cible_angle : " + target.transform.eulerAngles.y);
 		*/
-		bangbang = new BangBangVector3(Vector3.one * 20f, Vector3.one * 3f);
+		bangbang = new BangBangVector3(Vector3.one * 10f, Vector3.one * 6f);
 	}
 
     
@@ -198,11 +198,8 @@ public class QuadcopterControl : DroneControl
 
 	public override void SetWaypoint(GameObject waypointIndicator){
 		base.SetWaypoint(waypointIndicator);
-<<<<<<< HEAD
 		bangbang.StartMovement(sensor.GetPosition(),target.transform.position,transform.TransformDirection(sensor.GetSpeed()),Time.time);
-=======
-		bangbang.StartMovement(sensor.GetPosition(), target.transform.position, Time.time);
->>>>>>> 34189ec2178b8aef5d4f24c0e84401d56f936ed6
+
 	}
 
 	private void GoToWaypoint(){
@@ -212,7 +209,7 @@ public class QuadcopterControl : DroneControl
 
 		Vector3 currentPosition = sensor.GetPosition();
 		Vector3 currentSpeed = transform.TransformDirection(sensor.GetSpeed());
-		
+		/*
 		if(enableGroundClearance){
 			//Rise the target position and velocity if too close to the ground
 			float requiredGroundClearance = 2f;
@@ -227,7 +224,7 @@ public class QuadcopterControl : DroneControl
 				}
 			}
 		}
-
+		*/
 		if(!bangbang.IsMoving){
 			bangbang.StartMovement(currentPosition,target.transform.position,currentSpeed,Time.time);
 		}
@@ -294,30 +291,45 @@ public class QuadcopterControl : DroneControl
 		//positive roll = roll to the left, so an acceleration in negative x
 
 		
-		float targetHeading = target.transform.eulerAngles.y;
-
 		
+
+		bool usePhysicalTorque = false;
+		if(usePhysicalTorque){
 		// YAW
-		float requiredYaw = target.transform.eulerAngles.y;
+			float requiredYaw = target.transform.eulerAngles.y;
 
 
 
-		//TODO : tester bangbang
-		float mainThrust = totalThrust/4;
-		float thrustPitchDifference = GetThrustDifferenceToPitch( -1 * requiredPitch );
-		float thrustRollDifference = GetThrustDifferenceToRoll( -1 * requiredRoll );
-		float thrustYawDifference = 0f; //GetThrustDifferenceToYaw( requiredYaw );
-		
+			//TODO : tester bangbang
+			float mainThrust = totalThrust/4;
+			float thrustPitchDifference = GetThrustDifferenceToPitch( -1 * requiredPitch );
+			float thrustRollDifference = GetThrustDifferenceToRoll( -1 * requiredRoll );
+			float thrustYawDifference = 0f; //GetThrustDifferenceToYaw( requiredYaw );
+			
 
-		//Debug.Log(Time.fixedTime + " ; pitch:" +  requiredPitch + " ; roll:" + requiredRoll + " ; yaw:" + requiredYaw);
-		//Debug.Log(Time.fixedTime + " ; p:" +  thrustPitchDifference + " ; r:" + thrustRollDifference + " ; y:" + thrustYawDifference);
+			//Debug.Log(Time.fixedTime + " ; pitch:" +  requiredPitch + " ; roll:" + requiredRoll + " ; yaw:" + requiredYaw);
+			//Debug.Log(Time.fixedTime + " ; p:" +  thrustPitchDifference + " ; r:" + thrustRollDifference + " ; y:" + thrustYawDifference);
 
-		//TODO : réguler les forces
-		sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference - thrustYawDifference);
-		sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference - thrustRollDifference + thrustYawDifference);
-		sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference - thrustRollDifference - thrustYawDifference);
-		sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference + thrustRollDifference + thrustYawDifference);
-		
+			//TODO : réguler les forces
+			sim.SetThrusterThrust(0, mainThrust + thrustPitchDifference + thrustRollDifference - thrustYawDifference);
+			sim.SetThrusterThrust(1, mainThrust + thrustPitchDifference - thrustRollDifference + thrustYawDifference);
+			sim.SetThrusterThrust(2, mainThrust - thrustPitchDifference - thrustRollDifference - thrustYawDifference);
+			sim.SetThrusterThrust(3, mainThrust - thrustPitchDifference + thrustRollDifference + thrustYawDifference);
+		}else{
+			float targetHeading = target.transform.eulerAngles.y;
+
+			
+			transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0, targetHeading, 0);
+			//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
+			//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
+			//float currentHeading = sensor.GetHeadingAsFloat();
+			
+			for(int i = 0; i < numberOfThruster; i++){
+				thrust[i] = totalThrust/4; 
+				sim.SetThrusterThrust(i, thrust[i]);
+			}
+			
+		}
 
 		/*
 		for(int i = 0; i < numberOfThruster; i++){
@@ -342,7 +354,7 @@ public class QuadcopterControl : DroneControl
 
 
 		if(isFileOpen){
-			int axis = 2;
+			int axis = axisRecorded;
 			file.WriteLine(Time.fixedTime + ";" + expectedPosition[axis] 
 				+ ";" + currentPosition[axis] + ";" + (expectedSpeed[axis]/*+speedCorrection[axis]*/)
 				+ ";" + currentSpeed[axis] + ";" + totalThrust);

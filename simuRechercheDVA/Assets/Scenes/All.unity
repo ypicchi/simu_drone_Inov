@@ -862,6 +862,16 @@ PrefabInstance:
       propertyPath: enableGroundClearance
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: manualOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523172647426025564, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
+        type: 3}
+      propertyPath: axisRecorded
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5695683824817154127, guid: b87f9ffb0f2c0dd48ba1a2a1c3672c1f,
         type: 3}
       propertyPath: m_Name

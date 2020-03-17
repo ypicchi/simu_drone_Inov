@@ -15,7 +15,7 @@ public class PlaneBasicSearchBehavior : Navigation
 
 
 
-	protected override void LoggingOverload(DataPoint currentPoint){
+	protected override void OnLoggingDataPoint(DataPoint currentPoint){
 		allDataPoint.Add(currentPoint);
 	}
 

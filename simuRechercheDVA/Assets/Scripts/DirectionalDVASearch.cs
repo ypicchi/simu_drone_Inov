@@ -17,7 +17,8 @@ public class DirectionalDVASearch : Navigation
 
 	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
 	
-
+	
+	protected bool hadReachedClearanceRequest = true;
     public override void Awake(){
 		base.Awake();
 		payloadCtrl = GetComponent<PayloadControler>();
@@ -35,25 +36,68 @@ public class DirectionalDVASearch : Navigation
 		waypointValidationAngularThreshold = 1f;
 	}
 	
-	protected override void LoggingOverload(DataPoint currentPoint){
+	protected override void OnLoggingDataPoint(DataPoint currentPoint){
 		currentSegmentMeasure.Add(currentPoint);
 		dataPointAquiredSinceLastValidation++;
 	}
 
+	protected override bool ValidateWaypoint(Vector3 linearDifference,float angularDifference){
+		bool hasAquiredEnoughPoints = dataPointAquiredSinceLastValidation>=dataPointNeededBeforeValidatingTheWaypoint;
+		return base.ValidateWaypoint(linearDifference,angularDifference) && (hasAquiredEnoughPoints || ! isSearching);
+	}
+
+	public override void Update() {
+		base.Update();
+		if(enableGroundClearance){
+			//Rise the target position if too close to the ground
+			Vector3 currentPosition = sensor.GetPosition();
+			float requiredGroundClearance = 5f;
+			float currentClearance = sensor.GetDistanceToGround();
+			if(currentClearance<requiredGroundClearance){
+				float delta = requiredGroundClearance - currentClearance;
+				
+				if(waypointIndicator.transform.position.y < currentPosition.y){
+					Vector3 nextPoint = currentPosition + Vector3.up * 3 * delta;
+
+					navigationWaypoints.Peek().First += Vector3.up * 3 * delta;
+
+					if(hadReachedClearanceRequest){
+					
+						AddNavigationWaypoint(nextPoint,waypointIndicator.transform.eulerAngles);
+						UpdateWaypoint();
+						Debug.Log("ground detected");
+						hadReachedClearanceRequest = false;
+					}
+
+					
+				}
+			}
+		}
+	}
+
+
+	protected override void OnWaypointValidation(){
+		base.OnWaypointValidation();
+		hadReachedClearanceRequest = true;
+	}
+	
+
 	
 	protected override void GenerateNextNavigationWaypoint(){
 		
-		if(mainWaypoints.Count<=0){
-			SelectMode();
-		}
-		
-		if(dataPointAquiredSinceLastValidation>=dataPointNeededBeforeValidatingTheWaypoint || ! isSearching){
-			Pair<Vector3, Vector3> tmp = mainWaypoints.Dequeue();
-			waypointIndicator.transform.position = tmp.First;
-			waypointIndicator.transform.eulerAngles = tmp.Second;
-			ctrl.SetWaypoint(waypointIndicator);
+		if(navigationWaypoints.Count<=0){
+			if(mainWaypoints.Count<=0){
+				SelectMode();
+			}
+			navigationWaypoints.Push(mainWaypoints.Dequeue());
 			dataPointAquiredSinceLastValidation = 0;
 		}
+
+		//in case no waypoint are found, we don't change the order, ie : we hover in place
+		if(navigationWaypoints.Count>0){
+			UpdateWaypoint();
+		}
+		
 	}
 
 
@@ -156,7 +200,7 @@ public class DirectionalDVASearch : Navigation
 
 		case "startDeliveringChild":
 			Vector3 targetPos = targetsFound[0];
-			ctrl.enableGroundClearance = false;
+			enableGroundClearance = false;
 			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
 			state = "deliveringChild";
 			break;
@@ -165,21 +209,22 @@ public class DirectionalDVASearch : Navigation
 			targetPos = targetsFound[0];
 			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
 			if(sensor.GetDistanceToGround()<1f){
-				payloadCtrl.ReleaseAChild();
+				payloadCtrl.ReleaseAChild(targetPos);
 				//TODO childNav.targetsFound.Add(targetsFound[0]);
 				state = "childDelivered";
 			}
 			break;
 
 		case "childDelivered":
-			ctrl.enableGroundClearance = true;
+			enableGroundClearance = true;
+			AddWaypoint(targetsFound[0] + Vector3.up * 2);
 			state = "??";//TODO more than one child
 			break;
 		default:
 			Debug.Log("Unknown state : "+state);
 			break;
 		}
-		Debug.Log("Next state : "+state);
+		//Debug.Log("Next state : "+state);
 		
 
 		
@@ -216,14 +261,14 @@ public class DirectionalDVASearch : Navigation
 
 		if(sensor.GetDistanceToGround()>rangeFinderRange){
 			//far from the ground
-			basePosition.y-= (rangeFinderRange*0.8f);
-			//we only go down for 80% of the theorical range to be safer from oscillation and bad measures
+			basePosition.y-= (rangeFinderRange*0.6f);
+			//we only go down for 60% of the theorical range to be safer from oscillation and bad measures
 		}else{
 			//near the ground
 			basePosition.y -= (sensor.GetDistanceToGround()-requestedDistance);
 		}
 
-		AddWaypoint(basePosition,new Vector3(0,0,0));//TODO to test ? (ejecté du cremi avant de test)
+		AddWaypoint(basePosition);
 		return basePosition;
 	}
 }

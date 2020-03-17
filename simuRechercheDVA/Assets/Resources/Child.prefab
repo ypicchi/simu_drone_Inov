@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8967654676958214645}
   - component: {fileID: 361816014893531250}
   - component: {fileID: 4703560052396033662}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 8313882505888905226}
   - component: {fileID: 1483676991721841450}
   - component: {fileID: 60233433752015365}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 2694503952951793343}
   - component: {fileID: 7278619657258586795}
   - component: {fileID: 3827370554052350735}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Wheel3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 7828526380157436631}
   - component: {fileID: 6713565197627188922}
   - component: {fileID: 446029398501400426}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Child
   m_TagString: Child
   m_Icon: {fileID: 0}
@@ -371,7 +371,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modeDisplayText: 
   manualOverride: 0
-  enableGroundClearance: 1
   isFileOpen: 0
 --- !u!114 &7828526380157436631
 MonoBehaviour:
@@ -390,6 +389,7 @@ MonoBehaviour:
   samplingInterval: 0.2
   waypointValidationDistance: 5
   waypointValidationAngularThreshold: 10
+  enableGroundClearance: 1
   parentDrone: {fileID: 0}
   debugClickStartMission: 0
 --- !u!114 &6713565197627188922
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 8566297130315513554}
   - component: {fileID: 3495563108543227305}
   - component: {fileID: 322162332216484700}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,7 +510,7 @@ GameObject:
   - component: {fileID: 2638899924887297846}
   - component: {fileID: 5369934098130553281}
   - component: {fileID: 3213763956621979648}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Wheel0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 7744407604242311811}
   - component: {fileID: 6531930525727332111}
   - component: {fileID: 4436293027787661890}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Attach
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -694,7 +694,7 @@ GameObject:
   - component: {fileID: 6986877855404636636}
   - component: {fileID: 8025052589565549727}
   - component: {fileID: 2000918367144004442}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Wheel2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   - component: {fileID: 8671696067615493651}
   - component: {fileID: 8742825238547732431}
   - component: {fileID: 2051455584293945718}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -863,7 +863,7 @@ GameObject:
   - component: {fileID: 9090885387073298738}
   - component: {fileID: 5729710418838135570}
   - component: {fileID: 8119570166913400730}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -941,7 +941,7 @@ GameObject:
   - component: {fileID: 761916873603144782}
   - component: {fileID: 8443395299062094864}
   - component: {fileID: 448328247774472975}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Wheel1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

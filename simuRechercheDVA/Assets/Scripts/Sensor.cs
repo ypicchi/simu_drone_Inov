@@ -15,7 +15,7 @@ public class Sensor : MonoBehaviour
 	public string realClimbAngleDisplayText;
 	public string forwardSpeedDisplayText;
 
-	protected float ultrasonicRange = 3f;//used to detect the ground distance
+	protected float ultrasonicRange = 6f;//used to detect the ground distance
 	
 	protected const int numberOfSources = 1;
 	protected Vector3[] emissionSources = new Vector3[numberOfSources];
@@ -34,7 +34,7 @@ public class Sensor : MonoBehaviour
     void Start()
     {
 		rb = GetComponent<Rigidbody>();
-        emissionSources[0] = new Vector3(50,0,100);
+        emissionSources[0] = new Vector3(107,28,131);
 		
 		for(int i =0; i<numberOfSources ;i++ ){
 			sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -105,12 +105,15 @@ public class Sensor : MonoBehaviour
 	public float GetDistanceToGround(){//simulate an ultrasonic rangefinder so it have a limited range
 		RaycastHit hit;
 		Ray downRay;
+		Ray forwardRay;
 
 		GameObject rangefinder = GameObject.Find("Ultrason");
 		if(rangefinder==null){
 			downRay = new Ray(transform.position, -transform.up);
+			forwardRay = new Ray(transform.position, transform.forward);
 		}else{
 			downRay = new Ray(rangefinder.transform.position, -transform.up);
+			forwardRay = new Ray(rangefinder.transform.position, transform.forward);
 		}
 
 		float distance = float.PositiveInfinity;
@@ -120,6 +123,10 @@ public class Sensor : MonoBehaviour
         if (Physics.Raycast(downRay, out hit,ultrasonicRange)){
 			if(hit.distance<ultrasonicRange)
 			distance = hit.distance;
+		}
+		if (Physics.Raycast(forwardRay, out hit,ultrasonicRange)){
+			if(hit.distance<ultrasonicRange)
+			distance = Mathf.Min(distance,hit.distance);
 		}
 		return distance;
 	}

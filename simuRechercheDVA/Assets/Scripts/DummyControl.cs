@@ -89,11 +89,13 @@ public class DummyControl : DroneControl
         //Open file
 		if (Input.GetKey(KeyCode.O)){
 			IsFileOpen = true;
+            Debug.Log("recording...");
 		}
 
 		//Close file
 		if (Input.GetKey(KeyCode.C)){
 			IsFileOpen = false;
+            Debug.Log("recording saved");
 		}
     }
 }

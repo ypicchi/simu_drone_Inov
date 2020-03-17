@@ -52,9 +52,11 @@ public class PayloadControler : MonoBehaviour
         return CG;
     }
 
-    public void ReleaseAChild(){
+    public void ReleaseAChild(Vector3 target){
         if(GetRemainingChildAmount() > 0){
-            AllConnectedChild[0].GetComponent<Navigation>().StartMission();
+            Navigation nav = AllConnectedChild[0].GetComponent<Navigation>();
+            nav.AddWaypoint(target);
+            nav.StartMission();
             AllConnectedChild.RemoveAt(0);
             ComputeCGandMass();
         }
