@@ -7,46 +7,52 @@ public class UIDisplay : MonoBehaviour
 
     protected Sensor sensor;
     protected DroneControl control;
+    protected GameObject canvas;
 
 
 
-    private Text rollDisplay;
-	private Text pitchDisplay;
-	private Text climbAngleDisplay;
-	private Text realClimbAngleDisplay;
-	private Text forwardSpeedDisplay;
+    
     private Text sensorPowerDisplay;
     private Text modeDisplay;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
+        canvas = GameObject.Find("Canvas");
+
         sensor = GetComponent<Sensor>();
-        rollDisplay = GameObject.Find("Canvas/rollDisplay").GetComponent<Text>();
-		pitchDisplay = GameObject.Find("Canvas/pitchDisplay").GetComponent<Text>();
-		climbAngleDisplay = GameObject.Find("Canvas/climbAngleDisplay").GetComponent<Text>();
-		realClimbAngleDisplay = GameObject.Find("Canvas/realClimbAngleDisplay").GetComponent<Text>();
-		forwardSpeedDisplay = GameObject.Find("Canvas/forwardSpeedDisplay").GetComponent<Text>();
-        sensorPowerDisplay = GameObject.Find("Canvas/signalPowerDisplay").GetComponent<Text>();
+        sensorPowerDisplay = CreateText(canvas.transform, -114, 193, "Signal power : ").GetComponent<Text>();
         
         control = GetComponent<DroneControl>();
-        modeDisplay = GameObject.Find("Canvas/modeDisplay").GetComponent<Text>();
+        modeDisplay = CreateText(canvas.transform, -114, 173, "mode : ").GetComponent<Text>();
 
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         float power = sensor.GetSignalPower(transform.position);
 		sensorPowerDisplay.text = "Signal power : "+power.ToString();
-        rollDisplay.text = sensor.rollDisplayText;
-        pitchDisplay.text = sensor.pitchDisplayText;
-        climbAngleDisplay.text = sensor.climbAngleDisplayText;
-        realClimbAngleDisplay.text = sensor.realClimbAngleDisplayText;
-        forwardSpeedDisplay.text = sensor.forwardSpeedDisplayText;
-
         modeDisplay.text = control.modeDisplayText;
 
-        
+    }
+
+    protected GameObject CreateText(Transform canvas_transform, float x, float y, string text_to_print)
+    {
+        GameObject UItextGO = new GameObject("Text2");
+        UItextGO.layer = 5;
+        UItextGO.transform.SetParent(canvas_transform);
+
+        RectTransform trans = UItextGO.AddComponent<RectTransform>();
+        trans.anchoredPosition = new Vector2(x, y);
+        trans.sizeDelta = new Vector2 (160, 30);
+
+        Text text = UItextGO.AddComponent<Text>();
+        text.text = text_to_print;
+        text.color = Color.black;
+        text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        text.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+        return UItextGO;
     }
 }
