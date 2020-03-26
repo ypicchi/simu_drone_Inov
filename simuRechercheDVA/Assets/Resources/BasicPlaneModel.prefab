@@ -651,9 +651,9 @@ GameObject:
   - component: {fileID: 94649662874189353}
   - component: {fileID: 94649662874189352}
   - component: {fileID: 94649662874189355}
-  - component: {fileID: 94649662874189354}
+  - component: {fileID: 5192751178472214625}
   m_Layer: 0
-  m_Name: BasicPlaneModel 1
+  m_Name: BasicPlaneModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,8 +666,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 94649662874189357}
-  m_LocalRotation: {x: 0.21751198, y: -0, z: -0, w: 0.9760577}
-  m_LocalPosition: {x: 0, y: 8.84, z: -282.76}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 94649662180021946}
@@ -680,7 +680,7 @@ Transform:
   - {fileID: 94649661987606215}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 25.126001, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &94649662874189398
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -748,6 +748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fde6852cd3436d4f817719ea09907d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modeDisplayText: 
   manualOverride: 1
   rollPid:
     pFactor: 0.1
@@ -780,7 +781,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac2261a5e66ee994bbeb7ba557993750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &94649662874189354
+  rollDisplayText: 
+  pitchDisplayText: 
+  climbAngleDisplayText: 
+  realClimbAngleDisplayText: 
+  forwardSpeedDisplayText: 
+--- !u!114 &5192751178472214625
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -789,13 +795,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 94649662874189357}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad291d26b1daf214ba4d5dacfefad533, type: 3}
+  m_Script: {fileID: 11500000, guid: 1376271a9938cf947adaa459b64994cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  researchZoneSize: {x: 100, y: 0, z: 100}
-  researchZoneOrigin: {x: 10, y: 5, z: 50}
-  samplingInterval: 0.2
-  bandWidth: 10
 --- !u!1 &94649662973226849
 GameObject:
   m_ObjectHideFlags: 0

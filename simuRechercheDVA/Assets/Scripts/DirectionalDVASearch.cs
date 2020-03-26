@@ -14,6 +14,8 @@ public class DirectionalDVASearch : Navigation
 	protected int dataPointNeededBeforeValidatingTheWaypoint = 0;
 	protected int dataPointAquiredSinceLastValidation = 0;
 
+	protected float dropHeight = 1.2f;
+
 
 	protected List<DataPoint> currentSegmentMeasure = new List<DataPoint>();
 	
@@ -261,14 +263,14 @@ public class DirectionalDVASearch : Navigation
 		case "startDeliveringChild":
 			Vector3 targetPos = targetsFound[0];
 			enableGroundClearance = false;
-			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
+			targetsFound[0] = GetCloseToGround(targetPos, dropHeight);
 			state = "deliveringChild";
 			break;
 
 		case "deliveringChild":
 			targetPos = targetsFound[0];
-			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
-			if(sensor.GetDistanceToGround()<1f){
+			targetsFound[0] = GetCloseToGround(targetPos, dropHeight);
+			if(sensor.GetDistanceToGround()<(dropHeight+0.2f)){
 				payloadCtrl.ReleaseAChild(targetPos);
 				state = "childDelivered";
 			}
