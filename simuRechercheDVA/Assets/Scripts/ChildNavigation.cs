@@ -10,12 +10,22 @@ public class ChildNavigation : Navigation
     protected FixedJoint attachJoint;
     protected bool isAttached = false;
 
+    protected Camera childCam;
+
 
     public bool debugClickStartMission = false;
 
     public override void Awake(){
         ConnectAttachment();
         base.Awake();
+
+        Camera[] allCam = FindObjectsOfType<Camera>();
+        foreach(Camera cam in allCam){
+            if(cam.name == "ChildCam"){
+                childCam = cam;
+            }
+        }
+        childCam.enabled = false;
     }
 
     public override void Start(){
@@ -37,6 +47,8 @@ public class ChildNavigation : Navigation
         waypointValidationAngularThreshold = 360f;
         ReleaseAttachment();
         base.StartMission();
+
+        childCam.enabled = true;
     }
 
     public override void Update(){
