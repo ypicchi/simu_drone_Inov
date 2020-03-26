@@ -113,12 +113,12 @@ public abstract class Navigation : MonoBehaviour
 		float heading = sensor.GetHeadingAsFloat();
 		DataPoint currentPoint = new DataPoint(power,sensor.GetPosition(),
 			new Vector3(sensor.GetPitch(),heading,sensor.GetRoll()));
-		fileLog.Write(currentPoint.ToWSVLine());
+		//fileLog.Write(currentPoint.ToWSVLine());//TODO fait planter le script lors du build (mais marche dans l'éditeur)
 		OnLoggingDataPoint(currentPoint);
 	}
 
 	protected virtual void OnLoggingDataPoint(DataPoint currentPoint){
-
+		currentPoint = currentPoint;//TODO une fonction vide fait planter le script lors du build (mais pas dans l'éditeur)
 	}
 
 	protected virtual bool ValidateWaypoint(Vector3 linearDifference,float angularDifference){

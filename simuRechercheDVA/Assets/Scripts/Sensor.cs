@@ -40,7 +40,13 @@ public class Sensor : MonoBehaviour
 			sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			sphere.transform.position = emissionSources[i];
 			sphere.name = "signalTransmitter_"+i;
-			Debug.DrawRay(emissionSources[i], Vector3.up*100,Color.red,600,false);
+			GameObject beacon = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+			beacon.transform.localScale = new Vector3(0.08f,30,0.08f);
+			beacon.transform.position = sphere.transform.position + new Vector3(0,beacon.transform.localScale.y,0);
+			beacon.GetComponent<Renderer>().material.color = Color.red;
+			beacon.name = "beacon_"+i;
+			Destroy(beacon.GetComponent<Collider>());
+
 		}
 		
 		
