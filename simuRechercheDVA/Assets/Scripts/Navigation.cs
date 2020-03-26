@@ -19,6 +19,9 @@ public abstract class Navigation : MonoBehaviour
 	public float samplingInterval = 0.2f;//in second
 	public float waypointValidationDistance = 5f;//in m
 	public float waypointValidationAngularThreshold = 10f;
+
+	public float waypointConsideredADuplicateDistanceThreshold = 0.2f;
+	public float waypointConsideredADuplicateAngleThreshold = 2f;
 	
 	
 	protected float previousSamplingTime = 0;
@@ -122,18 +125,26 @@ public abstract class Navigation : MonoBehaviour
 		return linearDifference.magnitude < waypointValidationDistance && angularDifference < waypointValidationAngularThreshold;
 	}
 	
-	public void AddWaypoint(Vector3 nextPoint){
-		AddWaypoint(nextPoint, Vector3.zero);
+	public bool AddWaypoint(Vector3 nextPoint){
+		return AddWaypoint(nextPoint, Vector3.zero);
 	}
-	public void AddWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
+	public bool AddWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
 		mainWaypoints.Enqueue(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
+		return true;
 	}
 
-	public void AddNavigationWaypoint(Vector3 nextPoint){
-		AddNavigationWaypoint(nextPoint, Vector3.zero);
+	public bool AddNavigationWaypoint(Vector3 nextPoint){
+		return AddNavigationWaypoint(nextPoint, Vector3.zero);
 	}
-	public void AddNavigationWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
-		navigationWaypoints.Push(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
+	public bool AddNavigationWaypoint(Vector3 nextPoint, Vector3 eulerAngle){
+		//only add the new waypoint if it is significaly different from the current one.
+		if(Vector3.Distance(nextPoint,navigationWaypoints.Peek().First) > waypointConsideredADuplicateDistanceThreshold
+		|| Vector3.Distance(eulerAngle,navigationWaypoints.Peek().Second) > waypointConsideredADuplicateAngleThreshold){
+			navigationWaypoints.Push(new Pair<Vector3, Vector3>(nextPoint, eulerAngle));
+			return true;
+		}
+		return false;
+		
 	}
 
 	public void UpdateWaypoint(){
@@ -173,6 +184,6 @@ public abstract class Navigation : MonoBehaviour
 	
 	protected abstract void GenerateNextNavigationWaypoint();
 	
-	protected abstract List<Vector3> ComputeTargetsPositions();
+	//protected abstract List<Vector3> ComputeTargetsPositions();
 	
 }

@@ -39,7 +39,8 @@ public class Sensor : MonoBehaviour
 		for(int i =0; i<numberOfSources ;i++ ){
 			sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			sphere.transform.position = emissionSources[i];
-			sphere.name = "signalTransmitter";
+			sphere.name = "signalTransmitter_"+i;
+			Debug.DrawRay(emissionSources[i], Vector3.up*100,Color.red,600,false);
 		}
 		
 		
@@ -105,15 +106,12 @@ public class Sensor : MonoBehaviour
 	public float GetDistanceToGround(){//simulate an ultrasonic rangefinder so it have a limited range
 		RaycastHit hit;
 		Ray downRay;
-		Ray forwardRay;
 
 		GameObject rangefinder = GameObject.Find("Ultrason");
 		if(rangefinder==null){
 			downRay = new Ray(transform.position, -transform.up);
-			forwardRay = new Ray(transform.position, transform.forward);
 		}else{
 			downRay = new Ray(rangefinder.transform.position, -transform.up);
-			forwardRay = new Ray(rangefinder.transform.position, transform.forward);
 		}
 
 		float distance = float.PositiveInfinity;
@@ -124,11 +122,72 @@ public class Sensor : MonoBehaviour
 			if(hit.distance<ultrasonicRange)
 			distance = hit.distance;
 		}
-		if (Physics.Raycast(forwardRay, out hit,ultrasonicRange)){
-			if(hit.distance<ultrasonicRange)
-			distance = Mathf.Min(distance,hit.distance);
-		}
 		return distance;
+	}
+
+	public List<Vector3> GetGroundAltitude(Vector2 direction,float distanceCutoff){
+		Vector2 normalizedDirection = direction.normalized;
+		List<Vector3> output = new List<Vector3>();
+		
+		if(normalizedDirection.magnitude>0){
+			float samplingInterval = 1f;//1m between two measures
+			int nbSample = (int) (distanceCutoff/samplingInterval);
+
+			//RaycastHit hit;
+			//Ray upRay;//we go up because we know nothing is below altitude 0
+
+			for(int i =0; i<=nbSample; i++){
+
+				
+
+				Vector3 point = transform.position + i*normalizedDirection.x*Vector3.right + i*normalizedDirection.y*Vector3.forward;
+				point.y = -1f;
+				//upRay = new Ray(point, Vector3.up);
+				
+				//if (Physics.Raycast(upRay, out hit)){
+				//	point.y = hit.distance - point.y;
+				//}
+				Terrain closestTerrain = GetClosestCurrentTerrain(point);
+				point.y = closestTerrain.SampleHeight(point);
+
+				output.Add(point);
+			}
+		}
+		return output;
+		
+	}
+
+	private Terrain GetClosestCurrentTerrain(Vector3 playerPos)
+	{
+		//Get all terrain
+		Terrain[] terrains = Terrain.activeTerrains;
+
+		//Make sure that terrains length is ok
+		if (terrains.Length == 0)
+			return null;
+
+		//If just one, return that one terrain
+		if (terrains.Length == 1)
+			return terrains[0];
+
+		//Get the closest one to the player
+		float lowDist = (terrains[0].GetPosition() - playerPos).sqrMagnitude;
+		var terrainIndex = 0;
+
+		for (int i = 1; i < terrains.Length; i++)
+		{
+			Terrain terrain = terrains[i];
+			Vector3 terrainPos = terrain.GetPosition();
+
+			//Find the distance and check if it is lower than the last one then store it
+			var dist = (terrainPos - playerPos).sqrMagnitude;
+			if (dist < lowDist)
+			{
+				lowDist = dist;
+				terrainIndex = i;
+			}
+		}
+		return terrains[terrainIndex];
 	}
 	
 	public Vector3 GetPosition(){

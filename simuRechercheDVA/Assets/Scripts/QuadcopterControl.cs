@@ -15,23 +15,13 @@ public class QuadcopterControl : DroneControl
 
 	
 
-	public PID altitudePid = new PID(3f, 0.03f, 0.05f);
-	//public PID altitudePid = new PID(3f, 0.05f, 0.01f);
-
-
-	public PID speedPid = new PID(2f, 0.02f, 0f);
-	//public PID speedPid = new PID(400f, 800f, 10f);
-
-
 	public PID yawPid = new PID(0.2f, 0f, 0.3f);
 	private float yawThrustLimit = 10f;
 
 
-	private float pitchTarget = 0f;
 	private PID pitchPid = new PID(10f, 0f, 2f);
 	private float pitchThrustLimit = 100f;
 
-	private float rollTarget = 0f;
 	private PID rollPid = new PID(10f, 0f, 2f);
 	private float rollThrustLimit = 100f;
 
@@ -88,41 +78,6 @@ public class QuadcopterControl : DroneControl
 	}
 
 
-	private float GetThrustToReachWaypointAltitude(){
-
-		float targetAltitude = target.transform.position.y;
-		float actualAltitude = sensor.GetPosition().y;
-		float actualVerticalSpeed = sensor.GetVerticalSpeed();
-
-		float targetVerticalSpeed = altitudePid.Update(targetAltitude, actualAltitude, Time.deltaTime);
-		float thrustCommand = speedPid.Update(targetVerticalSpeed, actualVerticalSpeed, Time.deltaTime);
-
-		//Log
-		Debug.Log(Time.fixedTime);
-		if(isFileOpen){
-			file.WriteLine(Time.fixedTime + ";" + targetAltitude + ";" + actualAltitude + ";" + targetVerticalSpeed + ";" + actualVerticalSpeed + ";" + thrustCommand);
-		}
-
-		return thrustCommand;
-	}
-
-
-	private float GetThrustToStabilizeAltitude(){
-		
-		float targetSpeed = 0f;
-		float thrustCommand = speedPid.Update(targetSpeed, sensor.GetVerticalSpeed(), Time.deltaTime);
-
-		//Log
-		Debug.Log(Time.fixedTime);
-		if(isFileOpen){
-			file.WriteLine(Time.fixedTime + ";" + targetSpeed + ";" + sensor.GetVerticalSpeed() + ";" + thrustCommand + ";" + sensor.GetPosition().y);
-		}
-		
-		return thrustCommand;
-	}
-
-
-	//TODO : change name : actual => current
 	private float GetThrustDifferenceToYaw( float targetAngle ){
 
 		float thrustDifference = 0f;
@@ -271,7 +226,7 @@ public class QuadcopterControl : DroneControl
 		//Add the gravity in the acceleration/force required
 		Vector3 counterGravityAcceleration = - Physics.gravity;
 		accelerationCommand += counterGravityAcceleration;
-		accelerationCommand.y = Mathf.Max(accelerationCommand.y,0.1f);//we don't allow the drone to flip
+		accelerationCommand.y = Mathf.Max(accelerationCommand.y,1f);//we don't allow the drone to flip
 
 		//Now we have the acceleration required.
 		//We can find the angle and the trust to apply
@@ -320,9 +275,7 @@ public class QuadcopterControl : DroneControl
 
 			
 			transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0, targetHeading, 0);
-			//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
-			//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
-			//float currentHeading = sensor.GetHeadingAsFloat();
+			
 			
 			for(int i = 0; i < numberOfThruster; i++){
 				thrust[i] = totalThrust/4; 
@@ -331,25 +284,7 @@ public class QuadcopterControl : DroneControl
 			
 		}
 
-		/*
-		for(int i = 0; i < numberOfThruster; i++){
-			thrust[i] = thrustEquilibrium; 
-			sim.SetThrusterThrust(i, thrust[i]);
-		}
-		*/
 		
-
-		//TODO temporary
-		//transform.rotation = Quaternion.FromToRotation(Vector3.up, forceVector) * Quaternion.Euler(0, targetHeading, 0);
-		//transform.rotation = Quaternion.Euler(0,targetHeading,0) * Quaternion.Euler(requiredPitch,0,requiredRoll);
-		//transform.eulerAngles = new Vector3(requiredPitch,targetHeading,requiredRoll);
-		//float currentHeading = sensor.GetHeadingAsFloat();
-		/*
-		for(int i = 0; i < numberOfThruster; i++){
-			thrust[i] = totalThrust/4; 
-			sim.SetThrusterThrust(i, thrust[i]);
-		}
-		*/
 		
 
 

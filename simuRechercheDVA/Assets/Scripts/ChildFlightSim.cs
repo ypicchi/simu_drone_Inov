@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ChildFlightSim : DroneFlightSim
 {
-    //TODO child sim
 
     protected Vector3[] wheelCenters;
     protected float wheelRadius;
@@ -27,6 +26,7 @@ public class ChildFlightSim : DroneFlightSim
     
 
     public override void FixedUpdate(){
+        base.FixedUpdate();
 
         for(int i=0;i<simProperties.ThrusterOffset.Length;i++){
             

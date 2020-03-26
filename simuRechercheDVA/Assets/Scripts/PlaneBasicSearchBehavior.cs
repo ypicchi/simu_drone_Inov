@@ -70,7 +70,7 @@ public class PlaneBasicSearchBehavior : Navigation
 		}
 	}
 	
-	protected override List<Vector3> ComputeTargetsPositions(){
+	protected List<Vector3> ComputeTargetsPositions(){
 		DataPoint strongestPoint = allDataPoint.Pop();
 		float cutThreshold = 0.9f * strongestPoint.SensorPower;
 		

@@ -24,7 +24,7 @@ public class ChildControl : DroneControl
 		
     }
 
-    //TODO child control
+    
     public override void ControlLoop(){
 
 		if(hasTarget){
@@ -82,7 +82,6 @@ public class ChildControl : DroneControl
 		angle += 180f;
 
 		//now we ensure a range within 0-360°
-		//TODO
 		angle = angle%360f;
 		if(angle<0){
 			angle += 360f;

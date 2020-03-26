@@ -49,30 +49,94 @@ public class DirectionalDVASearch : Navigation
 	public override void Update() {
 		base.Update();
 		if(enableGroundClearance){
-			//Rise the target position if too close to the ground
-			Vector3 currentPosition = sensor.GetPosition();
-			float requiredGroundClearance = 5f;
-			float currentClearance = sensor.GetDistanceToGround();
-			if(currentClearance<requiredGroundClearance){
-				float delta = requiredGroundClearance - currentClearance;
+			HandleGroundClearance();
+		}
+	}
+
+	protected void HandleGroundClearance(){
+		//Rise the target position if too close to the ground
+		/*
+		Vector3 currentPosition = sensor.GetPosition();
+		float requiredGroundClearance = 5f;
+		float currentClearance = sensor.GetDistanceToGround();
+		if(currentClearance<requiredGroundClearance){
+			float delta = requiredGroundClearance - currentClearance;
+			
+			if(waypointIndicator.transform.position.y < currentPosition.y){
+				Vector3 nextPoint = currentPosition + Vector3.up * 3 * delta;
+
+				navigationWaypoints.Peek().First += Vector3.up * 3 * delta;
+
+				if(hadReachedClearanceRequest){
 				
-				if(waypointIndicator.transform.position.y < currentPosition.y){
-					Vector3 nextPoint = currentPosition + Vector3.up * 3 * delta;
-
-					navigationWaypoints.Peek().First += Vector3.up * 3 * delta;
-
-					if(hadReachedClearanceRequest){
-					
-						AddNavigationWaypoint(nextPoint,waypointIndicator.transform.eulerAngles);
-						UpdateWaypoint();
-						Debug.Log("ground detected");
-						hadReachedClearanceRequest = false;
-					}
-
-					
+					AddNavigationWaypoint(nextPoint,waypointIndicator.transform.eulerAngles);
+					UpdateWaypoint();
+					Debug.Log("ground detected");
+					hadReachedClearanceRequest = false;
 				}
+
+				
 			}
 		}
+		*/
+		Vector3 currentPosition = sensor.GetPosition();
+		Vector3 nextTarget = waypointIndicator.transform.position;
+		float requiredGroundClearance = 5f;
+		float newTargetHeightAboveRequiredGroundClearance = 2f;
+		float currentClearance = sensor.GetDistanceToGround();
+
+		Vector2 targetDifference = new Vector2(nextTarget.x - currentPosition.x, nextTarget.z - currentPosition.z);
+		
+		List<Vector3> groundPoints = sensor.GetGroundAltitude(targetDifference,10f);
+		if(groundPoints.Count>0){
+			groundPoints.Reverse();
+
+			bool hasGeneratedACorrection = false;
+			foreach(Vector3 point in groundPoints){
+				targetDifference = new Vector2(nextTarget.x - currentPosition.x, nextTarget.z - currentPosition.z);
+				float hypothenuseMultiplier = Vector3.Distance(nextTarget,currentPosition)/targetDifference.magnitude;
+				float pointDistance = Vector3.Distance(point-Vector3.up * point.y,currentPosition-Vector3.up * currentPosition.y);
+
+				Vector3 plannedPoint = Vector3.MoveTowards(currentPosition,nextTarget,pointDistance*hypothenuseMultiplier);
+				float plannedClearance = plannedPoint.y - point.y;
+				if(plannedClearance<requiredGroundClearance){
+					nextTarget = plannedPoint + Vector3.up * (requiredGroundClearance + newTargetHeightAboveRequiredGroundClearance - plannedClearance);
+					if(AddNavigationWaypoint(nextTarget)){
+						hasGeneratedACorrection = true;
+						RaiseNearbyTargetToAtLeastThisAltitude(nextTarget,nextTarget.y);
+					}
+				}
+			}
+			if(hasGeneratedACorrection){
+				UpdateWaypoint();
+			}
+		}
+
+
+
+	}
+
+	//Modify all the stored waypoint so that their altitude is at minimum "height"
+	//This way we can prevent a waypoint from being stuck in the ground forever.
+	protected void RaiseNearbyTargetToAtLeastThisAltitude(Vector3 centerPoint, float height){
+		float affectedRadius = 1f;
+		foreach(Pair<Vector3,Vector3> point in navigationWaypoints){
+			centerPoint.y = point.First.y;
+			if((Vector3.Distance(centerPoint,point.First)<affectedRadius) && (point.First.y < height)){
+				Vector3 newPos = point.First;
+				newPos.y = height;
+				point.First = newPos;
+			}
+		}
+		foreach(Pair<Vector3,Vector3> point in mainWaypoints){
+			centerPoint.y = point.First.y;
+			if((Vector3.Distance(centerPoint,point.First)<affectedRadius) && (point.First.y < height)){
+				Vector3 newPos = point.First;
+				newPos.y = height;
+				point.First = newPos;
+			}
+		}
+
 	}
 
 
@@ -166,8 +230,7 @@ public class DirectionalDVASearch : Navigation
 		
 		switch(state){
 		case "badHeading":
-			GenerateHeadingWaypoint(-120,120,30);
-			useWaypointY = false;
+			GenerateHeadingWaypoint(-160,160,30);
 			state = "findingHeading";
 			break;
 
@@ -175,13 +238,11 @@ public class DirectionalDVASearch : Navigation
 			heading = FindHeadingFromCurrentSegment();
 			currentSegmentMeasure.Clear();
 			GenerateHeadingWaypoint(heading-20,heading+20,5);
-			useWaypointY = false;
 			state = "refiningHeading";
 			break;
 
 		case "refiningHeading":
 			heading = FindHeadingFromCurrentSegment();
-			useWaypointY = false;
 			currentSegmentMeasure.Clear();
 			StepForward(stepDistance);
 			state = "goodHeading";
@@ -189,7 +250,6 @@ public class DirectionalDVASearch : Navigation
 
 		case "goodHeading":
 			StepForward(stepDistance);
-			useWaypointY = true;
 			if( ! IsSignalIncreasing()){
 				stepDistance /= 2;
 				currentSegmentMeasure.Clear();
@@ -210,7 +270,6 @@ public class DirectionalDVASearch : Navigation
 			targetsFound[0] = GetCloseToGround(targetPos, 0.8f);
 			if(sensor.GetDistanceToGround()<1f){
 				payloadCtrl.ReleaseAChild(targetPos);
-				//TODO childNav.targetsFound.Add(targetsFound[0]);
 				state = "childDelivered";
 			}
 			break;
@@ -233,7 +292,7 @@ public class DirectionalDVASearch : Navigation
 
 	//-----after zeroing in-----
 
-	protected override List<Vector3> ComputeTargetsPositions(){
+	protected List<Vector3> ComputeTargetsPositions(){
 		if(currentSegmentMeasure.Count != 0){
 			DataPoint max = currentSegmentMeasure[0];
 			foreach(DataPoint point in currentSegmentMeasure){
@@ -261,8 +320,8 @@ public class DirectionalDVASearch : Navigation
 
 		if(sensor.GetDistanceToGround()>rangeFinderRange){
 			//far from the ground
-			basePosition.y-= (rangeFinderRange*0.6f);
-			//we only go down for 60% of the theorical range to be safer from oscillation and bad measures
+			basePosition.y-= (rangeFinderRange*0.5f);
+			//we only go down for 50% of the theorical range to be safer from oscillation and bad measures
 		}else{
 			//near the ground
 			basePosition.y -= (sensor.GetDistanceToGround()-requestedDistance);
