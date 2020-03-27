@@ -46,7 +46,6 @@ public class Sensor : MonoBehaviour
 			beacon.GetComponent<Renderer>().material.color = Color.red;
 			beacon.name = "beacon_"+i;
 			Destroy(beacon.GetComponent<Collider>());
-
 		}
 		
 		

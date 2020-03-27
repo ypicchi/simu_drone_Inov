@@ -56,31 +56,6 @@ public class DirectionalDVASearch : Navigation
 	}
 
 	protected void HandleGroundClearance(){
-		//Rise the target position if too close to the ground
-		/*
-		Vector3 currentPosition = sensor.GetPosition();
-		float requiredGroundClearance = 5f;
-		float currentClearance = sensor.GetDistanceToGround();
-		if(currentClearance<requiredGroundClearance){
-			float delta = requiredGroundClearance - currentClearance;
-			
-			if(waypointIndicator.transform.position.y < currentPosition.y){
-				Vector3 nextPoint = currentPosition + Vector3.up * 3 * delta;
-
-				navigationWaypoints.Peek().First += Vector3.up * 3 * delta;
-
-				if(hadReachedClearanceRequest){
-				
-					AddNavigationWaypoint(nextPoint,waypointIndicator.transform.eulerAngles);
-					UpdateWaypoint();
-					Debug.Log("ground detected");
-					hadReachedClearanceRequest = false;
-				}
-
-				
-			}
-		}
-		*/
 		Vector3 currentPosition = sensor.GetPosition();
 		Vector3 nextTarget = waypointIndicator.transform.position;
 		float requiredGroundClearance = 5f;
@@ -226,7 +201,7 @@ public class DirectionalDVASearch : Navigation
 			//we found the source
 			state = "startDeliveringChild";
 			ComputeTargetsPositions();
-			isSearching = false;//TODO sauf si d'autres signal trouvé
+			isSearching = false;//TODO to change when we will handle several targets
 		}
 		
 		
@@ -279,7 +254,7 @@ public class DirectionalDVASearch : Navigation
 		case "childDelivered":
 			enableGroundClearance = true;
 			AddWaypoint(targetsFound[0] + Vector3.up * 2);
-			state = "??";//TODO more than one child
+			state = "??";//TODO to change when we will handle several targets
 			break;
 		default:
 			Debug.Log("Unknown state : "+state);
